@@ -1,0 +1,31 @@
+.navbar-brand {
+  font-family: "Inknut Antiqua", serif;
+  font-weight: 900;
+  font-style: normal;
+}
+.navbar-nav .nav-link {
+  font-size: 1.1rem;
+}
+
+.nav-item {
+  margin-left: 100px;
+}
+
+.nav-item > .nav-link {
+  font-family: "Inknut Antiqua", serif;
+  font-weight: 800;
+  font-style: normal;
+  text-transform: uppercase;
+}
+.backgroud-header {
+  background-color: black;
+}
+
+.container {
+  margin: 20px 50px 20px;
+}
+
+.img-fluid-logo {
+  filter: brightness(50%);
+  object-fit: cover;
+}
