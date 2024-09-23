@@ -1,44 +1,12 @@
 import React from "react";
+import Header from "../components/header";
 
 function HomePage() {
   return (
     <>
       <div className="container-fluid p-0">
         {/* Header */}
-        <nav className="navbar navbar-expand-lg navbar-light backgroud-header">
-          <div className="container">
-            {/* Left Side */}
-            <ul className="navbar-nav me-auto">
-              <li className="nav-item">
-                <a className="nav-link text-white" href="#">
-                  Contact
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-white" href="#">
-                  Feedback
-                </a>
-              </li>
-            </ul>
-            {/* Center*/}
-            <a className="navbar-brand mx-auto" href="#">
-              <h1 className="text-white">Harmony</h1>
-            </a>
-            {/* Right Side */}
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <a className="nav-link text-white" href="#">
-                  Booking
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-white" href="#">
-                  Service
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
+        <Header />
         {/* Header END */}
         {/* Booking */}
         <div className="position-relative">
@@ -60,7 +28,7 @@ function HomePage() {
           <div className="text-center">
             <h2 className="service-title text-white">Service</h2>
           </div>
-          <div className="container d-flex justify-content-center">
+          <div className="container d-flex justify-content-center mx-auto">
             <div className="card card-left">
               <img
                 src="../assets/image/service.jpg"
@@ -119,7 +87,7 @@ function HomePage() {
           className="bg-secondary-subtle p-0"
           style={{ marginBottom: "-20px" }}
         >
-          <div className="container" style={{ marginTop: 0 }}>
+          <div className="container mx-auto" style={{ marginTop: 0 }}>
             <div className="text-center" style={{ paddingBottom: 10 }}>
               <h2 className="service-title text-white">Store Space</h2>
             </div>
@@ -185,7 +153,7 @@ function HomePage() {
           <div className="text-center">
             <h2 className="service-title text-white">Stylist</h2>
           </div>
-          <div className="container d-flex justify-content-center">
+          <div className="container d-flex justify-content-center mx-auto">
             <div className="card card-left">
               <img
                 src="../assets/image/avatar.jpg"
