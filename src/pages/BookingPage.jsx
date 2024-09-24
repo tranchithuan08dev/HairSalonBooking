@@ -1,31 +1,11 @@
 import React from "react";
-
+import Header from "../components/header";
 function BookingPage() {
   return (
     <>
       <div className="container-fluid bg-dark">
         {/* Header */}
-        <div className="container">
-          <div className="position-relative">
-            <img
-              src="./image/logo_booking.jpg"
-              alt="logo"
-              className="img-fluid w-100"
-              style={{
-                height: 400,
-                objectFit: "cover",
-                filter: "brightness(50%)",
-              }}
-            />
-            <div className="position-absolute top-50 start-50 translate-middle text-center text-white">
-              <h1>Hair Harmony</h1>
-              <div className="time">
-                <p>Open: 10AM - 7:30PM</p>
-                <p>Phone: 0909090303</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Header />
         {/* Header END */}
         {/* Schedule */}
         <div
