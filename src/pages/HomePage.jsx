@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/header";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
@@ -17,9 +18,11 @@ function HomePage() {
             className="img-fluid-logo w-100 vh-100 blurred-image"
           />
           <div className="position-absolute top-50 start-50 translate-middle">
-            <a href="/booking" className="btn-booking text-white">
-              Booking
-            </a>
+            <Link to="/booking">
+              <a href="/booking" className="btn-booking text-white">
+                Booking
+              </a>
+            </Link>
           </div>
         </div>
 
