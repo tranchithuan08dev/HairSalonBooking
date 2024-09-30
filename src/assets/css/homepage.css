@@ -50,3 +50,20 @@
   border: 1px solid #fff;
   text-transform: uppercase;
 }
+/* take care */
+.offer-section {
+  padding: 20px;
+}
+.offer-item {
+  text-align: center;
+  padding: 20px;
+}
+.offer-item h1 {
+  font-size: 48px;
+  margin: 0;
+}
+.offer-item p {
+  font-size: 16px;
+  color: #454548; /* Your preferred grey color */
+  margin: 0;
+}
