@@ -1,0 +1,92 @@
+
+.nav-link.active {
+  color: rgb(236, 39, 39);
+  pointer-events: none; /* Ngăn không cho sự kiện hover xảy ra */
+}
+
+.text-center {
+  display: flex;
+  align-items: center;
+}
+
+.text-center > div {
+  margin: 0 15px;
+}
+
+.hover-card:hover {
+  border: 1px solid rgb(6, 57, 184);
+  cursor: pointer;
+}
+
+.block-span {
+  display:block;
+}
+
+.acceptDeny {
+  a{
+      text-decoration: none;
+      margin: 5px;
+    }
+    .accept {
+      color: #FFF;
+      background: #44CC44;
+      padding: 15px 20px;
+      box-shadow: 0 4px 0 0 #2EA62E;
+    }
+    .accept:hover {
+      background: #6FE76F;
+      box-shadow: 0 4px 0 0 #7ED37E;
+    }
+    .deny {
+      color: #FFF;
+      background: tomato;
+      padding: 15px 20px;
+      box-shadow: 0 4px 0 0 #CB4949;
+    }
+    .deny:hover {
+      background: rgb(255, 147, 128);
+      box-shadow: 0 4px 0 0 #EF8282;
+    }
+}
+
+.row-custom {
+max-height: 55px;
+width: 1202px;
+}
+
+.custom-pagi {
+margin-bottom: 0px;
+}
+.result-found > h6 {
+margin-left: 30px;
+}
+
+.card-custom{
+  width: 1177px;
+  height: 169.500px;
+  border: 1px;
+  margin-bottom: 16px;
+  margin-left: 0px;
+}
+
+.searchSubmit{
+float:right;
+padding: 10px;
+width: 80px;
+position: relative;
+top: -48px;
+}
+
+.card-custom-booking {
+width: 1180px;
+    height: 114px;
+    margin-left: 0px;
+}
+
+.custom-mt {
+  width: 1178px;
+}
+
+.custom-g0 {
+  width: 1194px;
+}
