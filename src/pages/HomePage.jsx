@@ -154,47 +154,147 @@ function HomePage() {
           <div className="text-center">
             <h2 className="service-title text-white">Stylist</h2>
           </div>
-          <div className="container d-flex justify-content-center mx-auto">
-            <div className="card card-left">
-              <img
-                src="../assets/image/avatar.jpg"
-                className="card-img-top"
-                alt="..."
-                style={{ height: 240, objectFit: "cover" }}
-              />
-              <div className="card-body">
-                <h3 className="text-center">Trần Chí Thuận</h3>
+          <div className="container mx-auto">
+            {/* Row 1 */}
+            <div className="row d-flex justify-content-center">
+              <div className="col-md-4 d-flex justify-content-center mb-4">
+                <div className="card">
+                  <img
+                    src="../assets/image/avatar.jpg"
+                    className="card-img-top"
+                    alt="Stylist Trần Chí Thuận"
+                    style={{ height: 240, objectFit: "cover" }}
+                  />
+                  <div className="card-body">
+                    <h3 className="text-center">
+                      <a
+                        className="text-black"
+                        href="./StylistDetail.html"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Trần Chí Thuận
+                      </a>
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 d-flex justify-content-center mb-4">
+                <div className="card">
+                  <img
+                    src="../assets/image/avatar.jpg"
+                    className="card-img-top"
+                    alt="Stylist Trần Chí Thuận"
+                    style={{ height: 240, objectFit: "cover" }}
+                  />
+                  <div className="card-body">
+                    <h3 className="text-center">
+                      <a
+                        className="text-black"
+                        href="./StylistDetail.html"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Trần Chí Thuận
+                      </a>
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 d-flex justify-content-center mb-4">
+                <div className="card">
+                  <img
+                    src="../assets/image/avatar.jpg"
+                    className="card-img-top"
+                    alt="Stylist Trần Chí Thuận"
+                    style={{ height: 240, objectFit: "cover" }}
+                  />
+                  <div className="card-body">
+                    <h3 className="text-center">
+                      <a
+                        className="text-black"
+                        href="./StylistDetail.html"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Trần Chí Thuận
+                      </a>
+                    </h3>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="card">
-              <img
-                src="../assets/image/avatar.jpg"
-                className="card-img-top"
-                alt="..."
-                style={{ height: 240, objectFit: "cover" }}
-              />
-              <div className="card-body">
-                <h3 className="text-center">Trần Chí Thuận</h3>
+            {/* Row 2 */}
+            <div className="row d-flex justify-content-center">
+              <div className="col-md-4 d-flex justify-content-center ">
+                <div className="card">
+                  <img
+                    src="../assets/image/avatar.jpg"
+                    className="card-img-top"
+                    alt="Stylist Trần Chí Thuận"
+                    style={{ height: 240, objectFit: "cover" }}
+                  />
+                  <div className="card-body">
+                    <h3 className="text-center">
+                      <a
+                        className="text-black"
+                        href="./StylistDetail.html"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Trần Chí Thuận
+                      </a>
+                    </h3>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="card">
-              <img
-                src="../assets/image/avatar.jpg"
-                className="card-img-top"
-                alt="..."
-                style={{ height: 240, objectFit: "cover" }}
-              />
-              <div className="card-body">
-                <h3 className="text-center">Trần Chí Thuận</h3>
+              <div className="col-md-4 d-flex justify-content-center">
+                <div className="card">
+                  <img
+                    src="../assets/image/avatar.jpg"
+                    className="card-img-top"
+                    alt="Stylist Trần Chí Thuận"
+                    style={{ height: 240, objectFit: "cover" }}
+                  />
+                  <div className="card-body">
+                    <h3 className="text-center">
+                      <a
+                        className="text-black"
+                        href="./StylistDetail.html"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Trần Chí Thuận
+                      </a>
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 d-flex justify-content-center">
+                <div className="card">
+                  <img
+                    src="../assets/image/avatar.jpg"
+                    className="card-img-top"
+                    alt="Stylist Trần Chí Thuận"
+                    style={{ height: 240, objectFit: "cover" }}
+                  />
+                  <div className="card-body">
+                    <h3 className="text-center">
+                      <a
+                        className="text-black"
+                        href="./StylistDetail.html"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Trần Chí Thuận
+                      </a>
+                    </h3>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           <div className="d-flex justify-content-center p-5">
-            <a href="" className="loading">
+            <a href="#" className="loading">
               Xem thêm
             </a>
           </div>
         </div>
+
         {/* Stylist End */}
       </div>
       {/* FOOTER  */}
