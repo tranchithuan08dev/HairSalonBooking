@@ -67,3 +67,35 @@
   color: #454548; /* Your preferred grey color */
   margin: 0;
 }
+
+/* ins */
+
+/* Gallery container styles */
+.container {
+  padding: 20px;
+  max-width: 1200px;
+}
+
+/* Gallery styles */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(200px, 0fr)
+  ); /* Ensure grid adapts to 200px */
+  gap: 0px;
+  margin: 0 auto;
+}
+
+.custom-img {
+  width: 200px; /* Set width to 200px */
+  height: 200px; /* Set height to 200px */
+  object-fit: cover; /* Ensure images cover the box without distortion */
+  transition: transform 0.3s ease; /* Smooth scaling */
+  margin-right: -10px;
+}
+
+.custom-img:hover {
+  transform: scale(1.05); /* Scale image on hover */
+  cursor: pointer; /* Pointer cursor on hover */
+}
