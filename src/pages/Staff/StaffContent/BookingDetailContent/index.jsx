@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import "./style.css";
 
 function Content() {
   const [image, setImage] = useState(null);
@@ -60,10 +61,10 @@ function Content() {
 
   return (
     <>
-      <div className="container">
-        <div className="row justify-content-center mt-5">
+      <div className="container cus-container">
+        <div className="row justify-content-center mt-5 cus-mt5test">
           <div className="col-md-9">
-            <div className="card">
+            <div className="card card-mycustom">
               <div className="card-header text-center">
                 <h5>Booking Detail</h5>
               </div>
@@ -132,7 +133,7 @@ function Content() {
             </div>
           </div>
           <div className="col-md-3">
-            <div className="card">
+            <div className="card card-mycustomCustomer">
               <div className="card-header text-center">
                 <h5>Customer Detail</h5>
               </div>
