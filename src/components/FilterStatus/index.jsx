@@ -45,13 +45,19 @@ function FilterStatus(props) {
         Rejected
       </button>
       <button
-        className="btn btn-sm ml-1 btn-outline-info"
+        className="btn btn-sm ml-1 btn-outline-success"
         onClick={() => handleFilterStatus("In-progress")}
       >
         In-progress
       </button>
       <button
-        className="btn btn-sm ml-1 btn-outline-success"
+        className="btn btn-sm ml-1 btn-outline-info"
+        onClick={() => handleFilterStatus("Done")}
+      >
+        Done
+      </button>
+      <button
+        className="btn btn-sm ml-1 btn-outline-dark"
         onClick={() => handleFilterStatus("Completed")}
       >
         Completed
