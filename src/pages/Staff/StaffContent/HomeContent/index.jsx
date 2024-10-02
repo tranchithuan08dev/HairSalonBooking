@@ -6,12 +6,12 @@ import { getBadgeClass } from "../../../../helpers/getBadgeClass";
 import Search from "../../../../components/Search";
 import DayPicker from "../../../../components/DayPicker";
 import { searchFilter } from "../../../../helpers/searchFilter";
-import SelectOption from "../../../../components/SelectOptions";
+import Sort from "../../../../components/Sort";
+import { sortBookings } from "../../../../helpers/sortBookings";
 
 function Content() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-
 
   const handleClick = (id) => {
     navigate(`bookingDetail/${id}`);
@@ -26,7 +26,7 @@ function Content() {
       bookingDate: "24/09/2024",
       serviceDate: "28/09/2024",
       stylist: "Ho Van A",
-      totalPrice: "99$",
+      totalPrice: 99,
       status: "Pending",
     },
     {
@@ -36,7 +36,7 @@ function Content() {
       bookingDate: "24/09/2024",
       serviceDate: "27/09/2024",
       stylist: "Ho Van B",
-      totalPrice: "89$",
+      totalPrice: 89,
       status: "Completed",
     },
     {
@@ -46,7 +46,7 @@ function Content() {
       bookingDate: "25/09/2024",
       serviceDate: "29/09/2024",
       stylist: "Ho Van C",
-      totalPrice: "79$",
+      totalPrice: 79,
       status: "Pending",
     },
     {
@@ -56,7 +56,7 @@ function Content() {
       bookingDate: "24/09/2024",
       serviceDate: "28/09/2024",
       stylist: "Ho Van A",
-      totalPrice: "99$",
+      totalPrice: 99,
       status: "Pending",
     },
   ]);
@@ -91,41 +91,51 @@ function Content() {
   // end accept/deny
 
   useEffect(() => {
-    console.log("--------------------------------------")
+    console.log("--------------------------------------");
+    console.log("Initial bookings:", bookings);
     console.log("useEffect is running");
     const type = searchParams.get("type");
-    const key = decodeURIComponent(searchParams.get("key"))
+    const key = decodeURIComponent(searchParams.get("key"));
     const status = searchParams.get("status") || "All";
     const bookingDate = searchParams.get("bookingDate");
-    console.log("type: " +type);
-    console.log("key: " +key);
-    console.log("status: " +status);
-    console.log("bookingDate: " +bookingDate);
+    const sort = searchParams.get("sort");
+    console.log("type: " + type);
+    console.log("key: " + key);
+    console.log("status: " + status);
+    console.log("bookingDate: " + bookingDate);
+    console.log("sort: " + sort);
 
     let filteredBookings = bookings;
 
-    if (status !== "All") {
-        filteredBookings = filteredBookings.filter((item) => item.status === status);
+    if(sort){
+      console.log("before update: ", filteredBookings);
+      const sortedBookings = sortBookings(filteredBookings, sort);
+      setFilteredBookings(sortedBookings);
+      console.log("after update: ", filteredBookings);
     }
-    console.log("filter by status: ");
-    console.log(filteredBookings.length);
 
-    
+    if (status !== "All") {
+      filteredBookings = filteredBookings.filter(
+        (item) => item.status === status
+      );
+      console.log("filter by status: ");
+      console.log(filteredBookings.length);
+    }
+
     if (type && key) {
-        const { filtered } = searchFilter(bookings, key);
-        filteredBookings = filtered;
+      const { filtered } = searchFilter(filteredBookings, key);
+      filteredBookings = filtered;
     }
 
     if (bookingDate) {
-        filteredBookings = filteredBookings.filter((item) => {
-            return item.bookingDate === bookingDate;
-        });
+      filteredBookings = filteredBookings.filter((item) => {
+        return item.bookingDate === bookingDate;
+      });
     }
 
     setFilteredBookings(filteredBookings);
     console.log("Filtered bookings:", filteredBookings);
-}, [searchParams, bookings]);
-
+  }, [searchParams, bookings]);
 
   return (
     <>
@@ -140,7 +150,7 @@ function Content() {
               />
             </div>
             <div className="col-md-6">
-              <Search 
+              <Search
                 bookings={bookings}
                 setFilteredBookings={setFilteredBookings}
               />
@@ -153,7 +163,7 @@ function Content() {
           </div>
           <div className="col-md-3">
             <div className="input-group mb-3">
-              <DayPicker 
+              <DayPicker
                 bookings={bookings}
                 setFilteredBookings={setFilteredBookings}
               />
@@ -161,9 +171,9 @@ function Content() {
           </div>
 
           <div className="col-md-3">
-            <SelectOption 
-            bookings={bookings}
-            setFilteredBookings={setFilteredBookings}
+            <Sort
+              bookings={bookings}
+              setFilteredBookings={setFilteredBookings}
             />
           </div>
         </div>
@@ -202,7 +212,7 @@ function Content() {
                     </div>
                     <div className="TotalPrice">
                       <h6>Total Price</h6>
-                      <span className="block-span">{item.totalPrice}</span>
+                      <span className="block-span">{item.totalPrice}$</span>
                     </div>
                     <div className="Status">
                       <h6>Status</h6>

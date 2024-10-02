@@ -8,14 +8,16 @@ function FilterStatus(props) {
     const params = new URLSearchParams(searchParams);
   
     if (status === "All") {
-      params.delete("status");
-      setFilteredBookings(bookings); 
+      setSearchParams(new URLSearchParams());
+      setFilteredBookings(bookings);
+      return;
     } else {
       params.set("status", status);
       const filteredBookings = bookings.filter((item) => item.status === status);
       setFilteredBookings(filteredBookings);
+      setSearchParams(params);
     }
-    setSearchParams(params);
+    
   };
 
   return (

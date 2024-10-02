@@ -5,12 +5,12 @@ import { useSearchParams } from "react-router-dom";
 
 function DayPicker(props) {
   const { bookings, setFilteredBookings } = props;
-  const [date, setDate] = useState(""); // Khởi tạo trạng thái cho ngày
+  const [date, setDate] = useState(""); 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmitDate = () => {
     if (date) {
-      const dateValue = date.toLocaleDateString("en-GB"); // Định dạng ngày theo DD/MM/YYYY
+      const dateValue = date.toLocaleDateString("en-GB"); 
       console.log(dateValue);
       const params = new URLSearchParams(searchParams);
       params.set("bookingDate", dateValue);
@@ -32,8 +32,8 @@ function DayPicker(props) {
         handleSubmitDate();
       }}>
         <DatePicker
-          selected={date} // Liên kết giá trị đã chọn với trạng thái
-          onChange={handleDateChange} // Cập nhật trạng thái khi thay đổi ngày
+          selected={date} 
+          onChange={handleDateChange} 
           placeholderText="DD/MM/YYYY"
           className="form-control-Date"
           dateFormat="dd/MM/yyyy"

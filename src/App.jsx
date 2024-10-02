@@ -6,7 +6,7 @@ import BookingDetail from "./pages/Staff/BookingDetail";
 import Profile from "./pages/Staff/Profile";
 import Salary from "./pages/Staff/Salary";
 import HomePage from "./pages/HomePage";
-import BookingPage from "./pages/BookingPage";
+// import BookingPage from "./pages/BookingPage";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
       <Routes>
         {/* client */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/booking" element={<BookingPage />} />
+        {/* <Route path="/booking" element={<BookingPage />} /> */}
 
         {/* staff */}
         <Route path="/staff/" element={<PrivateRoutes />}>
