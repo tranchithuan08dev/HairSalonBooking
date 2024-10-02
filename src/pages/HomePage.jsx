@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/header";
 import Footer from "../components/Footer";
+import Booking from "../components/Home/Booking";
 
 function HomePage() {
   return (
@@ -10,18 +11,7 @@ function HomePage() {
         <Header />
         {/* Header END */}
         {/* Booking */}
-        <div className="position-relative">
-          <img
-            src="public/assets/image/logo_booking.jpg"
-            alt="Logo-Booking"
-            className="img-fluid-logo w-100 vh-100 blurred-image"
-          />
-          <div className="position-absolute top-50 start-50 translate-middle">
-            <a href="/booking" className="btn-booking text-white">
-              Booking
-            </a>
-          </div>
-        </div>
+        <Booking />
 
         {/* Endbooking */}
         {/* Service */}
