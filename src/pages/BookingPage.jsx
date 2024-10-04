@@ -36,7 +36,7 @@ function BookingPage() {
           </div>
         </div>
         {/* Schedule END */}
-        <div className="container">
+        <div className="container mx-auto">
           {/* Booking Title */}
           <h2 className="time text-white text-center">Booking</h2>
           {/* Booking Form */}
