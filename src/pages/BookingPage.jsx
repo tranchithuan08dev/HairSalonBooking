@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/header";
 import Footer from "../components/Footer";
+import "../assets/css/booking.css";
 function BookingPage() {
   return (
     <>
@@ -20,7 +21,7 @@ function BookingPage() {
             {/* Left side (image) */}
             <div className="me-4">
               <img
-                src="./image/WorkSchedule.jpg"
+                src="public/assets/image/WorkSchedule.jpg"
                 alt="Work Schedule"
                 className="img-fluid rounded"
                 style={{ maxWidth: 300, height: 200, objectFit: "cover" }}
@@ -91,7 +92,7 @@ function BookingPage() {
                       <div className="d-flex align-items-center">
                         {/* Stylist Profile */}
                         <img
-                          src="./image/avatar.jpg"
+                          src="public/assets/image/avatar.jpg"
                           alt="Stylist Image"
                           className="rounded-circle me-3"
                           style={{ width: 60, height: 60, objectFit: "cover" }}
@@ -109,7 +110,7 @@ function BookingPage() {
                           {/* g-2 adds spacing between grid items */}
                           <div className="col-6 col-sm-4 mb-2">
                             <img
-                              src="./image/avatar.jpg"
+                              src="public/assets/image/avatar.jpg"
                               alt="Haircut Example"
                               className="img-fluid rounded"
                               style={{
@@ -121,7 +122,7 @@ function BookingPage() {
                           </div>
                           <div className="col-6 col-sm-4 mb-2">
                             <img
-                              src="./image/avatar.jpg"
+                              src="public/assets/image/avatar.jpg"
                               alt="Haircut Example"
                               className="img-fluid rounded"
                               style={{
@@ -133,7 +134,7 @@ function BookingPage() {
                           </div>
                           <div className="col-6 col-sm-4 mb-2">
                             <img
-                              src="./image/avatar.jpg"
+                              src="public/assets/image/avatar.jpg"
                               alt="Haircut Example"
                               className="img-fluid rounded"
                               style={{
@@ -145,7 +146,7 @@ function BookingPage() {
                           </div>
                           <div className="col-6 col-sm-4 mb-2">
                             <img
-                              src="./image/avatar.jpg"
+                              src="public/assets/image/avatar.jpg"
                               alt="Haircut Example"
                               className="img-fluid rounded"
                               style={{
@@ -157,7 +158,7 @@ function BookingPage() {
                           </div>
                           <div className="col-6 col-sm-4 mb-2">
                             <img
-                              src="./image/avatar.jpg"
+                              src="public/assets/image/avatar.jpg"
                               alt="Haircut Example"
                               className="img-fluid rounded"
                               style={{
@@ -169,7 +170,7 @@ function BookingPage() {
                           </div>
                           <div className="col-6 col-sm-4 mb-2">
                             <img
-                              src="./image/avatar.jpg"
+                              src="public/assets/image/avatar.jpg"
                               alt="Haircut Example"
                               className="img-fluid rounded"
                               style={{
