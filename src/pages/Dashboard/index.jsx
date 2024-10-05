@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  FileDoneOutlined,
-  UserOutlined,
-  ShoppingCartOutlined,
-  ScissorOutlined,
-  PhoneOutlined,
-  ContactsOutlined,
-} from "@ant-design/icons";
+import { FileDoneOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import { Outlet, Link } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
@@ -62,13 +55,28 @@ const DashBroad = () => {
             {
               key: "1",
               icon: <FileDoneOutlined />,
-              label: <Link to={`/dashboard`}>Home</Link>,
+              label: (
+                <Link to={`/dashboard`} style={{ textDecoration: "none" }}>
+                  Home
+                </Link>
+              ),
+            },
+            {
+              key: "2",
+              icon: <ShoppingCartOutlined />,
+              label: (
+                <Link
+                  to={`/dashboard/service`}
+                  style={{ textDecoration: "none" }}
+                >
+                  Service
+                </Link>
+              ),
             },
           ]}
         />
       </Sider>
 
-      {/* Adjust the layout to accommodate the sidebar */}
       <Layout
         style={{
           marginLeft: collapsed ? 80 : 200, // Adjust margin based on the collapsed state
@@ -112,7 +120,7 @@ const DashBroad = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <Outlet></Outlet>
+            <Outlet />
           </div>
         </Content>
 
