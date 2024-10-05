@@ -5,6 +5,7 @@ import DashBroad from "./pages/Dashboard";
 import Service from "./pages/Dashboard/Service";
 import Stylist from "./pages/Dashboard/Stylist";
 import Staff from "./pages/Dashboard/Staff";
+import User from "./pages/Dashboard/User";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/dashboard/service" element={<Service />} />
           <Route path="/dashboard/stylist" element={<Stylist />} />
           <Route path="/dashboard/staff" element={<Staff />} />
+          <Route path="/dashboard/user" element={<User />} />
         </Route>
       </Routes>
     </>

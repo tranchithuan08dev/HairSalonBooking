@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  ContactsOutlined,
   FileDoneOutlined,
   PhoneOutlined,
   ScissorOutlined,
@@ -99,6 +100,15 @@ const DashBroad = () => {
                   style={{ textDecoration: "none" }}
                 >
                   Staff
+                </Link>
+              ),
+            },
+            {
+              key: "5",
+              icon: <ContactsOutlined />,
+              label: (
+                <Link to={`/dashboard/user`} style={{ textDecoration: "none" }}>
+                  User
                 </Link>
               ),
             },
