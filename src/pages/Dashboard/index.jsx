@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { FileDoneOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import {
+  FileDoneOutlined,
+  ScissorOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import { Outlet, Link } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
@@ -70,6 +74,18 @@ const DashBroad = () => {
                   style={{ textDecoration: "none" }}
                 >
                   Service
+                </Link>
+              ),
+            },
+            {
+              key: "3",
+              icon: <ScissorOutlined />,
+              label: (
+                <Link
+                  to={`/dashboard/stylist`}
+                  style={{ textDecoration: "none" }}
+                >
+                  Stylist
                 </Link>
               ),
             },
