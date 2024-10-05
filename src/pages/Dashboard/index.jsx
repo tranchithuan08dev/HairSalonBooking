@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   FileDoneOutlined,
+  PhoneOutlined,
   ScissorOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
@@ -86,6 +87,18 @@ const DashBroad = () => {
                   style={{ textDecoration: "none" }}
                 >
                   Stylist
+                </Link>
+              ),
+            },
+            {
+              key: "4",
+              icon: <PhoneOutlined />,
+              label: (
+                <Link
+                  to={`/dashboard/staff`}
+                  style={{ textDecoration: "none" }}
+                >
+                  Staff
                 </Link>
               ),
             },
