@@ -1,8 +1,12 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
+import { useDispatch } from "react-redux";
+import { Login } from "../../store/authSlice";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const onFinish = (values) => {
+    dispatch(Login(values));
     console.log("Success:", values);
   };
 
@@ -47,7 +51,7 @@ const LoginPage = () => {
 
                         <Form.Item
                           label="Phone"
-                          name="phone"
+                          name="phoneNumber"
                           rules={[
                             {
                               required: true,
