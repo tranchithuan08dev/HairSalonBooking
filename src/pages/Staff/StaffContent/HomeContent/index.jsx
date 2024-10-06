@@ -1,13 +1,15 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./style.css";
 import { useEffect, useState } from "react";
-import FilterStatus from "../../../../components/FilterStatus";
+import FilterStatus from "../../../../components/Staff/FilterStatus";
 import { getBadgeClass } from "../../../../helpers/getBadgeClass";
-import Search from "../../../../components/Search";
-import DayPicker from "../../../../components/DayPicker";
+import Search from "../../../../components/Staff/Search";
+import DayPicker from "../../../../components/Staff/DayPicker";
 import { searchFilter } from "../../../../helpers/searchFilter";
-import Sort from "../../../../components/Sort";
+import Sort from "../../../../components/Staff/Sort";
 import { sortBookings } from "../../../../helpers/sortBookings";
+import Pagination from "../../../../components/Staff/Pagination";
+// import axios from "axios";
 
 function Content() {
   const navigate = useNavigate();
@@ -17,7 +19,18 @@ function Content() {
     navigate(`bookingDetail/${id}`);
   };
 
-  // test
+  // useEffect(() => {
+  //   axios
+  //     .get("src/api/v1/bookings")
+  //     .then((response) => {
+  //       console.log(response);
+  //       setBookings(response);
+  //     })
+  //     .catch((error) => {
+  //       console.error("There was an error fetching the bookings!", error);
+  //     });
+  // }, []);
+
   const [bookings, setBookings] = useState([
     {
       bookingID: "G001",
@@ -59,34 +72,44 @@ function Content() {
       totalPrice: 99,
       status: "Pending",
     },
+    {
+      bookingID: "G005",
+      name: "Nguyen Van B",
+      phone: "0973645789",
+      bookingDate: "24/09/2024",
+      serviceDate: "28/09/2024",
+      stylist: "Ho Van A",
+      totalPrice: 99,
+      status: "Pending",
+    },
   ]);
+  const [filteredBookings, setFilteredBookings] = useState(bookings);
 
   // accept/deny booking
-  const [filteredBookings, setFilteredBookings] = useState(bookings);
-  const handleStatus = (status, id) => {
-    setBookings((prevBookings) => {
-      const updatedBookings = prevBookings.map((booking) => {
-        if (booking.bookingID === id) {
-          return {
-            ...booking,
-            status: status === "APROVE" ? "Confirmed" : "Rejected",
-          };
-        }
-        return booking;
-      });
-      filterBooking(
-        updatedBookings,
-        status === "APROVE" ? "Confirmed" : "Rejected"
-      );
+  // const handleStatus = (status, id) => {
+  //   setBookings((prevBookings) => {
+  //     const updatedBookings = prevBookings.map((booking) => {
+  //       if (booking.bookingID === id) {
+  //         return {
+  //           ...booking,
+  //           status: status === "APROVE" ? "Confirmed" : "Rejected",
+  //         };
+  //       }
+  //       return booking;
+  //     });
+  //     filterBooking(
+  //       updatedBookings,
+  //       status === "APROVE" ? "Confirmed" : "Rejected"
+  //     );
 
-      return updatedBookings;
-    });
-  };
+  //     return updatedBookings;
+  //   });
+  // };
 
-  const filterBooking = (bookings, statusSet) => {
-    const filtered = bookings.filter((item) => item.status === statusSet);
-    setFilteredBookings(filtered);
-  };
+  // const filterBooking = (bookings, statusSet) => {
+  //   const filtered = bookings.filter((item) => item.status === statusSet);
+  //   setFilteredBookings(filtered);
+  // };
 
   // end accept/deny
 
@@ -107,7 +130,7 @@ function Content() {
 
     let filteredBookings = bookings;
 
-    if(sort){
+    if (sort) {
       console.log("before update: ", filteredBookings);
       const sortedBookings = sortBookings(filteredBookings, sort);
       setFilteredBookings(sortedBookings);
@@ -132,7 +155,6 @@ function Content() {
         return item.bookingDate === bookingDate;
       });
     }
-
     setFilteredBookings(filteredBookings);
     console.log("Filtered bookings:", filteredBookings);
   }, [searchParams, bookings]);
@@ -197,7 +219,7 @@ function Content() {
                       </p>
                     </div>
                   </div>
-                  <div className="col-md-6 text-center">
+                  <div className="col-md-7 text-center">
                     <div className="Stylist">
                       <h6>Stylist</h6>
                       <span className="block-span">{item.stylist}</span>
@@ -221,69 +243,19 @@ function Content() {
                       </span>
                     </div>
                   </div>
-                  {item.status == "Pending" ? (
-                    <>
-                      <div className="col-md-3 acceptDeny">
-                        <center>
-                          <br />
-                          <a
-                            className="accept"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleStatus("APROVE", item.bookingID);
-                            }}
-                          >
-                            APROVE
-                          </a>
-                          <a
-                            className="deny"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleStatus("REJECT", item.bookingID);
-                            }}
-                          >
-                            REJECT
-                          </a>
-                        </center>
-                      </div>
-                    </>
-                  ) : (
-                    ""
-                  )}
+                  <div className="col-md-2 detailSee">
+                    Click to see detail →
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        <nav aria-label="Page navigation">
-          <ul className="pagination justify-content-center custom-pagi">
-            <li className="page-item">
-              <a className="page-link" href="#">
-                Previous
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                1
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                2
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                3
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <Pagination
+          bookings={bookings}
+          setFilteredBookings={setFilteredBookings}
+          itemsPerPage={4}
+        />
       </div>
     </>
   );

@@ -8,10 +8,8 @@ export const getBadgeClass = (status) => {
         return "bg-danger";
       case "In-progress":
         return "bg-info";
-      case "Done":
-        return "bg-success";
       case "Completed":
-        return "bg-dark"; 
+        return "bg-success"; 
       case "Cancelled":
         return "bg-secondary";
       default:

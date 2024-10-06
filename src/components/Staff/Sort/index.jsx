@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { sortBookings } from "../../helpers/sortBookings";
+import { sortBookings } from "../../../helpers/sortBookings";
 
 function Sort(props) {
   const { bookings, setFilteredBookings } = props;

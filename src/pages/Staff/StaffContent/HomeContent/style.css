@@ -22,33 +22,6 @@
   display:block;
 }
 
-.acceptDeny {
-  a{
-      text-decoration: none;
-      margin: 5px;
-    }
-    .accept {
-      color: #FFF;
-      background: #44CC44;
-      padding: 15px 20px;
-      box-shadow: 0 4px 0 0 #2EA62E;
-    }
-    .accept:hover {
-      background: #6FE76F;
-      box-shadow: 0 4px 0 0 #7ED37E;
-    }
-    .deny {
-      color: #FFF;
-      background: tomato;
-      padding: 15px 20px;
-      box-shadow: 0 4px 0 0 #CB4949;
-    }
-    .deny:hover {
-      background: rgb(255, 147, 128);
-      box-shadow: 0 4px 0 0 #EF8282;
-    }
-}
-
 .row-custom {
 max-height: 55px;
 width: 1202px;
@@ -77,16 +50,50 @@ position: relative;
 top: -48px;
 }
 
-.card-custom-booking {
-width: 1180px;
-    height: 114px;
-    margin-left: 0px;
-}
-
 .custom-mt {
   width: 1178px;
 }
 
-.custom-g0 {
-  width: 1194px;
+
+.buttonCreate{
+  button {
+  border: 2px solid #000000;
+  background-color: #2e98c9;
+  border-radius: 0.9em;
+  cursor: pointer;
+  padding: 0.8em 1.2em 0.8em 1em;
+  transition: all ease-in-out 0.2s;
+  font-size: 16px;
 }
+
+button span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: #303942;
+}
+
+}
+
+.detailSee{
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+
+.card-custom-booking {
+  width: 1180px;
+      height: 114px;
+      margin-left: 0px;
+      margin-bottom: 10px;
+  }
+  
+  .custom-g0 {
+    width: 1194px;
+    margin-bottom: 10px;
+  }

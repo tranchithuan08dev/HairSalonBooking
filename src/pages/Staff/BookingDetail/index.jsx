@@ -3,7 +3,7 @@ import "./style.css";
 function BookingDetail(){
     return (
         <>
-            <div className="booking-content" style={{paddingTop: '40px'}}>
+            <div className="booking-content" style={{paddingTop: '20px'}}>
                 <BookingDetailContent />
             </div>
         </>

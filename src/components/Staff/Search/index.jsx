@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { searchFilter } from "../../helpers/searchFilter";
+import { searchFilter } from "../../../helpers/searchFilter";
 
 function Search(props) {
   const { bookings, setFilteredBookings } = props;
