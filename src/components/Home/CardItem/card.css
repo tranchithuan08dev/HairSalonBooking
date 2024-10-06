@@ -1,0 +1,35 @@
+.service-title {
+  font-family: "Inknut Antiqua", serif;
+  font-weight: 800;
+  font-style: normal;
+  text-transform: uppercase;
+  padding-top: 20px;
+}
+
+.service {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.card {
+  margin-left: 70px;
+  width: 18rem;
+  height: 400px;
+}
+
+.card-left {
+  margin-left: -70px;
+}
+
+.loading {
+  font-family: "Rye", serif;
+  font-weight: 400;
+  font-size: 20px;
+  font-style: normal;
+  background-color: rgb(106, 98, 98, 0.5);
+  text-decoration: none;
+  color: #ffff;
+  padding: 10px 105px;
+  border: 1px solid #fff;
+  text-transform: uppercase;
+}
