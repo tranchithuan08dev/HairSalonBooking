@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./bookingButton.css";
 function Booking() {
   return (
     <>
