@@ -5,6 +5,7 @@ import {
   PhoneOutlined,
   ScissorOutlined,
   ShoppingCartOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import { Outlet, Link } from "react-router-dom";
@@ -109,6 +110,18 @@ const DashBroad = () => {
               label: (
                 <Link to={`/dashboard/user`} style={{ textDecoration: "none" }}>
                   User
+                </Link>
+              ),
+            },
+            {
+              key: "6",
+              icon: <UserOutlined />,
+              label: (
+                <Link
+                  to={`/dashboard/profile`}
+                  style={{ textDecoration: "none" }}
+                >
+                  Profile
                 </Link>
               ),
             },
