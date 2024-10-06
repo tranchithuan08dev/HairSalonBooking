@@ -1,7 +1,14 @@
+import React from "react";
+import { Form, Input, Button } from "antd";
+
 const LoginPage = () => {
+  const onFinish = (values) => {
+    console.log("Success:", values);
+  };
+
   return (
     <>
-      <section className="vh-100" style={{ backgroundColor: "#9A616D" }}>
+      <section className="vh-100" style={{ backgroundColor: "#121231" }}>
         <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col col-xl-10">
@@ -9,7 +16,7 @@ const LoginPage = () => {
                 <div className="row g-0">
                   <div className="col-md-6 col-lg-5 d-none d-md-block">
                     <img
-                      src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
+                      src="./public/assets/image/login.jpg"
                       alt="login form"
                       className="img-fluid"
                       style={{ borderRadius: "1rem 0 0 1rem" }}
@@ -17,13 +24,19 @@ const LoginPage = () => {
                   </div>
                   <div className="col-md-6 col-lg-7 d-flex align-items-center">
                     <div className="card-body p-4 p-lg-5 text-black">
-                      <form>
+                      <Form
+                        name="login"
+                        initialValues={{ remember: true }}
+                        onFinish={onFinish}
+                      >
                         <div className="d-flex align-items-center mb-3 pb-1">
                           <i
                             className="fas fa-cubes fa-2x me-3"
                             style={{ color: "#ff6219" }}
                           />
-                          <span className="h1 fw-bold mb-0">Logo</span>
+                          <span className="h1 fw-bold mb-0">
+                            Hairmony Salon
+                          </span>
                         </div>
                         <h5
                           className="fw-normal mb-3 pb-3"
@@ -31,48 +44,48 @@ const LoginPage = () => {
                         >
                           Sign into your account
                         </h5>
-                        <div
-                          data-mdb-input-init=""
-                          className="form-outline mb-4"
+
+                        <Form.Item
+                          label="Phone"
+                          name="phone"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your phone number!",
+                            },
+                            {
+                              pattern: /^[0-9]{10}$/, // Assuming 10 digits for the phone number
+                              message: "Phone number must be 10 digits!",
+                            },
+                          ]}
                         >
-                          <input
-                            type="email"
-                            id="form2Example17"
-                            className="form-control form-control-lg"
-                          />
-                          <label
-                            className="form-label"
-                            htmlFor="form2Example17"
-                          >
-                            Email address
-                          </label>
-                        </div>
-                        <div
-                          data-mdb-input-init=""
-                          className="form-outline mb-4"
+                          <Input type="text" placeholder="Phone" size="large" />
+                        </Form.Item>
+
+                        <Form.Item
+                          label="PassWord"
+                          name="password"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your password!",
+                            },
+                          ]}
                         >
-                          <input
-                            type="password"
-                            id="form2Example27"
-                            className="form-control form-control-lg"
-                          />
-                          <label
-                            className="form-label"
-                            htmlFor="form2Example27"
-                          >
-                            Password
-                          </label>
-                        </div>
-                        <div className="pt-1 mb-4">
-                          <button
-                            data-mdb-button-init=""
-                            data-mdb-ripple-init=""
-                            className="btn btn-dark btn-lg btn-block"
-                            type="button"
+                          <Input.Password placeholder="Password" size="large" />
+                        </Form.Item>
+
+                        <Form.Item>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            block
+                            size="large"
                           >
                             Login
-                          </button>
-                        </div>
+                          </Button>
+                        </Form.Item>
+
                         <a className="small text-muted" href="#!">
                           Forgot password?
                         </a>
@@ -91,7 +104,7 @@ const LoginPage = () => {
                         <a href="#!" className="small text-muted">
                           Privacy policy
                         </a>
-                      </form>
+                      </Form>
                     </div>
                   </div>
                 </div>
