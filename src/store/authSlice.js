@@ -38,6 +38,7 @@ const authSlice = createSlice({
     builder.addCase(Login.fulfilled, (state, action) => {
       if (action.payload.ok) {
         state.token = action.payload.data.token;
+        localStorage.setItem("ACCESS_TOKKEN", state.token);
         state.currentUser = action.payload.data.currenInfor;
       }
     });
