@@ -2,12 +2,19 @@ import React from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch } from "react-redux";
 import { Login } from "../../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const onFinish = (values) => {
-    dispatch(Login(values));
-    console.log("Success:", values);
+    dispatch(Login(values)).then((res) => {
+      if (res.payload.ok) {
+        navigate("/");
+      } else {
+        console.log("Login failed");
+      }
+    });
   };
 
   return (
