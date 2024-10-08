@@ -14,9 +14,9 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-white" to="/login">
+              <a className="nav-link text-white" href="#">
                 Feedback
-              </Link>
+              </a>
             </li>
           </ul>
           {/* Center*/}
@@ -31,9 +31,9 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">
-                Sign In
-              </a>
+              <Link className="nav-link text-white" to="/login">
+                Sign-In
+              </Link>
             </li>
           </ul>
         </div>
