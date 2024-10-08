@@ -7,6 +7,7 @@ const API = {
     });
   },
   callWithToken: function (token) {
+    if (!token) token = localStorage.getItem("ACCESS_TOKKEN");
     return axios.create({
       baseURL: "http://localhost:5000/",
       headers: {
