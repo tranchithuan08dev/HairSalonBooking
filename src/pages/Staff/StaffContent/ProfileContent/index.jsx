@@ -1,7 +1,20 @@
+import { useEffect } from "react";
 import "../../../../assets/css/profile.css";
 
+function Content(props) {
+  const {id} = props;
+  useEffect(() => {
+    const fetchStylist = async (id) => {
+      try {
+        const response = await API.call().get(`/stylist/${id}`);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching stylist data:", error);
+      }
+    };
 
-function Content() {
+    fetchStylist(id);
+  }, [id]);
   return (
     <>
       <div className="container mt-5 custom-mt5">

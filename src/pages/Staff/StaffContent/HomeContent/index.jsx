@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import "../../../../assets/css/creatBooking.css";
+import "../../../../assets/css/createBooking.css";
 import { useEffect, useState } from "react";
 import FilterStatus from "../../../../components/Staff/FilterStatus";
 import { getBadgeClass } from "../../../../helpers/getBadgeClass";
