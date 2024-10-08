@@ -1,5 +1,5 @@
 import SalaryContent from '../StaffContent/SalaryContent';
-import './style.css';
+import "../../../assets/css/profile.css";
 function Salary(){
     return (
         <>

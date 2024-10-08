@@ -1,5 +1,4 @@
-body{
-    background-color:#f2f6fc;
+.profile-content{
     color:#69707a;
     }
     .img-account-profile {
@@ -57,3 +56,24 @@ body{
         margin-left: 1rem;
         margin-right: 1rem;
     }
+
+    .custom-mt5 {
+        height: 646px;
+    }
+    
+    .custom-rowJ {
+        max-width: 1200px;
+        width: 100%;
+        height: 646px;
+    }
+    
+    .test-col-6 {
+        height: 646px;
+    }
+    
+    .test-mb4 {
+        width: 572px;
+        margin-left: 0px;
+    }
+    
+    

@@ -1,4 +1,5 @@
-import "./style.css";
+import "../../../../assets/css/salary.css";
+
 
 function Content() {
   return (

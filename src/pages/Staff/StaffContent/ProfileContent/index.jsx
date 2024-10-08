@@ -1,4 +1,5 @@
-import "./style.css";
+import "../../../../assets/css/profile.css";
+
 
 function Content() {
   return (
@@ -30,7 +31,7 @@ function Content() {
                 <form>
                   <div className="mb-3">
                     <label className="small mb-1" htmlFor="inputUsername">
-                      Username (how your name will appear to other users on the site)
+                      Username
                     </label>
                     <input
                       className="form-control"

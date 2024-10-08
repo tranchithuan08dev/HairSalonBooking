@@ -1,5 +1,5 @@
 import ProfileContent from "../StaffContent/ProfileContent";
-import './style.css';
+import '../../../assets/css/profile.css';
 
 function Profile(){
     return (

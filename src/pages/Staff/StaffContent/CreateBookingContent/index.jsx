@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./style.scss";
+import "../../../../assets/css/createBooking.css";
 
 function CreateBookingContent() {
   const navigate = useNavigate();

@@ -5,9 +5,8 @@ import Home from "./pages/Staff/Home";
 import BookingDetail from "./pages/Staff/BookingDetail";
 import Profile from "./pages/Staff/Profile";
 import Salary from "./pages/Staff/Salary";
-// import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage";
 import CreateBooking from "./pages/Staff/CreateBooking";
-// import BookingPage from "./pages/BookingPage";
 
 function App() {
   return (

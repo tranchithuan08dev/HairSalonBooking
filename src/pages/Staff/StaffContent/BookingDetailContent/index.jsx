@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import "./style.css";
+import "../../../../assets/css/bookingDetail.css";
 import { useEffect, useState } from "react";
 
 function Content() {
