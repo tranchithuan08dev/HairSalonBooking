@@ -1,0 +1,55 @@
+.cus-container {
+    width: 1100px;
+    height: 750px;
+}
+
+.cus-mt5test {
+    width: 1220px;
+    height: 750px;
+
+}
+.card-mycustom {
+    height: 750px;
+    width: 1076px;
+    margin-left: 12px;
+}
+
+.card-mycustomCustomer{
+    margin-left: 0px;
+    width: 235px;
+}
+
+.form-group{
+    display:flex;
+    justify-content: space-between;
+    padding: 3px;
+    margin: 10px;
+}
+
+.form-group > input,select {
+    width: 240px;
+    padding: 1px 2px;
+}
+
+
+.buttonSubmit {
+    padding: 20px 40px;
+    position: relative;
+    top: -80px;
+    left: 600px;
+    background-color: rgb(29, 169, 29);
+    color: white;
+}
+
+.buttonSubmit:hover{
+    background-color: blueviolet;
+}
+
+.alert {
+    position: fixed; 
+    top: 20px; 
+    right: 20px; 
+    z-index: 9999; 
+    min-width: 200px; 
+  }
+  
