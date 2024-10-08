@@ -52,6 +52,14 @@ top: -48px;
 
 .custom-mt {
   width: 1178px;
+  margin-top: 3px!important;
+}
+
+.card-body-custom{
+  height: 97px!important;
+  padding-bottom: 0px!important;
+  margin-bottom: 0px!important;
+
 }
 
 
@@ -90,7 +98,7 @@ button:hover {
   width: 1180px;
       height: 114px;
       margin-left: 0px;
-      margin-bottom: 10px;
+      margin-bottom: 5px!important;
   }
   
   .custom-g0 {

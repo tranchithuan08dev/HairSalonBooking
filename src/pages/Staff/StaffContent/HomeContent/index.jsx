@@ -14,6 +14,7 @@ import Pagination from "../../../../components/Staff/Pagination";
 function Content() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [itemOffset, setItemOffset] = useState(0);
 
   const handleClick = (id) => {
     navigate(`bookingDetail/${id}`);
@@ -85,34 +86,6 @@ function Content() {
   ]);
   const [filteredBookings, setFilteredBookings] = useState(bookings);
 
-  // accept/deny booking
-  // const handleStatus = (status, id) => {
-  //   setBookings((prevBookings) => {
-  //     const updatedBookings = prevBookings.map((booking) => {
-  //       if (booking.bookingID === id) {
-  //         return {
-  //           ...booking,
-  //           status: status === "APROVE" ? "Confirmed" : "Rejected",
-  //         };
-  //       }
-  //       return booking;
-  //     });
-  //     filterBooking(
-  //       updatedBookings,
-  //       status === "APROVE" ? "Confirmed" : "Rejected"
-  //     );
-
-  //     return updatedBookings;
-  //   });
-  // };
-
-  // const filterBooking = (bookings, statusSet) => {
-  //   const filtered = bookings.filter((item) => item.status === statusSet);
-  //   setFilteredBookings(filtered);
-  // };
-
-  // end accept/deny
-
   useEffect(() => {
     console.log("--------------------------------------");
     console.log("Initial bookings:", bookings);
@@ -127,6 +100,9 @@ function Content() {
     console.log("status: " + status);
     console.log("bookingDate: " + bookingDate);
     console.log("sort: " + sort);
+    const page = parseInt(searchParams.get("page")) || 1;
+    const newOffset = (page - 1) * 4;
+    setItemOffset(newOffset);
 
     let filteredBookings = bookings;
 
@@ -155,7 +131,11 @@ function Content() {
         return item.bookingDate === bookingDate;
       });
     }
-    setFilteredBookings(filteredBookings);
+
+    const endOffset = itemOffset + 4;
+    const paginatedBookings = filteredBookings.slice(itemOffset, endOffset);
+
+    setFilteredBookings(paginatedBookings);
     console.log("Filtered bookings:", filteredBookings);
   }, [searchParams, bookings]);
 

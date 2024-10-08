@@ -2,7 +2,7 @@ import HomeContent from "../StaffContent/HomeContent";
 function Home() {
   return (
     <>
-        <HomeContent />
+        <HomeContent/>
     </>
   );
 }

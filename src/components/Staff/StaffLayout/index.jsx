@@ -8,7 +8,7 @@ function Layout(){
                 <div className="layout-default__sidebar" style={{width: "280px"}}>
                     <Sidebar/>
                 </div>
-                <div className="layout-default__main" style={{width: "1449px"}}>
+                <div className="layout-default__main" style={{width: "1449px", overflowY: 'hidden', overflowX:'hidden'}}>
                     <Outlet />
                 </div>
            

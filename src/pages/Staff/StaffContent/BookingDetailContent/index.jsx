@@ -25,6 +25,7 @@ function Content() {
       totalPrice: 99,
       status: "Pending",
       method: "Bank Transfer",
+      paymentstatus: "unpaid",
     },
     {
       bookingID: "C002",
@@ -42,6 +43,7 @@ function Content() {
       totalPrice: 89,
       status: "Completed",
       method: "Cash",
+      paymentstatus: "paid",
     },
     {
       bookingID: "C003",
@@ -59,6 +61,7 @@ function Content() {
       totalPrice: 79,
       status: "Pending",
       method: "Bank Transfer",
+      paymentstatus: "unpaid",
     },
   ];
   const booking = bookingDetails.find((app) => app.bookingID === id);
@@ -80,10 +83,11 @@ function Content() {
       totalPrice: e.target.totalPrice.value,
       status: e.target.status.value,
       method: e.target.method.value,
+      paymentstatus: e.target.paymentstatus.value,
     };
 
     try {
-      const response = await axios.post(
+      const response = await axios.patch(
         "http://your-backend-api.com/api/bookings",
         formData,
         {
@@ -97,11 +101,11 @@ function Content() {
         setError("");
         setShowAlert(true);
       }
-      } catch (error) {
+    } catch (error) {
       setError("Cannot update!");
       setMessage("");
       setShowAlert(true);
-      }
+    }
   };
 
   const handleChangeMethod = (e) => {
@@ -154,35 +158,11 @@ function Content() {
                     />
                   </div>
                   <div className="form-group">
-                    <strong>Service Date:</strong>
-                    <input
-                      type="text"
-                      name="serviceDate"
-                      defaultValue={booking.serviceDate}
-                    />
-                  </div>
-                  <div className="form-group">
                     <strong>Service ID:</strong>
                     <input
                       type="text"
                       name="serviceID"
                       defaultValue={booking.serviceID}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Service Name:</strong>
-                    <input
-                      type="text"
-                      name="serviceName"
-                      defaultValue={booking.serviceName}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Duration:</strong>
-                    <input
-                      type="text"
-                      name="duration"
-                      defaultValue={booking.duration}
                     />
                   </div>
                   <div className="form-group">
@@ -202,7 +182,7 @@ function Content() {
                     />
                   </div>
                   <div className="form-group">
-                    <strong>Booking's username:</strong>
+                    <strong>Username:</strong>
                     <input
                       type="text"
                       name="userBooking"
@@ -249,6 +229,18 @@ function Content() {
                     </select>
                   </div>
                   <div className="form-group">
+                    <strong>Payment status:</strong>
+                    <select
+                      name="paymentStatus"
+                      defaultValue={booking.paymentstatus}
+                      onChange={handleChangeStatus}
+                    >
+                      <option defaultValue="unpaid">Unpaid</option>
+                      <option defaultValue="paid">Paid</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
                     <strong>Method:</strong>
                     <select
                       name="method"
@@ -262,6 +254,7 @@ function Content() {
                     </select>
                   </div>
                 </div>
+
                 {showAlert && (
                   <div
                     className={`alert ${
