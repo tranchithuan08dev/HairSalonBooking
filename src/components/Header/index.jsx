@@ -4,7 +4,7 @@ function Header() {
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light backgroud-header">
-        <div className="container mx-auto">
+        <div className="container container-header mx-auto">
           {/* Left Side */}
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
