@@ -13,11 +13,8 @@ function App() {
   return (
     <>
       <Routes>
-        {/* client */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/booking" element={<BookingPage />}/>
 
-        {/* staff */}
         <Route path="/staff/" element={<PrivateRoutes />}>
           <Route element={<Layout />}>
             <Route path="home/" element={<Home />} />
