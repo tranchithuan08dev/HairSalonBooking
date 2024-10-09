@@ -5,8 +5,6 @@ import { useSelector } from "react-redux";
 
 function Header() {
   const { currentUser, token } = useSelector((state) => state.AUTH);
-  console.log(currentUser.record.phoneNumber);
-  console.log(token);
 
   return (
     <>
