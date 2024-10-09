@@ -4,6 +4,7 @@ import LoginPage from "./pages/Login/LoginPage";
 import { useDispatch } from "react-redux";
 import { fetchMe } from "./store/authSlice";
 import { useEffect } from "react";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </>
   );
