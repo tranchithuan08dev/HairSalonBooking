@@ -30,6 +30,37 @@ export const Login = createAsyncThunk(`${name}/Login`, async (params = {}) => {
   }
 });
 
+export const Register = createAsyncThunk(
+  `${name}/Register`,
+  async (params = {}) => {
+    try {
+      console.log(params);
+
+      const response = await authService.register(params);
+      const res = await authService.login({
+        phoneNumber: params.phoneNumber,
+        password: params.password,
+      });
+      const token = res.data.records.accessToken;
+      const currentUser = await authService.fetchWithMe(token);
+      const currenInfor = currentUser.data;
+
+      return {
+        ok: true,
+        data: {
+          token,
+          currenInfor,
+        },
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Registration failed!",
+      };
+    }
+  }
+);
+
 export const fetchMe = createAsyncThunk(`${name}/fetchMe`, async (token) => {
   try {
     if (!token) token = localStorage.getItem("ACCESS_TOKKEN");
@@ -56,6 +87,13 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(Login.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.token = action.payload.data.token;
+        localStorage.setItem("ACCESS_TOKKEN", state.token);
+        state.currentUser = action.payload.data.currenInfor;
+      }
+    });
+    builder.addCase(Register.fulfilled, (state, action) => {
       if (action.payload.ok) {
         state.token = action.payload.data.token;
         localStorage.setItem("ACCESS_TOKKEN", state.token);
