@@ -1,0 +1,16 @@
+.img-fluid-logo {
+  filter: brightness(50%);
+  object-fit: cover;
+}
+
+.btn-booking {
+  font-family: "Rye", serif;
+  font-weight: 800;
+  font-size: 40px;
+  font-style: normal;
+  background-color: rgb(106, 98, 98, 0.5);
+  text-decoration: none;
+  padding: 10px 45px;
+  border: 1px solid #fff;
+  text-transform: uppercase;
+}
