@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Drawer,
@@ -16,6 +16,8 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPostStylist } from "../../../store/dashbroadSlice";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -32,12 +34,26 @@ const layout = {
 const Stylist = () => {
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [selectedStylist, setSelectedStylist] = useState(null);
+  const dispatch = useDispatch();
 
-  const showLargeDrawer = () => {
+  useEffect(() => {
+    dispatch(fetchPostStylist());
+  }, [dispatch]);
+
+  const dataStylist = useSelector((state) => state.DASHBOARD.postStylist);
+
+  if (dataStylist == null) {
+    return <></>;
+  }
+
+  const showLargeDrawer = (stylist) => {
+    setSelectedStylist(stylist); // Set the selected stylist's data
     setOpen(true);
   };
 
   const onClose = () => {
+    setSelectedStylist(null); // Reset selected stylist
     setOpen(false);
   };
 
@@ -63,6 +79,7 @@ const Stylist = () => {
 
   const onFinish = (values) => {
     console.log("Form values:", values);
+    // Handle the submit logic here (e.g., update stylist data)
   };
 
   const columns = [
@@ -95,9 +112,12 @@ const Stylist = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: () => (
+      render: (_, record) => (
         <span>
-          <Button style={{ color: "blue" }} onClick={showLargeDrawer}>
+          <Button
+            style={{ color: "blue" }}
+            onClick={() => showLargeDrawer(record.key)}
+          >
             Detail
           </Button>
         </span>
@@ -105,78 +125,13 @@ const Stylist = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      stylistname: "Anna Nguyen",
-      status: "active",
-      phone: "0987654321",
-      hiredate: "2021-01-15",
-    },
-    {
-      key: "2",
-      stylistname: "David Tran",
-      status: "active",
-      phone: "0978123456",
-      hiredate: "2020-03-12",
-    },
-    {
-      key: "3",
-      stylistname: "Linh Pham",
-      status: "active",
-      phone: "0901234567",
-      hiredate: "2019-07-18",
-    },
-    {
-      key: "4",
-      stylistname: "Mark Le",
-      status: "active",
-      phone: "0912345678",
-      hiredate: "2022-05-23",
-    },
-    {
-      key: "5",
-      stylistname: "Sophia Vu",
-      status: "active",
-      phone: "0934567890",
-      hiredate: "2021-10-09",
-    },
-    {
-      key: "6",
-      stylistname: "Huyen Dang",
-      status: "active",
-      phone: "0923456789",
-      hiredate: "2020-11-11",
-    },
-    {
-      key: "7",
-      stylistname: "Minh Hoang",
-      status: "active",
-      phone: "0912345670",
-      hiredate: "2022-06-13",
-    },
-    {
-      key: "8",
-      stylistname: "Thao Bui",
-      status: "active",
-      phone: "0934567123",
-      hiredate: "2018-12-20",
-    },
-    {
-      key: "9",
-      stylistname: "James Nguyen",
-      status: "active",
-      phone: "0909876543",
-      hiredate: "2019-03-15",
-    },
-    {
-      key: "10",
-      stylistname: "Lan Truong",
-      status: "active",
-      phone: "0923456701",
-      hiredate: "2021-08-05",
-    },
-  ];
+  const data = dataStylist.map((index) => ({
+    key: index.id,
+    stylistname: index.fullName,
+    status: index.deleted ? "Inactive" : "Active",
+    phone: index.email,
+    hiredate: index.hireDate,
+  }));
 
   return (
     <>
@@ -227,34 +182,52 @@ const Stylist = () => {
               </Upload>
             </Space>
           </Form.Item>
-          <Form.Item name="stylistname" label="Stylist Name">
+          <Form.Item
+            name="stylistname"
+            label="Stylist Name"
+            // initialValue={selectedStylist?.fullName}
+          >
             <Input />
           </Form.Item>
           <Form.Item label="Gender">
-            <Radio.Group>
+            <Radio.Group defaultValue={selectedStylist?.gender}>
               <Radio value="male">Male</Radio>
               <Radio value="female">Female</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item name="birth" label="Date of birth">
-            <DatePicker
-              defaultValue={dayjs("2004/08/08", dateFormat)}
-              format={dateFormat}
-            />
+          <Form.Item
+            name="birth"
+            label="Date of birth"
+            // initialValue={dayjs(selectedStylist?.birthDate, dateFormat)}
+          >
+            <DatePicker format={dateFormat} />
           </Form.Item>
-          <Form.Item name="address" label="Address">
+          <Form.Item
+            name="address"
+            label="Address"
+            // initialValue={selectedStylist?.address}
+          >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item name="level" label="Level">
+          <Form.Item
+            name="level"
+            label="Level"
+            // initialValue={selectedStylist?.level}
+          >
             <InputNumber />
           </Form.Item>
-          <Form.Item name="hiredate" label="Hire Date">
-            <DatePicker
-              defaultValue={dayjs("2015/01/01", dateFormat)}
-              format={dateFormat}
-            />
+          <Form.Item
+            name="hiredate"
+            label="Hire Date"
+            initialValue={dayjs(selectedStylist?.hireDate, dateFormat)}
+          >
+            <DatePicker format={dateFormat} />
           </Form.Item>
-          <Form.Item name="description" label="Description">
+          <Form.Item
+            name="description"
+            label="Description"
+            // initialValue={selectedStylist?.description}
+          >
             <Input.TextArea />
           </Form.Item>
 
