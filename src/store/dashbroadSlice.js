@@ -5,6 +5,7 @@ import { mappingStylist } from "../helpers";
 const name = "posts";
 const initialState = {
   postStylist: [],
+  postStylistDetailById: [],
 };
 
 export const fetchPostStylist = createAsyncThunk(
@@ -16,6 +17,15 @@ export const fetchPostStylist = createAsyncThunk(
   }
 );
 
+export const fetchPostStylistDetailById = createAsyncThunk(
+  `${name}/fetchPostStylistDetailById`,
+  async (stylistID) => {
+    const res = await dashboardService.getDetailStylistById(stylistID);
+    const datastylistId = res.data.data.user;
+    return datastylistId;
+  }
+);
+
 const dashboardSlice = createSlice({
   name,
   initialState,
@@ -23,6 +33,9 @@ const dashboardSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchPostStylist.fulfilled, (state, action) => {
       state.postStylist = action.payload;
+    });
+    builder.addCase(fetchPostStylistDetailById.fulfilled, (state, action) => {
+      state.postStylistDetailById = action.payload;
     });
   },
 });
