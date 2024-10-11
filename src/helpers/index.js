@@ -3,8 +3,10 @@ export function mappingStylist(item) {
     id: item.stylistID,
     fullName: item.fullName,
     avatar: item.avatar,
+    phone: item.phoneNumber,
+    gender: item.gender,
     email: item.email,
-    yob: item.yob, // Year of birth
+    yob: item.yob,
     address: item.address,
     level: item.level,
     certificateURL: item.certificateURL,
