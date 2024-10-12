@@ -4,11 +4,13 @@ import { mappingStylist } from "../helpers";
 
 const name = "posts";
 const initialState = {
+  postStaff: [],
+  //Stylist
   postStylist: [],
   postStylistDetailById: [],
   updateStylist: null,
 };
-
+//Stylist
 export const fetchPostStylist = createAsyncThunk(
   `${name}/fetchAllStylist`,
   async () => {
