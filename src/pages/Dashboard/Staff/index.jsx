@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Drawer,
@@ -16,6 +16,8 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useDispatch, useSelector } from "react-redux";
+import { featchPostStaff } from "../../../store/dashbroadSlice";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -32,6 +34,16 @@ const layout = {
 const Staff = () => {
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
+  const dataStaff = useSelector((state) => state.DASHBOARD.postStaff);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(featchPostStaff());
+  }, [dispatch]);
+
+  if (dataStaff == null) {
+    return <></>;
+  }
 
   const showLargeDrawer = () => {
     setOpen(true);
@@ -67,8 +79,8 @@ const Staff = () => {
 
   const columns = [
     {
-      title: "Stylist Name",
-      dataIndex: "stylistname",
+      title: "Staff Name",
+      dataIndex: "staffname",
       key: "stylistname",
     },
     {
@@ -105,78 +117,13 @@ const Staff = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      stylistname: "Anna Nguyen",
-      status: "active",
-      phone: "0987654321",
-      hiredate: "2021-01-15",
-    },
-    {
-      key: "2",
-      stylistname: "David Tran",
-      status: "active",
-      phone: "0978123456",
-      hiredate: "2020-03-12",
-    },
-    {
-      key: "3",
-      stylistname: "Linh Pham",
-      status: "active",
-      phone: "0901234567",
-      hiredate: "2019-07-18",
-    },
-    {
-      key: "4",
-      stylistname: "Mark Le",
-      status: "active",
-      phone: "0912345678",
-      hiredate: "2022-05-23",
-    },
-    {
-      key: "5",
-      stylistname: "Sophia Vu",
-      status: "active",
-      phone: "0934567890",
-      hiredate: "2021-10-09",
-    },
-    {
-      key: "6",
-      stylistname: "Huyen Dang",
-      status: "active",
-      phone: "0923456789",
-      hiredate: "2020-11-11",
-    },
-    {
-      key: "7",
-      stylistname: "Minh Hoang",
-      status: "active",
-      phone: "0912345670",
-      hiredate: "2022-06-13",
-    },
-    {
-      key: "8",
-      stylistname: "Thao Bui",
-      status: "active",
-      phone: "0934567123",
-      hiredate: "2018-12-20",
-    },
-    {
-      key: "9",
-      stylistname: "James Nguyen",
-      status: "active",
-      phone: "0909876543",
-      hiredate: "2019-03-15",
-    },
-    {
-      key: "10",
-      stylistname: "Lan Truong",
-      status: "active",
-      phone: "0923456701",
-      hiredate: "2021-08-05",
-    },
-  ];
+  const data = dataStaff.map((index, i) => ({
+    key: index.id || `staff-${i}`,
+    staffname: index.fullName,
+    status: index.deleted ? "Inactive" : "Active",
+    phone: index.phone,
+    hiredate: index.hireDate,
+  }));
 
   return (
     <>
