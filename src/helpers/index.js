@@ -19,7 +19,7 @@ export function mappingStylist(item) {
 
 export function mappingStaff(item) {
   return {
-    id: item.salaryID,
+    id: item.staffID,
     fullName: item.fullName,
     avatar: item.avatar,
     phone: item.phoneNumber,
