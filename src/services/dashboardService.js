@@ -20,8 +20,11 @@ const dashboardService = {
     return API.call().get(`/api/v1/stylist/detail?id=${id}`);
   },
   updateStylist: (inputParam = {}) => {
-    const { stylistID, ...data } = inputParam;
-    return API.call().patch(`/api/v1/stylist/update?id=${stylistID}`, data);
+    const { stylistID } = inputParam;
+    return API.call().patch(
+      `/api/v1/stylist/update?id=${stylistID}`,
+      inputParam
+    );
   },
 };
 
