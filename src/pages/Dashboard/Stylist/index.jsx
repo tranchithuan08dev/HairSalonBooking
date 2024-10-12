@@ -12,6 +12,7 @@ import {
   Tag,
   Radio,
   DatePicker,
+  message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -78,7 +79,8 @@ const Stylist = () => {
   };
 
   const onClose = () => {
-    setSelectedStylist(null); // Reset selected stylist
+    setSelectedStylist(null);
+    dispatch(fetchPostStylist());
     setOpen(false);
   };
 
@@ -103,15 +105,28 @@ const Stylist = () => {
   };
 
   const onFinish = (values) => {
-    console.log("Form values:", values.yob.format(dateFormat));
-    dispatch(
-      fetchUpdateStylist({
-        stylistID: selectedStylist,
-        yob: values.yob.format(dateFormat),
-        fullName: "Tran Chi Thuan112",
+    const updatedData = {
+      stylistID: selectedStylist,
+      fullName: values.fullName,
+      avatar: avatarUrl || "avatar3.png", // Use uploaded avatar if available
+      gender: values.gender,
+      address: values.address,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      yob: values.yob.format(dateFormat),
+      level: values.level,
+      deleted: values.status,
+      userID: dataStylistById?.userID || null,
+    };
+
+    dispatch(fetchUpdateStylist(updatedData))
+      .then(() => {
+        message.success("Staff updated successfully!");
+        onClose();
       })
-    );
-    window.location.reload();
+      .catch((error) => {
+        message.error(`Failed to update staff: ${error.message}`);
+      });
   };
 
   const columns = [
@@ -125,7 +140,7 @@ const Stylist = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === "active" ? "green" : "red"}>
+        <Tag color={status === "Active" ? "green" : "red"}>
           {status.toUpperCase()}
         </Tag>
       ),
@@ -271,7 +286,6 @@ const Stylist = () => {
               <Radio value={false}>False</Radio>
             </Radio.Group>
           </Form.Item>
-
           <Form.Item
             wrapperCol={{
               ...layout.wrapperCol,
