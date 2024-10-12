@@ -12,5 +12,24 @@ export function mappingStylist(item) {
     certificateURL: item.certificateURL,
     hireDate: item.hireDate,
     deleted: item.deleted,
+    role: item.role,
+    userId: item.userID,
+  };
+}
+
+export function mappingStaff(item) {
+  return {
+    id: item.salaryID,
+    fullName: item.fullName,
+    avatar: item.avatar,
+    phone: item.phoneNumber,
+    email: item.email,
+    yob: item.yob,
+    hireDate: item.hireDate,
+    gender: item.gender,
+    address: item.address,
+    deleted: item.deleted,
+    role: item.role,
+    userId: item.userID,
   };
 }
