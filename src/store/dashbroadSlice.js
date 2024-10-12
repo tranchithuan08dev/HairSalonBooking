@@ -7,6 +7,7 @@ const initialState = {
   //Staff
   postStaff: [],
   postStaffDetailById: {},
+  updateStaff: null,
   //Stylist
   postStylist: [],
   postStylistDetailById: [],
@@ -29,6 +30,16 @@ export const fetchPostStaffDetailById = createAsyncThunk(
     const res = await dashboardService.getDetailStaffById(id);
     const dataStaffId = res.data.data.user;
     return dataStaffId;
+  }
+);
+
+export const fetchUpdateStaff = createAsyncThunk(
+  `${name}/fetchUpdateStaff`,
+  async (inputParams = {}) => {
+    const res = await dashboardService.updateStaff(inputParams);
+    console.log("res", res);
+
+    return res.data;
   }
 );
 //Stylist
@@ -54,7 +65,6 @@ export const fetchUpdateStylist = createAsyncThunk(
   `${name}/fetchUpdateStylist`,
   async (inputParams = {}) => {
     const res = await dashboardService.updateStylist(inputParams);
-    console.log(res);
     return res.data;
   }
 );
@@ -69,6 +79,9 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(fetchPostStaffDetailById.fulfilled, (state, action) => {
       state.postStaffDetailById = action.payload;
+    });
+    builder.addCase(fetchUpdateStaff.fulfilled, (state, action) => {
+      state.updateStaff = action.payload;
     });
     //Stylist
     builder.addCase(fetchPostStylist.fulfilled, (state, action) => {
