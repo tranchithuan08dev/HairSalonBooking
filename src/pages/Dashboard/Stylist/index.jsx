@@ -17,7 +17,11 @@ import { UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPostStylist } from "../../../store/dashbroadSlice";
+import {
+  fetchPostStylist,
+  fetchPostStylistDetailById,
+  fetchUpdateStylist,
+} from "../../../store/dashbroadSlice";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -36,19 +40,40 @@ const Stylist = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedStylist, setSelectedStylist] = useState(null);
   const dispatch = useDispatch();
-
+  const [form] = Form.useForm();
   useEffect(() => {
     dispatch(fetchPostStylist());
   }, [dispatch]);
 
   const dataStylist = useSelector((state) => state.DASHBOARD.postStylist);
 
+  const dataStylistById = useSelector(
+    (state) => state.DASHBOARD.postStylistDetailById
+  );
+
   if (dataStylist == null) {
     return <></>;
   }
 
+  useEffect(() => {
+    if (dataStylistById) {
+      form.setFieldsValue({
+        fullName: dataStylistById.fullName,
+        gender: dataStylistById.gender,
+        yob: dayjs(dataStylistById.yob),
+        phoneNumber: dataStylistById.phoneNumber,
+        email: dataStylistById.email,
+        address: dataStylistById.address,
+        level: dataStylistById.level,
+        status: dataStylistById.deleted,
+      });
+    }
+  }, [dataStylistById, form]);
+  console.log(dataStylistById);
+
   const showLargeDrawer = (stylist) => {
-    setSelectedStylist(stylist); // Set the selected stylist's data
+    setSelectedStylist(stylist);
+    dispatch(fetchPostStylistDetailById(stylist));
     setOpen(true);
   };
 
@@ -78,8 +103,15 @@ const Stylist = () => {
   };
 
   const onFinish = (values) => {
-    console.log("Form values:", values);
-    // Handle the submit logic here (e.g., update stylist data)
+    console.log("Form values:", values.yob.format(dateFormat));
+    dispatch(
+      fetchUpdateStylist({
+        stylistID: selectedStylist,
+        yob: values.yob.format(dateFormat),
+        fullName: "Tran Chi Thuan112",
+      })
+    );
+    window.location.reload();
   };
 
   const columns = [
@@ -129,7 +161,7 @@ const Stylist = () => {
     key: index.id,
     stylistname: index.fullName,
     status: index.deleted ? "Inactive" : "Active",
-    phone: index.email,
+    phone: index.phone,
     hiredate: index.hireDate,
   }));
 
@@ -149,6 +181,7 @@ const Stylist = () => {
         }
       >
         <Form
+          form={form}
           {...layout}
           name="nest-messages"
           onFinish={onFinish}
@@ -182,53 +215,61 @@ const Stylist = () => {
               </Upload>
             </Space>
           </Form.Item>
-          <Form.Item
-            name="stylistname"
-            label="Stylist Name"
-            // initialValue={selectedStylist?.fullName}
-          >
+          <Form.Item name="fullName" label="Stylist Name">
             <Input />
           </Form.Item>
-          <Form.Item label="Gender">
-            <Radio.Group defaultValue={selectedStylist?.gender}>
-              <Radio value="male">Male</Radio>
-              <Radio value="female">Female</Radio>
+          <Form.Item label="Gender" name="gender">
+            <Radio.Group>
+              <Radio value="Male">Male</Radio>
+              <Radio value="Female">Female</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item
-            name="birth"
-            label="Date of birth"
-            // initialValue={dayjs(selectedStylist?.birthDate, dateFormat)}
-          >
+          <Form.Item name="yob" label="Date of birth">
             <DatePicker format={dateFormat} />
           </Form.Item>
           <Form.Item
-            name="address"
-            label="Address"
-            // initialValue={selectedStylist?.address}
+            label="Phone"
+            name="phoneNumber"
+            rules={[
+              {
+                required: true,
+                message: "Please input your phone number!",
+              },
+              {
+                pattern: /^[0-9]{10}$/,
+                message: "Phone number must be 10 digits!",
+              },
+            ]}
           >
-            <Input.TextArea />
+            <Input type="text" placeholder="Phone" />
           </Form.Item>
           <Form.Item
-            name="level"
-            label="Level"
-            // initialValue={selectedStylist?.level}
+            label="Email"
+            name="email"
+            rules={[
+              {
+                message: "Please input your email!",
+              },
+              {
+                type: "email",
+                message: "The input is not a valid email!",
+              },
+            ]}
           >
+            <Input type="email" placeholder="Email" />
+          </Form.Item>
+
+          <Form.Item name="address" label="Address">
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item name="level" label="Level">
             <InputNumber />
           </Form.Item>
-          <Form.Item
-            name="hiredate"
-            label="Hire Date"
-            initialValue={dayjs(selectedStylist?.hireDate, dateFormat)}
-          >
-            <DatePicker format={dateFormat} />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            // initialValue={selectedStylist?.description}
-          >
-            <Input.TextArea />
+          <Form.Item name="status" label="Status">
+            <Radio.Group>
+              <Radio value={true}>True</Radio>
+              <Radio value={false}>False</Radio>
+            </Radio.Group>
           </Form.Item>
 
           <Form.Item
