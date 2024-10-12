@@ -1,57 +1,199 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../../../../assets/css/profile.css";
+import React from "react";
+import { DatePicker } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchStaff,
+  updateProfile,
+  setData,
+  setShowAlert,
+} from "../../../../store/profileSlice";
+import dayjs from "dayjs";
 
-function Content(props) {
-  const {id} = props;
+function Content() {
+  const dispatch = useDispatch();
+  const { data, loading, error, showAlert, message } = useSelector(
+    (state) => state.Profile
+  );
+  const [date, setDate] = useState(null);
+
   useEffect(() => {
-    const fetchStylist = async (id) => {
-      try {
-        const response = await API.call().get(`/stylist/${id}`);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching stylist data:", error);
+    const fetch = async () => {
+      const resultAction = await dispatch(fetchStaff("ST001")).unwrap();
+      if (resultAction.ok && resultAction.data && resultAction.data.dob) {
+        setDate(dayjs(resultAction.data.dob));
       }
     };
+    fetch();
+  }, [dispatch]);
 
-    fetchStylist(id);
-  }, [id]);
+  const handleChangeDate = (date) => {
+    setDate(date);
+    dispatch(setData({ dob: date.format("YYYY-MM-DD") }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    dispatch(setData({ [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      dispatch(setData({ avatar: URL.createObjectURL(file) }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("before dispatch: ", data);
+    const check = dispatch(updateProfile({ id: 'ST001', data}));
+    console.log(check);
+  };
+
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        dispatch(setShowAlert());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert, dispatch]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <div className="container mt-5 custom-mt5">
-        <div className="row justify-content-center custom-rowJ" style={{ maxWidth: "1200px", width: "100%" }}>
+        <div
+          className="row justify-content-center custom-rowJ"
+          style={{ maxWidth: "1200px", width: "100%" }}
+        >
           <div className="col-xl-6 test-col-6">
             <div className="card mb-4 mb-xl-0 test-mb4">
               <div className="card-header">Profile Picture</div>
               <div className="card-body d-flex flex-column align-items-center text-center">
-                <img
-                  className="img-account-profile rounded-circle mb-2"
-                  src="http://bootdey.com/img/Content/avatar/avatar1.png"
-                  alt="Profile"
-                />
+                {data.avatar ? (
+                  <img
+                    name="avatar"
+                    className="img-account-profile rounded-circle mb-2"
+                    src={data.avatar}
+                    alt="avatar"
+                  />
+                ) : (
+                  <img
+                    className="img-account-profile rounded-circle mb-2"
+                    src="http://bootdey.com/img/Content/avatar/avatar1.png"
+                    alt="avatar"
+                  />
+                )}
                 <div className="small font-italic text-muted mb-4">
                   JPG or PNG no larger than 5 MB
                 </div>
-                <button className="btn btn-primary" type="button">
-                  Upload new image
-                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
+            <div className="card mt-4">
+              <div className="card-header">
+                <h5 className="mb-0">User Account</h5>
+              </div>
+              <div className="card-body">
+                <div className="row gx-3 mb-3">
+                  <div className="col-md-6">
+                    <label className="small mb-1" htmlFor="inputUserID">
+                      UserID
+                    </label>
+                    <input
+                      className="form-control"
+                      id="inputUserID"
+                      type="text"
+                      name="userID"
+                      defaultValue={data.userID}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="small mb-1" htmlFor="inputPhoneNumber">
+                      PhoneNumber
+                    </label>
+                    <input
+                      className="form-control"
+                      id="inputPhoneNumber"
+                      type="text"
+                      name="phoneNumber"
+                      defaultValue={data.phoneNumber}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="small mb-1" htmlFor="inputEmail">
+                      Email
+                    </label>
+                    <input
+                      className="form-control"
+                      id="inputEmail"
+                      type="text"
+                      name="email"
+                      defaultValue={data.email}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           <div className="col-xl-6 test-col-6">
             <div className="card mb-4 test-mb4">
-              <div className="card-header">Account Details</div>
+              <div className="card-header">User Information</div>
               <div className="card-body">
-                <form>
-                  <div className="mb-3">
-                    <label className="small mb-1" htmlFor="inputUsername">
-                      Username
-                    </label>
-                    <input
-                      className="form-control"
-                      id="inputUsername"
-                      type="text"
-                      placeholder="Enter your username"
-                    />
+                <form onSubmit={handleSubmit}>
+                  <div className="row gx-3 mb-3">
+                    <div className="col-md-6">
+                      <label className="small mb-1" htmlFor="inputStaffID">
+                        StaffID
+                      </label>
+                      <input
+                        className="form-control"
+                        id="inputStaffID"
+                        type="text"
+                        name="staffID"
+                        defaultValue={data.staffID}
+                        disabled
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="small mb-1" htmlFor="selectGender">
+                        Gender
+                      </label>
+                      <select
+                        id="selectGender"
+                        className="form-select gender"
+                        name="gender"
+                        onChange={handleChange}
+                        defaultValue={data.gender || ""}
+                      >
+                        <option defaultValue="" disabled>
+                          Select your gender
+                        </option>
+                        <option
+                          disabled={data.gender == "Male"}
+                          defaultValue="Male"
+                        >
+                          Male
+                        </option>
+                        <option
+                          disabled={data.gender == "Female"}
+                          defaultValue="Female"
+                        >
+                          Female
+                        </option>
+                      </select>
+                    </div>
                   </div>
                   <div className="mb-3">
                     <label className="small mb-1" htmlFor="inputFullName">
@@ -61,19 +203,38 @@ function Content(props) {
                       className="form-control"
                       id="inputFullName"
                       type="text"
+                      name="fullName"
                       placeholder="Enter your fullname"
+                      defaultValue={data.fullName}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="small mb-1" htmlFor="inputEmailAddress">
-                      Email address
+                    <label className="small mb-1" htmlFor="inputEmail">
+                      Email
                     </label>
                     <input
                       className="form-control"
-                      id="inputEmailAddress"
+                      id="inputEmail"
                       type="email"
+                      name="email"
                       placeholder="Enter your email address"
-                      defaultValue="name@example.com"
+                      defaultValue={data.email}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="small mb-1" htmlFor="inputAddress">
+                      Address
+                    </label>
+                    <input
+                      className="form-control"
+                      id="inputAddress"
+                      type="text"
+                      name="address"
+                      placeholder="Enter your address"
+                      defaultValue={data.address}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="row gx-3 mb-3">
@@ -85,36 +246,25 @@ function Content(props) {
                         className="form-control"
                         id="inputPhone"
                         type="tel"
+                        name="phoneNumber"
                         placeholder="Enter your phone number"
-                        defaultValue="555-123-4567"
+                        defaultValue={data.phoneNumber}
+                        onChange={handleChange}
                       />
                     </div>
                     <div className="col-md-6">
                       <label className="small mb-1" htmlFor="inputBirthday">
                         Birthday
-                      </label>
-                      <input
-                        className="form-control"
-                        id="inputBirthday"
-                        type="text"
-                        name="birthday"
-                        placeholder="Enter your birthday"
-                        defaultValue="06/10/1988"
+                      </label>{" "}
+                      <br />
+                      <DatePicker
+                        className="form-control-date"
+                        name="yob"
+                        value={date}
+                        dateFormat="yyyy-MM-dd"
+                        onChange={handleChangeDate}
                       />
                     </div>
-                  </div>
-                  <div className="mb-3">
-                    <label className="small mb-1" htmlFor="gender">
-                      Gender
-                    </label>
-                    <select id="gender" className="form-select">
-                      <option value="" disabled>
-                        Select your gender
-                      </option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
                   </div>
                   <div className="mb-3">
                     <label className="small mb-1" htmlFor="role">
@@ -127,11 +277,21 @@ function Content(props) {
                       Staff
                     </span>
                   </div>
-                  <button className="btn btn-primary" type="button">
+                  <button className="btn btn-primary" type="submit">
                     Save changes
                   </button>
                 </form>
               </div>
+              {showAlert && (
+                <div
+                  className={`alert ${
+                    message ? "alert-success" : "alert-danger"
+                  } mt-3`}
+                  role="alert"
+                >
+                  {message || error}
+                </div>
+              )}
             </div>
           </div>
         </div>

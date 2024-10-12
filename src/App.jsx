@@ -16,7 +16,7 @@ function App() {
 
         <Route path="/staff/" element={<PrivateRoutes />}>
           <Route element={<Layout />}>
-            <Route path="home/" element={<Home />} />
+            <Route path="home/" element={<Home />} /> 
             <Route path="home/bookingDetail/:id" element={<BookingDetail />} />
             <Route path="createBooking" element={<CreateBooking />} />
             <Route path="profile" element={<Profile />} />

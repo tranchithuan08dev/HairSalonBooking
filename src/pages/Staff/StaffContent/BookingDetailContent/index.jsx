@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import "../../../../assets/css/bookingDetail.css";
 import { useEffect, useState } from "react";
+import axios from "axios"; 
 
 function Content() {
   const [message, setMessage] = useState("");
@@ -64,31 +65,38 @@ function Content() {
       paymentstatus: "unpaid",
     },
   ];
+
   const booking = bookingDetails.find((app) => app.bookingID === id);
+
+  const [formData, setFormData] = useState({
+    bookingID: booking?.bookingID,
+    bookingDate: booking?.bookingDate,
+    serviceDate: booking?.serviceDate,
+    serviceID: booking?.serviceID,
+    serviceName: booking?.serviceName,
+    duration: booking?.duration,
+    stylistID: booking?.stylistID,
+    staffID: booking?.staffID,
+    username: booking?.username,
+    bookingphone: booking?.bookingphone,
+    role: booking?.role,
+    totalPrice: booking?.totalPrice,
+    status: booking?.status,
+    method: booking?.method,
+    paymentstatus: booking?.paymentstatus,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      bookingID: booking.bookingID,
-      bookingDate: e.target.bookingDate.value,
-      serviceDate: e.target.serviceDate.value,
-      serviceID: e.target.serviceID.value,
-      serviceName: e.target.serviceName.value,
-      duration: e.target.duration.value,
-      stylistID: e.target.stylistID.value,
-      staffID: e.target.staffID.value,
-      username: e.target.userBooking.value,
-      bookingphone: e.target.userPhone.value,
-      role: e.target.role.value,
-      totalPrice: e.target.totalPrice.value,
-      status: e.target.status.value,
-      method: e.target.method.value,
-      paymentstatus: e.target.paymentstatus.value,
-    };
+    console.log("Submitted form data:", formData);
 
     try {
-      const response = await axios.patch(
-        "http://your-backend-api.com/api/bookings",
+      const response = await axios.patch(`/api/bookings/${formData.bookingID}`,
         formData,
         {
           headers: {
@@ -108,14 +116,6 @@ function Content() {
     }
   };
 
-  const handleChangeMethod = (e) => {
-    console.log(e.target.value);
-  };
-
-  const handleChangeStatus = (e) => {
-    console.log(e.target.value);
-  };
-
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
@@ -125,166 +125,172 @@ function Content() {
     }
   }, [showAlert]);
 
-  if (!booking) {
+  if (!formData) {
     return <div>BookingID not found</div>;
   }
 
   return (
-    <>
-      <div className="container cus-container">
-        <div className="justify-content-center cus-mt5test">
-          <div className="card card-mycustom">
-            <div className="card-header text-center">
-              <h5>Booking Detail</h5>
-            </div>
-            <div className="card-body row">
-              <form onSubmit={handleSubmit} className="col-md-6">
-                <div className="formBody">
-                  <div className="form-group">
-                    <strong>Booking ID:</strong>
-                    <input
-                      type="text"
-                      name="bookingID"
-                      defaultValue={booking.bookingID}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Booking Date:</strong>
-                    <input
-                      type="text"
-                      name="bookingDate"
-                      defaultValue={booking.bookingDate}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Service ID:</strong>
-                    <input
-                      type="text"
-                      name="serviceID"
-                      defaultValue={booking.serviceID}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Stylist ID:</strong>
-                    <input
-                      type="text"
-                      name="stylistID"
-                      defaultValue={booking.stylistID}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Staff ID:</strong>
-                    <input
-                      type="text"
-                      name="staffID"
-                      defaultValue={booking.staffID}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Username:</strong>
-                    <input
-                      type="text"
-                      name="userBooking"
-                      defaultValue={booking.username}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Booking Phone:</strong>
-                    <input
-                      type="text"
-                      name="userPhone"
-                      defaultValue={booking.bookingphone}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>User Role:</strong>
-                    <input
-                      type="text"
-                      name="role"
-                      defaultValue={booking.role}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Total Price:</strong>
-                    <input
-                      type="number"
-                      name="totalPrice"
-                      defaultValue={booking.totalPrice}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Status:</strong>
-                    <select
-                      name="status"
-                      defaultValue={booking.status}
-                      onChange={handleChangeStatus}
-                    >
-                      <option defaultValue="pending">Pending</option>
-                      <option defaultValue="confirm">Confirm</option>
-                      <option defaultValue="rejected">Rejected</option>
-                      <option defaultValue="Cancelled">Confirm</option>
-                      <option defaultValue="In-progress">In-progress</option>
-                      <option defaultValue="Completed">Completed</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <strong>Payment status:</strong>
-                    <select
-                      name="paymentStatus"
-                      defaultValue={booking.paymentstatus}
-                      onChange={handleChangeStatus}
-                    >
-                      <option defaultValue="unpaid">Unpaid</option>
-                      <option defaultValue="paid">Paid</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <strong>Method:</strong>
-                    <select
-                      name="method"
-                      defaultValue={booking.method}
-                      onChange={handleChangeMethod}
-                    >
-                      <option defaultValue="bank transfer">
-                        Bank Transfer
-                      </option>
-                      <option defaultValue="cash">Cash</option>
-                    </select>
-                  </div>
+    <div className="container cus-container">
+      <div className="justify-content-center cus-mt5test">
+        <div className="card card-mycustom">
+          <div className="card-header text-center">
+            <h5>Booking Detail</h5>
+          </div>
+          <div className="card-body row">
+            <form onSubmit={handleSubmit} className="col-md-6">
+              <div className="formBody">
+                <div className="form-group">
+                  <strong>Booking ID:</strong>
+                  <input
+                    type="text"
+                    name="bookingID"
+                    value={formData.bookingID}
+                    readOnly
+                  />
                 </div>
-
-                {showAlert && (
-                  <div
-                    className={`alert ${
-                      message ? "alert-success" : "alert-danger"
-                    } mt-3`}
-                    role="alert"
+                <div className="form-group">
+                  <strong>Booking Date:</strong>
+                  <input
+                    type="text"
+                    name="bookingDate"
+                    value={formData.bookingDate}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Service ID:</strong>
+                  <input
+                    type="text"
+                    name="serviceID"
+                    value={formData.serviceID}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Stylist ID:</strong>
+                  <input
+                    type="text"
+                    name="stylistID"
+                    value={formData.stylistID}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Staff ID:</strong>
+                  <input
+                    type="text"
+                    name="staffID"
+                    value={formData.staffID}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Username:</strong>
+                  <input
+                    type="text"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Booking Phone:</strong>
+                  <input
+                    type="text"
+                    name="bookingphone"
+                    value={formData.bookingphone}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>User Role:</strong>
+                  <input
+                    type="text"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Total Price:</strong>
+                  <input
+                    type="number"
+                    name="totalPrice"
+                    value={formData.totalPrice}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Status:</strong>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
                   >
-                    {message || error}
-                  </div>
-                )}
-                <button type="submit" className="buttonSubmit">
-                  Update
-                </button>
-              </form>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirm">Confirm</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="In-progress">In-progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <strong>Payment Status:</strong>
+                  <select
+                    name="paymentstatus"
+                    value={formData.paymentstatus}
+                    onChange={handleChange}
+                  >
+                    <option value="unpaid">Unpaid</option>
+                    <option value="paid">Paid</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <strong>Method:</strong>
+                  <select
+                    name="method"
+                    value={formData.method}
+                    onChange={handleChange}
+                  >
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Cash">Cash</option>
+                  </select>
+                </div>
+              </div>
 
-              {booking.method === "Bank Transfer" && (
-                <div className="col-md-6 QR">
-                  <div className="Image justify-content align-items">
-                    <h3>QR</h3>
-                    <div className="imageContainer">
-                      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"></img>
-                    </div>
-                  </div>
+              {showAlert && (
+                <div
+                  className={`alert ${
+                    message ? "alert-success" : "alert-danger"
+                  } mt-3`}
+                  role="alert"
+                >
+                  {message || error}
                 </div>
               )}
-            </div>
+              <button type="submit" className="buttonSubmit">
+                Update
+              </button>
+            </form>
+
+            {formData.method === "Bank Transfer" && (
+              <div className="col-md-6 QR">
+                <div className="Image justify-content align-items">
+                  <h3>QR</h3>
+                  <div className="imageContainer">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
+                      alt="QR Code"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
