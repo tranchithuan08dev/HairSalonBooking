@@ -6,10 +6,7 @@ import { getBadgeClass } from "../../../../helpers/getBadgeClass";
 import Search from "../../../../components/Staff/Search";
 import DayPicker from "../../../../components/Staff/DayPicker";
 import { searchFilter } from "../../../../helpers/searchFilter";
-import Sort from "../../../../components/Staff/Sort";
-import { sortBookings } from "../../../../helpers/sortBookings";
 import Pagination from "../../../../components/Staff/Pagination";
-// import axios from "axios";
 
 function Content() {
   const navigate = useNavigate();
@@ -17,20 +14,8 @@ function Content() {
   const [itemOffset, setItemOffset] = useState(0);
 
   const handleClick = (id) => {
-    navigate(`bookingDetail/${id}`);
+    navigate(`bookingDetail?bookingID=${id}`);
   };
-
-  // useEffect(() => {
-  //   axios
-  //     .get("src/api/v1/bookings")
-  //     .then((response) => {
-  //       console.log(response);
-  //       setBookings(response);
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error fetching the bookings!", error);
-  //     });
-  // }, []);
 
   const [bookings, setBookings] = useState([
     {
@@ -94,24 +79,15 @@ function Content() {
     const key = decodeURIComponent(searchParams.get("key"));
     const status = searchParams.get("status") || "All";
     const bookingDate = searchParams.get("bookingDate");
-    const sort = searchParams.get("sort");
     console.log("type: " + type);
     console.log("key: " + key);
     console.log("status: " + status);
     console.log("bookingDate: " + bookingDate);
-    console.log("sort: " + sort);
     const page = parseInt(searchParams.get("page")) || 1;
     const newOffset = (page - 1) * 4;
     setItemOffset(newOffset);
 
     let filteredBookings = bookings;
-
-    if (sort) {
-      console.log("before update: ", filteredBookings);
-      const sortedBookings = sortBookings(filteredBookings, sort);
-      setFilteredBookings(sortedBookings);
-      console.log("after update: ", filteredBookings);
-    }
 
     if (status !== "All") {
       filteredBookings = filteredBookings.filter(
@@ -170,13 +146,6 @@ function Content() {
                 setFilteredBookings={setFilteredBookings}
               />
             </div>
-          </div>
-
-          <div className="col-md-3">
-            <Sort
-              bookings={bookings}
-              setFilteredBookings={setFilteredBookings}
-            />
           </div>
         </div>
         <div className="mt-4 custom-mt">

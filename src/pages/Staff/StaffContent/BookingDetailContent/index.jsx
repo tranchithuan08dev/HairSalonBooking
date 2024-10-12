@@ -1,13 +1,15 @@
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "../../../../assets/css/staff/bookingDetail.css";
 import { useEffect, useState } from "react";
 import axios from "axios"; 
 
 function Content() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const bookingId = queryParams.get('bookingID');
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const { id } = useParams();
 
   const bookingDetails = [
     {
