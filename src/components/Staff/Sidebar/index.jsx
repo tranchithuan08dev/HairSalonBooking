@@ -1,8 +1,7 @@
 import { NavLink } from "react-router-dom";
 import "../../../assets/scss/sidebar.scss";
 
-function Sidebar(props) {
-  const { id } = props; 
+function Sidebar() {
   const navLinkActive = (e) => {
     return e.isActive ? "sidebar__menu__li__link sidebar__menu__li__link--active" : "sidebar__menu__li__link";
   };
@@ -17,23 +16,18 @@ function Sidebar(props) {
         <div className="sidebar__menu">
           <ul>
             <li>
-              <NavLink to={`/staff/${id}/home`} className={navLinkActive}>
+              <NavLink to={`/staff/home`} className={navLinkActive}>
                 Home
               </NavLink>
             </li>
             <li>
-              <NavLink to={`/staff/${id}/profile`} className={navLinkActive}>
+              <NavLink to={`/staff/profile`} className={navLinkActive}>
                 Profile
               </NavLink>
             </li>
             <li>
-              <NavLink to={`/staff/${id}/salary`} className={navLinkActive}>
+              <NavLink to={`/staff/salary`} className={navLinkActive}>
                 Salary
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to={`/staff/${id}/createBooking`} className={navLinkActive}>
-                Create Booking
               </NavLink>
             </li>
           </ul>

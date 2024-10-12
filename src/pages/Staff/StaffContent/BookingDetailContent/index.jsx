@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import "../../../../assets/css/bookingDetail.css";
+import "../../../../assets/css/staff/bookingDetail.css";
 import { useEffect, useState } from "react";
 import axios from "axios"; 
 

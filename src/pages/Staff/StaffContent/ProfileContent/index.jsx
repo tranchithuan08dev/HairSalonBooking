@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "../../../../assets/css/profile.css";
+import "../../../../assets/css/staff/profile.css";
 import React from "react";
 import { DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,7 +48,7 @@ function Content() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("before dispatch: ", data);
-    const check = dispatch(updateProfile({ id: 'ST001', data}));
+    const check = dispatch(updateProfile({ id: "ST001", data }));
     console.log(check);
   };
 
@@ -210,20 +210,6 @@ function Content() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="small mb-1" htmlFor="inputEmail">
-                      Email
-                    </label>
-                    <input
-                      className="form-control"
-                      id="inputEmail"
-                      type="email"
-                      name="email"
-                      placeholder="Enter your email address"
-                      defaultValue={data.email}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="mb-3">
                     <label className="small mb-1" htmlFor="inputAddress">
                       Address
                     </label>
@@ -237,34 +223,18 @@ function Content() {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="row gx-3 mb-3">
-                    <div className="col-md-6">
-                      <label className="small mb-1" htmlFor="inputPhone">
-                        Phone number
-                      </label>
-                      <input
-                        className="form-control"
-                        id="inputPhone"
-                        type="tel"
-                        name="phoneNumber"
-                        placeholder="Enter your phone number"
-                        defaultValue={data.phoneNumber}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="small mb-1" htmlFor="inputBirthday">
-                        Birthday
-                      </label>{" "}
-                      <br />
-                      <DatePicker
-                        className="form-control-date"
-                        name="yob"
-                        value={date}
-                        dateFormat="yyyy-MM-dd"
-                        onChange={handleChangeDate}
-                      />
-                    </div>
+                  <div className="mb-3">
+                    <label className="small mb-1" htmlFor="inputBirthday">
+                      Birthday
+                    </label>{" "}
+                    <br />
+                    <DatePicker
+                      className="form-control-date"
+                      name="yob"
+                      value={date}
+                      dateFormat="yyyy-MM-dd"
+                      onChange={handleChangeDate}
+                    />
                   </div>
                   <div className="mb-3">
                     <label className="small mb-1" htmlFor="role">

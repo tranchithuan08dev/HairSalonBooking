@@ -1,5 +1,5 @@
 import BookingDetailContent from '../StaffContent/BookingDetailContent';
-import "../../../assets/css/bookingDetail.css";
+import "../../../assets/css/staff/bookingDetail.css";
 function BookingDetail(){
     return (
         <>

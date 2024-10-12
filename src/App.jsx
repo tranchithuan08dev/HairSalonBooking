@@ -6,7 +6,6 @@ import BookingDetail from "./pages/Staff/BookingDetail";
 import Profile from "./pages/Staff/Profile";
 import Salary from "./pages/Staff/Salary";
 import HomePage from "./pages/HomePage";
-import CreateBooking from "./pages/Staff/CreateBooking";
 
 function App() {
   return (
@@ -18,7 +17,6 @@ function App() {
           <Route element={<Layout />}>
             <Route path="home/" element={<Home />} /> 
             <Route path="home/bookingDetail/:id" element={<BookingDetail />} />
-            <Route path="createBooking" element={<CreateBooking />} />
             <Route path="profile" element={<Profile />} />
             <Route path="salary" element={<Salary />} />
           </Route>
