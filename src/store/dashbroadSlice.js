@@ -6,6 +6,7 @@ const name = "posts";
 const initialState = {
   //Staff
   postStaff: [],
+  postStaffDetailById: {},
   //Stylist
   postStylist: [],
   postStylistDetailById: [],
@@ -13,12 +14,21 @@ const initialState = {
 };
 
 //Staff
-export const featchPostStaff = createAsyncThunk(
-  `${name}/featchPostStaff`,
+export const fetchPostStaff = createAsyncThunk(
+  `${name}/fetchPostStaff`,
   async () => {
     const res = await dashboardService.getAllSatff();
     const dataStaff = res.data.data.users.map(mappingStaff);
     return dataStaff;
+  }
+);
+
+export const fetchPostStaffDetailById = createAsyncThunk(
+  `${name}/fetchPostStaffDetailById`,
+  async (id) => {
+    const res = await dashboardService.getDetailStaffById(id);
+    const dataStaffId = res.data.data.user;
+    return dataStaffId;
   }
 );
 //Stylist
@@ -54,10 +64,12 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(featchPostStaff.fulfilled, (state, action) => {
+    builder.addCase(fetchPostStaff.fulfilled, (state, action) => {
       state.postStaff = action.payload;
     });
-
+    builder.addCase(fetchPostStaffDetailById.fulfilled, (state, action) => {
+      state.postStaffDetailById = action.payload;
+    });
     //Stylist
     builder.addCase(fetchPostStylist.fulfilled, (state, action) => {
       state.postStylist = action.payload;
