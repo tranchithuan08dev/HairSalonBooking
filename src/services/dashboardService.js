@@ -5,7 +5,9 @@ const dashboardService = {
   getAllSatff: () => {
     return API.call().get(`/api/v1/staff/getAll`);
   },
-
+  getDetailStaffById: (id) => {
+    return API.call().get(`/api/v1/staff/detail?id=${id}`);
+  },
   // Stylist
   getAllStylist: () => {
     return API.call().get(`/api/v1/stylist/getAll`);
