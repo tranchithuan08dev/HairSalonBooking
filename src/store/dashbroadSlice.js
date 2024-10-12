@@ -1,15 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import dashboardService from "../services/dashboardService";
-import { mappingStylist } from "../helpers";
+import { mappingStaff, mappingStylist } from "../helpers";
 
 const name = "posts";
 const initialState = {
+  //Staff
   postStaff: [],
   //Stylist
   postStylist: [],
   postStylistDetailById: [],
   updateStylist: null,
 };
+
+//Staff
+export const featchPostStaff = createAsyncThunk(
+  `${name}/featchPostStaff`,
+  async () => {
+    const res = await dashboardService.getAllSatff();
+    const dataStaff = res.data.data.users.map(mappingStaff);
+    return dataStaff;
+  }
+);
 //Stylist
 export const fetchPostStylist = createAsyncThunk(
   `${name}/fetchAllStylist`,
@@ -43,6 +54,11 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(featchPostStaff.fulfilled, (state, action) => {
+      state.postStaff = action.payload;
+    });
+
+    //Stylist
     builder.addCase(fetchPostStylist.fulfilled, (state, action) => {
       state.postStylist = action.payload;
     });
