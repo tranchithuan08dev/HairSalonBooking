@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import "./style.css";
+import "../../../../assets/css/staff/home.css";
 import { useEffect, useState } from "react";
 import FilterStatus from "../../../../components/Staff/FilterStatus";
 import { getBadgeClass } from "../../../../helpers/getBadgeClass";

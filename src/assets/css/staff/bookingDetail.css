@@ -1,4 +1,15 @@
-.cus-container {
+.Image {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  .imageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cus-container {
     width: 1100px;
     height: 750px;
 }
