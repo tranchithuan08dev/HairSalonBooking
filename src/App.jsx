@@ -8,8 +8,16 @@ import Salary from "./pages/Staff/Salary";
 import HomePage from "./pages/HomePage";
 import CreateBooking from "./pages/Staff/CreateBooking";
 // import BookingPage from "./pages/BookingPage";
+import LoginPage from "./pages/Login/LoginPage";
+import { useDispatch } from "react-redux";
+import { fetchMe } from "./store/authSlice";
+import { useEffect } from "react";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, []);
   return (
     <>
       <Routes>
@@ -24,6 +32,7 @@ function App() {
             <Route path="salary" element={<Salary />} />
           </Route>
         </Route>
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </>
   );
