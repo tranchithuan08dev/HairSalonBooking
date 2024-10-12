@@ -8,6 +8,10 @@ const dashboardService = {
   getDetailStaffById: (id) => {
     return API.call().get(`/api/v1/staff/detail?id=${id}`);
   },
+  updateStaff: (inputParam = {}) => {
+    const { staffID } = inputParam;
+    return API.call().patch(`/api/v1/staff/update?id=${staffID}`, inputParam);
+  },
   // Stylist
   getAllStylist: () => {
     return API.call().get(`/api/v1/stylist/getAll`);
