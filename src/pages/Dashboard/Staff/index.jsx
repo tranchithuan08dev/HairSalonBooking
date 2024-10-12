@@ -11,6 +11,7 @@ import {
   Tag,
   Radio,
   DatePicker,
+  message, // <-- Import message from antd
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -19,18 +20,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostStaff,
   fetchPostStaffDetailById,
+  fetchUpdateStaff,
 } from "../../../store/dashbroadSlice";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
 
 const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 const Staff = () => {
@@ -38,19 +36,17 @@ const Staff = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedStylist, setSelectedStylist] = useState(null);
   const [form] = Form.useForm();
+
   const dataStaff = useSelector((state) => state.DASHBOARD.postStaff);
   const dataStaffDetail = useSelector(
     (state) => state.DASHBOARD.postStaffDetailById
   );
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(fetchPostStaff());
   }, [dispatch]);
-
-  if (dataStaff == null) {
-    return <></>;
-  }
 
   useEffect(() => {
     if (dataStaffDetail) {
@@ -61,13 +57,11 @@ const Staff = () => {
         phoneNumber: dataStaffDetail.phoneNumber,
         email: dataStaffDetail.email,
         address: dataStaffDetail.address,
-        level: dataStaffDetail.level,
         status: dataStaffDetail.deleted,
       });
+      setAvatarUrl(dataStaffDetail.avatar || "");
     }
   }, [dataStaffDetail, form]);
-  console.log("gender", dataStaffDetail?.gender);
-  console.log("dataDetail", dataStaffDetail);
 
   const showLargeDrawer = (staffId) => {
     setSelectedStylist(staffId);
@@ -77,19 +71,22 @@ const Staff = () => {
 
   const onClose = () => {
     setSelectedStylist(null);
+    dispatch(fetchPostStaff());
     setOpen(false);
   };
 
   const beforeUpload = (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      console.error("You can only upload JPG/PNG files!");
+      message.error("You can only upload JPG/PNG files!");
+      return false;
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      console.error("Image must be smaller than 2MB!");
+      message.error("Image must be smaller than 2MB!");
+      return false;
     }
-    return isJpgOrPng && isLt2M;
+    return true;
   };
 
   const handleChangeImage = (info) => {
@@ -101,21 +98,41 @@ const Staff = () => {
   };
 
   const onFinish = (values) => {
-    console.log("Form values:", values);
+    const updatedData = {
+      staffID: selectedStylist,
+      fullName: values.fullName,
+      avatar: avatarUrl || "avatar3.png", // Use uploaded avatar if available
+      gender: values.gender,
+      address: values.address,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      yob: values.yob.format(dateFormat),
+      deleted: values.status,
+      userID: dataStaffDetail?.userID || null,
+    };
+
+    dispatch(fetchUpdateStaff(updatedData))
+      .then(() => {
+        message.success("Staff updated successfully!");
+        onClose();
+      })
+      .catch((error) => {
+        message.error(`Failed to update staff: ${error.message}`);
+      });
   };
 
   const columns = [
     {
       title: "Staff Name",
       dataIndex: "staffname",
-      key: "stylistname",
+      key: "staffname",
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === "active" ? "green" : "red"}>
+        <Tag color={status === "Active" ? "green" : "red"}>
           {status.toUpperCase()}
         </Tag>
       ),
@@ -135,14 +152,12 @@ const Staff = () => {
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
-        <span>
-          <Button
-            style={{ color: "blue" }}
-            onClick={() => showLargeDrawer(record.key)}
-          >
-            Detail
-          </Button>
-        </span>
+        <Button
+          style={{ color: "blue" }}
+          onClick={() => showLargeDrawer(record.key)}
+        >
+          Detail
+        </Button>
       ),
     },
   ];
@@ -175,26 +190,14 @@ const Staff = () => {
           {...layout}
           name="nest-messages"
           onFinish={onFinish}
-          style={{
-            maxWidth: 600,
-          }}
+          style={{ maxWidth: 600 }}
         >
-          <Form.Item
-            wrapperCol={{
-              offset: 4,
-              span: 20,
-            }}
-          >
+          <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
             <Space size={12}>
               <Image
                 width={200}
                 src={avatarUrl || "https://via.placeholder.com/200"}
-                style={{
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  width: "200px",
-                  height: "200px",
-                }}
+                style={{ borderRadius: "50%", width: 200, height: 200 }}
               />
               <Upload
                 name="file"
@@ -218,32 +221,23 @@ const Staff = () => {
             label="Phone"
             name="phoneNumber"
             rules={[
-              {
-                required: true,
-                message: "Please input your phone number!",
-              },
+              { required: true, message: "Please input your phone number!" },
               {
                 pattern: /^[0-9]{10}$/,
                 message: "Phone number must be 10 digits!",
               },
             ]}
           >
-            <Input type="text" placeholder="Phone" />
+            <Input />
           </Form.Item>
           <Form.Item
             label="Email"
             name="email"
             rules={[
-              {
-                message: "Please input your email!",
-              },
-              {
-                type: "email",
-                message: "The input is not a valid email!",
-              },
+              { type: "email", message: "The input is not a valid email!" },
             ]}
           >
-            <Input type="email" placeholder="Email" />
+            <Input />
           </Form.Item>
           <Form.Item name="yob" label="Date of birth">
             <DatePicker format={dateFormat} />
@@ -251,12 +245,13 @@ const Staff = () => {
           <Form.Item name="address" label="Address">
             <Input.TextArea />
           </Form.Item>
-          <Form.Item
-            wrapperCol={{
-              ...layout.wrapperCol,
-              offset: 8,
-            }}
-          >
+          <Form.Item name="status" label="Status">
+            <Radio.Group>
+              <Radio value={true}>Active</Radio>
+              <Radio value={false}>Inactive</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
             <Button type="primary" htmlType="submit">
               Update Staff
             </Button>
