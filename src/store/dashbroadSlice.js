@@ -6,6 +6,7 @@ const name = "posts";
 const initialState = {
   postStylist: [],
   postStylistDetailById: [],
+  updateStylist: null,
 };
 
 export const fetchPostStylist = createAsyncThunk(
@@ -26,6 +27,15 @@ export const fetchPostStylistDetailById = createAsyncThunk(
   }
 );
 
+export const fetchUpdateStylist = createAsyncThunk(
+  `${name}/fetchUpdateStylist`,
+  async (inputParams = {}) => {
+    const res = await dashboardService.updateStylist(inputParams);
+    console.log(res);
+    return res.data;
+  }
+);
+
 const dashboardSlice = createSlice({
   name,
   initialState,
@@ -36,6 +46,9 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(fetchPostStylistDetailById.fulfilled, (state, action) => {
       state.postStylistDetailById = action.payload;
+    });
+    builder.addCase(fetchUpdateStylist.fulfilled, (state, action) => {
+      state.updateStylist = action.payload;
     });
   },
 });
