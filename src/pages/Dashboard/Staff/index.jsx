@@ -8,7 +8,6 @@ import {
   Table,
   Upload,
   Image,
-  InputNumber,
   Tag,
   Radio,
   DatePicker,
@@ -17,7 +16,10 @@ import { UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { featchPostStaff } from "../../../store/dashbroadSlice";
+import {
+  fetchPostStaff,
+  fetchPostStaffDetailById,
+} from "../../../store/dashbroadSlice";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -34,22 +36,47 @@ const layout = {
 const Staff = () => {
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [selectedStylist, setSelectedStylist] = useState(null);
+  const [form] = Form.useForm();
   const dataStaff = useSelector((state) => state.DASHBOARD.postStaff);
+  const dataStaffDetail = useSelector(
+    (state) => state.DASHBOARD.postStaffDetailById
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(featchPostStaff());
+    dispatch(fetchPostStaff());
   }, [dispatch]);
 
   if (dataStaff == null) {
     return <></>;
   }
 
-  const showLargeDrawer = () => {
+  useEffect(() => {
+    if (dataStaffDetail) {
+      form.setFieldsValue({
+        fullName: dataStaffDetail.fullName,
+        gender: dataStaffDetail.gender,
+        yob: dayjs(dataStaffDetail.yob),
+        phoneNumber: dataStaffDetail.phoneNumber,
+        email: dataStaffDetail.email,
+        address: dataStaffDetail.address,
+        level: dataStaffDetail.level,
+        status: dataStaffDetail.deleted,
+      });
+    }
+  }, [dataStaffDetail, form]);
+  console.log("gender", dataStaffDetail?.gender);
+  console.log("dataDetail", dataStaffDetail);
+
+  const showLargeDrawer = (staffId) => {
+    setSelectedStylist(staffId);
+    dispatch(fetchPostStaffDetailById(staffId));
     setOpen(true);
   };
 
   const onClose = () => {
+    setSelectedStylist(null);
     setOpen(false);
   };
 
@@ -107,9 +134,12 @@ const Staff = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: () => (
+      render: (_, record) => (
         <span>
-          <Button style={{ color: "blue" }} onClick={showLargeDrawer}>
+          <Button
+            style={{ color: "blue" }}
+            onClick={() => showLargeDrawer(record.key)}
+          >
             Detail
           </Button>
         </span>
@@ -141,6 +171,7 @@ const Staff = () => {
         }
       >
         <Form
+          form={form}
           {...layout}
           name="nest-messages"
           onFinish={onFinish}
@@ -174,34 +205,52 @@ const Staff = () => {
               </Upload>
             </Space>
           </Form.Item>
-          <Form.Item name="staffname" label="Name">
+          <Form.Item name="fullName" label="Name">
             <Input />
           </Form.Item>
-          <Form.Item label="Gender">
+          <Form.Item label="Gender" name="gender">
             <Radio.Group>
-              <Radio value="male">Male</Radio>
-              <Radio value="female">Female</Radio>
+              <Radio value="Male">Male</Radio>
+              <Radio value="Female">Female</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item name="birth" label="Date of birth">
-            <DatePicker
-              defaultValue={dayjs("2004/08/08", dateFormat)}
-              format={dateFormat}
-            />
+          <Form.Item
+            label="Phone"
+            name="phoneNumber"
+            rules={[
+              {
+                required: true,
+                message: "Please input your phone number!",
+              },
+              {
+                pattern: /^[0-9]{10}$/,
+                message: "Phone number must be 10 digits!",
+              },
+            ]}
+          >
+            <Input type="text" placeholder="Phone" />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              {
+                message: "Please input your email!",
+              },
+              {
+                type: "email",
+                message: "The input is not a valid email!",
+              },
+            ]}
+          >
+            <Input type="email" placeholder="Email" />
+          </Form.Item>
+          <Form.Item name="yob" label="Date of birth">
+            <DatePicker format={dateFormat} />
           </Form.Item>
           <Form.Item name="address" label="Address">
             <Input.TextArea />
           </Form.Item>
-          <Form.Item name="salary" label="Salary">
-            <InputNumber />
-          </Form.Item>
-          <Form.Item name="hiredate" label="Hire Date">
-            <DatePicker
-              defaultValue={dayjs("2015/01/01", dateFormat)}
-              format={dateFormat}
-            />
-          </Form.Item>
-
           <Form.Item
             wrapperCol={{
               ...layout.wrapperCol,
@@ -209,7 +258,7 @@ const Staff = () => {
             }}
           >
             <Button type="primary" htmlType="submit">
-              Edit Service
+              Update Staff
             </Button>
           </Form.Item>
         </Form>
