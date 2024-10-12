@@ -32,7 +32,7 @@ function Sidebar() {
             </li>
           </ul>
           <div className="sidebar__menu--logout">
-            <NavLink to="/logout" className={navLinkActive}>
+            <NavLink to="/" className={navLinkActive}>
               Logout
             </NavLink>
           </div>

@@ -6,7 +6,7 @@ import axios from "axios";
 function Content() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const bookingId = queryParams.get('bookingID');
+  const bookingId = queryParams.get("bookingID");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(false);
@@ -68,7 +68,7 @@ function Content() {
     },
   ];
 
-  const booking = bookingDetails.find((app) => app.bookingID === id);
+  const booking = bookingDetails.find((app) => app.bookingID === bookingId);
 
   const [formData, setFormData] = useState({
     bookingID: booking?.bookingID,

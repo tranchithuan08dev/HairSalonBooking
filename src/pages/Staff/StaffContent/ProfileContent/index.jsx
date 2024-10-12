@@ -29,8 +29,15 @@ function Content() {
   }, [dispatch]);
 
   const handleChangeDate = (date) => {
+    const dateChanged = new Date(date);
+    const day = `${dateChanged.getDate()}`.padStart(2, "0");
+    const month = `${dateChanged.getMonth() + 1}`.padStart(2, "0");
+    const year = dateChanged.getFullYear();
+
+    const formattedDate = `${year}-${month}-${day}`;
+    console.log(formattedDate);
     setDate(date);
-    dispatch(setData({ dob: date.format("YYYY-MM-DD") }));
+    dispatch(setData({ dob: formattedDate }));
   };
 
   const handleChange = (e) => {
@@ -129,6 +136,7 @@ function Content() {
                       type="text"
                       name="phoneNumber"
                       defaultValue={data.phoneNumber}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="mb-3">
@@ -140,6 +148,7 @@ function Content() {
                       id="inputEmail"
                       type="text"
                       name="email"
+                      onChange={handleChange}
                       defaultValue={data.email}
                     />
                   </div>
@@ -149,7 +158,9 @@ function Content() {
           </div>
           <div className="col-xl-6 test-col-6">
             <div className="card mb-4 test-mb4">
-              <div className="card-header">User Information</div>
+              <div className="card-header">
+                <h5 className="mb-0">User Information</h5>
+              </div>
               <div className="card-body">
                 <form onSubmit={handleSubmit}>
                   <div className="row gx-3 mb-3">

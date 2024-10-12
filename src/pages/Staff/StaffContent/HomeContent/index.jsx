@@ -139,7 +139,7 @@ function Content() {
           <div className="col-md-6 result-found">
             <h6>{filteredBookings.length} results found</h6>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-6">
             <div className="input-group mb-3">
               <DayPicker
                 bookings={bookings}
