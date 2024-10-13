@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { useDispatch } from "react-redux";
 import { Login } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +11,12 @@ const LoginPage = () => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
         navigate("/");
+        console.log(res.payload.data.currenInfor);
       } else {
-        console.log("Login failed");
+        message.open({
+          type: "error",
+          content: "This is an error message",
+        });
       }
     });
   };
