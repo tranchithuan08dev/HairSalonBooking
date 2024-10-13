@@ -7,16 +7,17 @@ import {
   Space,
   Table,
   Image,
-  InputNumber,
-  Tag,
-  Radio,
   DatePicker,
+  Radio,
+  Tag,
 } from "antd";
-
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPostCustomer } from "../../../store/dashbroadSlice";
+import {
+  fetchPostCustomer,
+  fetchPostCustomerById,
+} from "../../../store/dashbroadSlice";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -34,21 +35,33 @@ const User = () => {
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-
   const [form] = Form.useForm();
-  dayjs.extend(customParseFormat);
-  const dateFormat = "YYYY/MM/DD";
-  const dataCustomer = useSelector((state) => state.DASHBOARD.postCustomer);
-
   const dispatch = useDispatch();
+  const dataCustomer = useSelector((state) => state.DASHBOARD.postCustomer);
+  const dataCustomerDetail = useSelector(
+    (state) => state.DASHBOARD.postCustomerById
+  );
+  console.log(dataCustomerDetail);
+
   useEffect(() => {
     dispatch(fetchPostCustomer());
   }, [dispatch]);
 
   if (dataCustomer == null) return <></>;
-  const showLargeDrawer = (stylist) => {
-    setSelectedCustomer(stylist);
 
+  useEffect(() => {
+    if (dataCustomerDetail) {
+      form.setFieldsValue({
+        fullName: dataCustomerDetail.fullName,
+        point: dataCustomerDetail.loyaltyPoints,
+        status: dataCustomerDetail.deleted,
+      });
+    }
+  }, [dataCustomerDetail, form]);
+
+  const showLargeDrawer = (customerId) => {
+    setSelectedCustomer(customerId);
+    dispatch(fetchPostCustomerById(customerId));
     setOpen(true);
   };
 
@@ -72,7 +85,7 @@ const User = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === "active" ? "green" : "red"}>
+        <Tag color={status === "Active" ? "green" : "red"}>
           {status.toUpperCase()}
         </Tag>
       ),
@@ -88,9 +101,9 @@ const User = () => {
       key: "point",
     },
     {
-      title: "Create At",
-      key: "create at",
-      dataIndex: "createat",
+      title: "Created At",
+      key: "createAt",
+      dataIndex: "createAt",
     },
     {
       title: "Action",
@@ -107,14 +120,16 @@ const User = () => {
       ),
     },
   ];
+
   const data = dataCustomer.map((index) => ({
     key: index.id,
     name: index.customerName,
     status: index.deleted ? "Active" : "UnActive",
     phone: index.phone,
     point: index.loyaltyPoints,
-    createat: dayjs(index.createdAt).format(dateFormat),
+    createAt: dayjs(index.createdAt).format(dateFormat),
   }));
+
   return (
     <>
       <Table columns={columns} dataSource={data} />
@@ -135,9 +150,7 @@ const User = () => {
           {...layout}
           name="nest-messages"
           onFinish={onFinish}
-          style={{
-            maxWidth: 600,
-          }}
+          style={{ maxWidth: 600 }}
         >
           <Form.Item
             wrapperCol={{
@@ -161,53 +174,11 @@ const User = () => {
           <Form.Item name="fullName" label="Stylist Name">
             <Input />
           </Form.Item>
-          <Form.Item label="Gender" name="gender">
-            <Radio.Group>
-              <Radio value="Male">Male</Radio>
-              <Radio value="Female">Female</Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item name="yob" label="Date of birth">
-            <DatePicker format={dateFormat} />
-          </Form.Item>
-          <Form.Item
-            label="Phone"
-            name="phoneNumber"
-            rules={[
-              {
-                required: true,
-                message: "Please input your phone number!",
-              },
-              {
-                pattern: /^[0-9]{10}$/,
-                message: "Phone number must be 10 digits!",
-              },
-            ]}
-          >
-            <Input type="text" placeholder="Phone" />
-          </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                message: "Please input your email!",
-              },
-              {
-                type: "email",
-                message: "The input is not a valid email!",
-              },
-            ]}
-          >
-            <Input type="email" placeholder="Email" />
+
+          <Form.Item name="point" label="Loyalty Points">
+            <Input />
           </Form.Item>
 
-          <Form.Item name="address" label="Address">
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item name="level" label="Level">
-            <InputNumber />
-          </Form.Item>
           <Form.Item name="status" label="Status">
             <Radio.Group>
               <Radio value={true}>True</Radio>
@@ -221,7 +192,7 @@ const User = () => {
             }}
           >
             <Button type="primary" htmlType="submit">
-              Edit Service
+              Update Customer
             </Button>
           </Form.Item>
         </Form>
