@@ -1,7 +1,5 @@
 export const getBadgeClass = (status) => {
     switch (status) {
-      case "Pending":
-        return "bg-warning";
       case "Confirmed":
         return "bg-primary";
       case "Rejected":

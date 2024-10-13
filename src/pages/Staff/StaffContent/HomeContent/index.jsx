@@ -26,7 +26,7 @@ function Content() {
       serviceDate: "28/09/2024",
       stylist: "Ho Van A",
       totalPrice: 99,
-      status: "Pending",
+      status: "In-progress",
     },
     {
       bookingID: "C002",
@@ -36,7 +36,7 @@ function Content() {
       serviceDate: "27/09/2024",
       stylist: "Ho Van B",
       totalPrice: 89,
-      status: "Completed",
+      status: "In-progress",
     },
     {
       bookingID: "C003",
@@ -46,7 +46,7 @@ function Content() {
       serviceDate: "29/09/2024",
       stylist: "Ho Van C",
       totalPrice: 79,
-      status: "Pending",
+      status: "In-progress",
     },
     {
       bookingID: "G004",
@@ -56,7 +56,7 @@ function Content() {
       serviceDate: "28/09/2024",
       stylist: "Ho Van A",
       totalPrice: 99,
-      status: "Pending",
+      status: "Cancelled",
     },
     {
       bookingID: "G005",
@@ -66,7 +66,7 @@ function Content() {
       serviceDate: "28/09/2024",
       stylist: "Ho Van A",
       totalPrice: 99,
-      status: "Pending",
+      status: "Rejected",
     },
   ]);
   const [filteredBookings, setFilteredBookings] = useState(bookings);

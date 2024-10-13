@@ -8,13 +8,13 @@ import {
   updateProfile,
   setData,
   setShowAlert,
-} from "../../../../store/profileSlice";
+} from "../../../../store/profileStaffSlice";
 import dayjs from "dayjs";
 
 function Content() {
   const dispatch = useDispatch();
   const { data, loading, error, showAlert, message } = useSelector(
-    (state) => state.Profile
+    (state) => state.StaffProfile
   );
   const [date, setDate] = useState(null);
 
@@ -43,6 +43,7 @@ function Content() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch(setData({ [name]: value }));
+    console.log(data);
   };
 
   const handleFileChange = (e) => {
@@ -54,9 +55,7 @@ function Content() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("before dispatch: ", data);
-    const check = dispatch(updateProfile({ id: "ST001", data }));
-    console.log(check);
+    dispatch(updateProfile({ id: "ST001", data }));
   };
 
   useEffect(() => {
@@ -111,6 +110,7 @@ function Content() {
               <div className="card-header">
                 <h5 className="mb-0">User Account</h5>
               </div>
+
               <div className="card-body">
                 <div className="row gx-3 mb-3">
                   <div className="col-md-6">
@@ -136,7 +136,7 @@ function Content() {
                       type="text"
                       name="phoneNumber"
                       defaultValue={data.phoneNumber}
-                      onChange={handleChange}
+                      disabled
                     />
                   </div>
                   <div className="mb-3">
@@ -258,6 +258,8 @@ function Content() {
                       Staff
                     </span>
                   </div>
+                  <input type="hidden" name="userID" value={data.userID} />
+                  <input type="hidden" name="email" value={data.email} />
                   <button className="btn btn-primary" type="submit">
                     Save changes
                   </button>

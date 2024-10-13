@@ -29,12 +29,6 @@ function FilterStatus(props) {
         All
       </button>
       <button
-        className="btn btn-sm ml-1 btn-outline-warning"
-        onClick={() => handleFilterStatus("Pending")}
-      >
-        Pending
-      </button>
-      <button
         className="btn btn-sm ml-1 btn-outline-primary"
         onClick={() => handleFilterStatus("Confirmed")}
       >
