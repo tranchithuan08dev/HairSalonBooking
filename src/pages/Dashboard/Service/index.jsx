@@ -13,8 +13,11 @@ import {
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPostService } from "../../../store/dashbroadSlice";
-
+import {
+  fetchPostService,
+  fetchPostServiceById,
+} from "../../../store/dashbroadSlice";
+import dayjs from "dayjs";
 const layout = {
   labelCol: {
     span: 8,
@@ -28,23 +31,31 @@ const Service = () => {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState();
   const [avatarUrl, setAvatarUrl] = useState("");
-
+  const [selectServiceId, setSelectServiceId] = useState(null);
+  const timeFormat = "HH:mm";
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchPostService());
   }, [dispatch]);
   const dataService = useSelector((state) => state.DASHBOARD.postService);
+  const dataServiceDetail = useSelector(
+    (state) => state.DASHBOARD.postServiceById
+  );
+
   if (dataService == null) return <></>;
+  if (dataServiceDetail == null) return <></>;
+  console.log(dataServiceDetail);
 
-  console.log(dataService);
-
-  const showLargeDrawer = () => {
+  const showLargeDrawer = (serviceID) => {
     setSize("Detail");
+    setSelectServiceId(serviceID);
+    dispatch(fetchPostServiceById(serviceID));
     setOpen(true);
   };
 
   const onClose = () => {
     setOpen(false);
+    setSelectServiceId(null);
   };
 
   const beforeUpload = (file) => {
@@ -94,7 +105,7 @@ const Service = () => {
       render: (_, record) => (
         <Button
           style={{ color: "blue" }}
-          onClick={() => showLargeDrawer(record)}
+          onClick={() => showLargeDrawer(record.key)}
         >
           Details
         </Button>
@@ -165,11 +176,8 @@ const Service = () => {
           <Form.Item name="price" label="Price">
             <InputNumber addonAfter="VND" />
           </Form.Item>
-          <Form.Item name="discount" label="Discount">
-            <InputNumber />
-          </Form.Item>
           <Form.Item name="duration" label="Duration">
-            <TimePicker />
+            <TimePicker format={timeFormat} />
           </Form.Item>
           <Form.Item
             wrapperCol={{
