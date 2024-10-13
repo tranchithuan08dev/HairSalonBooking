@@ -6,6 +6,10 @@ const dashboardService = {
     return API.call().get(`/api/v1/service/getAll`);
   },
 
+  getServiceById: (id) => {
+    return API.call().get(`/api/v1/service/detail?id=${id}`);
+  },
+
   //Staff
   getAllStaff: () => {
     return API.call().get(`/api/v1/staff/getAll`);
