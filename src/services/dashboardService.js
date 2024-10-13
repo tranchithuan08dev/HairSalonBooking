@@ -5,6 +5,9 @@ const dashboardService = {
   getAllCustomer: () => {
     return API.call().get(`/api/v1/customer/getAll`);
   },
+  getDetailCustomerById: (id) => {
+    return API.call().get(`/api/v1/customer/detail?id=${id}`);
+  },
 
   // Service
   getAllService: () => {
