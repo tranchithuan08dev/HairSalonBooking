@@ -33,3 +33,14 @@ export function mappingStaff(item) {
     userId: item.userID,
   };
 }
+
+export function mappingService(item) {
+  return {
+    id: item.serviceID,
+    serviceName: item.serviceName,
+    price: item.price,
+    duration: item.duration,
+    description: item.description,
+    deleted: item.deleted,
+  };
+}
