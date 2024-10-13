@@ -11,6 +11,7 @@ const name = "posts";
 const initialState = {
   //Customer
   postCustomer: [],
+  postCustomerById: {},
   //Service
   postService: [],
   postServiceById: {},
@@ -35,6 +36,15 @@ export const fetchPostCustomer = createAsyncThunk(
   }
 );
 
+export const fetchPostCustomerById = createAsyncThunk(
+  `${name}/fetchPostCustomerById`,
+  async (id) => {
+    const res = await dashboardService.getDetailCustomerById(id);
+    const dataCustomerId = res.data.customer;
+    return dataCustomerId;
+  }
+);
+
 //Service'
 export const fetchPostService = createAsyncThunk(
   `${name}/fetchPostService`,
@@ -50,7 +60,6 @@ export const fetchPostServiceById = createAsyncThunk(
   async (id) => {
     const res = await dashboardService.getServiceById(id);
     const dataServiceId = res.data.service;
-    console.log(dataServiceId);
     return dataServiceId;
   }
 );
@@ -123,6 +132,9 @@ const dashboardSlice = createSlice({
     //Customer
     builder.addCase(fetchPostCustomer.fulfilled, (state, action) => {
       state.postCustomer = action.payload;
+    });
+    builder.addCase(fetchPostCustomerById.fulfilled, (state, action) => {
+      state.postCustomerById = action.payload;
     });
 
     //Service
