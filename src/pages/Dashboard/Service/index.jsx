@@ -103,7 +103,7 @@ const Service = () => {
       price: values.price,
       description: values.description,
       duration: values.duration,
-      delete: values.status,
+      deleted: values.status,
       img: null,
     };
 
