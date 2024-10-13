@@ -10,6 +10,13 @@ const dashboardService = {
     return API.call().get(`/api/v1/service/detail?id=${id}`);
   },
 
+  updateService: (inputParam = {}) => {
+    const { serviceID } = inputParam;
+    return API.call().patch(
+      `/api/v1/service/update?id=${serviceID}`,
+      inputParam
+    );
+  },
   //Staff
   getAllStaff: () => {
     return API.call().get(`/api/v1/staff/getAll`);
