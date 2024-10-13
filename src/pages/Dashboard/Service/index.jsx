@@ -9,13 +9,16 @@ import {
   Upload,
   Image,
   InputNumber,
-  TimePicker,
+  Tag,
+  Radio,
+  message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostService,
   fetchPostServiceById,
+  fetchUpdateService,
 } from "../../../store/dashbroadSlice";
 
 const layout = {
@@ -54,6 +57,7 @@ const Service = () => {
         price: dataServiceDetail.price,
         duration: dataServiceDetail.duration,
         description: dataServiceDetail.description,
+        status: dataServiceDetail.deleted,
       });
     }
   }, [dataServiceDetail, form]);
@@ -66,6 +70,7 @@ const Service = () => {
   };
 
   const onClose = () => {
+    dispatch(fetchPostService());
     setOpen(false);
     setSelectServiceId(null);
   };
@@ -91,7 +96,25 @@ const Service = () => {
   };
 
   const onFinish = (values) => {
-    console.log("Form values:", values);
+    const updateService = {
+      serviceID: selectServiceId,
+      serviceName: values.serviceName,
+      type: "single",
+      price: values.price,
+      description: values.description,
+      duration: values.duration,
+      delete: values.status,
+      img: null,
+    };
+
+    dispatch(fetchUpdateService(updateService))
+      .then(() => {
+        message.success("Service updated successfully!");
+        onClose();
+      })
+      .catch((error) => {
+        message.error(`Failed to update service: ${error.message}`);
+      });
   };
 
   const columns = [
@@ -99,6 +122,16 @@ const Service = () => {
       title: "Service Name",
       dataIndex: "servicename",
       key: "servicename",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <Tag color={status === "Active" ? "green" : "red"}>
+          {status.toUpperCase()}
+        </Tag>
+      ),
     },
     {
       title: "Duration",
@@ -127,6 +160,7 @@ const Service = () => {
 
   const data = dataService.map((index) => ({
     key: index.id,
+    status: index.deleted ? "Inactive" : "Active",
     servicename: index.serviceName,
     duration: index.duration,
     price: index.price,
@@ -192,6 +226,12 @@ const Service = () => {
           </Form.Item>
           <Form.Item name="description" label="Description">
             <Input.TextArea />
+          </Form.Item>
+          <Form.Item name="status" label="Status">
+            <Radio.Group>
+              <Radio value={false}>Active</Radio>
+              <Radio value={true}>Inactive</Radio>
+            </Radio.Group>
           </Form.Item>
           <Form.Item
             wrapperCol={{
