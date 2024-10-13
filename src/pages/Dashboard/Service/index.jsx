@@ -17,7 +17,7 @@ import {
   fetchPostService,
   fetchPostServiceById,
 } from "../../../store/dashbroadSlice";
-import dayjs from "dayjs";
+
 const layout = {
   labelCol: {
     span: 8,
@@ -32,7 +32,8 @@ const Service = () => {
   const [size, setSize] = useState();
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectServiceId, setSelectServiceId] = useState(null);
-  const timeFormat = "HH:mm";
+  const [form] = Form.useForm();
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchPostService());
@@ -45,6 +46,17 @@ const Service = () => {
   if (dataService == null) return <></>;
   if (dataServiceDetail == null) return <></>;
   console.log(dataServiceDetail);
+
+  useEffect(() => {
+    if (dataServiceDetail) {
+      form.setFieldsValue({
+        serviceName: dataServiceDetail.serviceName,
+        price: dataServiceDetail.price,
+        duration: dataServiceDetail.duration,
+        description: dataServiceDetail.description,
+      });
+    }
+  }, [dataServiceDetail, form]);
 
   const showLargeDrawer = (serviceID) => {
     setSize("Detail");
@@ -136,6 +148,7 @@ const Service = () => {
         }
       >
         <Form
+          form={form}
           {...layout}
           name="service-form"
           onFinish={onFinish}
@@ -170,14 +183,15 @@ const Service = () => {
           <Form.Item name="serviceName" label="Service Name">
             <Input />
           </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input.TextArea />
-          </Form.Item>
+
           <Form.Item name="price" label="Price">
             <InputNumber addonAfter="VND" />
           </Form.Item>
           <Form.Item name="duration" label="Duration">
-            <TimePicker format={timeFormat} />
+            <InputNumber />
+          </Form.Item>
+          <Form.Item name="description" label="Description">
+            <Input.TextArea />
           </Form.Item>
           <Form.Item
             wrapperCol={{
