@@ -45,3 +45,17 @@ export function mappingService(item) {
     deleted: item.deleted,
   };
 }
+
+export function mappingCustomer(item) {
+  return {
+    id: item.customerID,
+    customerName: item.fullName,
+    avatar: item.fullName,
+    loyaltyPoints: item.loyaltyPoints,
+    createdAt: item.createdAt,
+    gender: item.gender,
+    yob: item.yob,
+    phone: item.phoneNumber,
+    deleted: item.deleted,
+  };
+}
