@@ -7,9 +7,9 @@ import {
   Space,
   Table,
   Image,
-  DatePicker,
   Radio,
   Tag,
+  message,
 } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostCustomer,
   fetchPostCustomerById,
+  fetchUpdateCustomer,
 } from "../../../store/dashbroadSlice";
 
 dayjs.extend(customParseFormat);
@@ -41,6 +42,7 @@ const User = () => {
   const dataCustomerDetail = useSelector(
     (state) => state.DASHBOARD.postCustomerById
   );
+
   console.log(dataCustomerDetail);
 
   useEffect(() => {
@@ -56,6 +58,7 @@ const User = () => {
         point: dataCustomerDetail.loyaltyPoints,
         status: dataCustomerDetail.deleted,
       });
+      setAvatarUrl(dataCustomerDetail.avatar);
     }
   }, [dataCustomerDetail, form]);
 
@@ -67,11 +70,24 @@ const User = () => {
 
   const onClose = () => {
     setSelectedCustomer(null);
+    dispatch(fetchPostCustomer());
     setOpen(false);
   };
 
   const onFinish = (values) => {
-    console.log(values);
+    const updateCustomer = {
+      customerID: selectedCustomer,
+      loyaltyPoints: values.point,
+      deleted: values.status,
+    };
+    dispatch(fetchUpdateCustomer(updateCustomer))
+      .then(() => {
+        message.success("Customer updated successfully!");
+        onClose();
+      })
+      .catch((error) => {
+        message.error(`Failed to update Customer: ${error.message}`);
+      });
   };
 
   const columns = [
@@ -172,7 +188,7 @@ const User = () => {
             </Space>
           </Form.Item>
           <Form.Item name="fullName" label="Stylist Name">
-            <Input />
+            <Input disabled />
           </Form.Item>
 
           <Form.Item name="point" label="Loyalty Points">
