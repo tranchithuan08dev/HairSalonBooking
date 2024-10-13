@@ -7,6 +7,7 @@ const initialState = {
   //Service
   postService: [],
   postServiceById: {},
+  updateService: null,
   //Staff
   postStaff: [],
   postStaffDetailById: {},
@@ -34,6 +35,14 @@ export const fetchPostServiceById = createAsyncThunk(
     const dataServiceId = res.data.service;
     console.log(dataServiceId);
     return dataServiceId;
+  }
+);
+
+export const fetchUpdateService = createAsyncThunk(
+  `${name}/fetchUpdateService`,
+  async (inputParam = {}) => {
+    const res = await dashboardService.updateService(inputParam);
+    return res.data;
   }
 );
 //Staff
@@ -100,6 +109,9 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(fetchPostServiceById.fulfilled, (state, action) => {
       state.postServiceById = action.payload;
+    });
+    builder.addCase(fetchUpdateService.fulfilled, (state, action) => {
+      state.updateService = action.payload;
     });
     //Staff
     builder.addCase(fetchPostStaff.fulfilled, (state, action) => {
