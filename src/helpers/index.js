@@ -38,6 +38,7 @@ export function mappingService(item) {
   return {
     id: item.serviceID,
     serviceName: item.serviceName,
+    serviceImg: item.img,
     price: item.price,
     duration: item.duration,
     description: item.description,
