@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Drawer,
@@ -12,6 +12,8 @@ import {
   TimePicker,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPostService } from "../../../store/dashbroadSlice";
 
 const layout = {
   labelCol: {
@@ -26,6 +28,15 @@ const Service = () => {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState();
   const [avatarUrl, setAvatarUrl] = useState("");
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchPostService());
+  }, [dispatch]);
+  const dataService = useSelector((state) => state.DASHBOARD.postService);
+  if (dataService == null) return <></>;
+
+  console.log(dataService);
 
   const showLargeDrawer = () => {
     setSize("Detail");
@@ -91,68 +102,12 @@ const Service = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      servicename: "Haircut",
-      duration: "30 mins",
-      price: "200,000 VND",
-    },
-    {
-      key: "2",
-      servicename: "Hair Coloring",
-      duration: "1 hour",
-      price: "500,000 VND",
-    },
-    {
-      key: "3",
-      servicename: "Shampoo",
-      duration: "15 mins",
-      price: "100,000 VND",
-    },
-    {
-      key: "4",
-      servicename: "Blow-dry",
-      duration: "20 mins",
-      price: "150,000 VND",
-    },
-    {
-      key: "5",
-      servicename: "Hair Treatment",
-      duration: "45 mins",
-      price: "400,000 VND",
-    },
-    {
-      key: "6",
-      servicename: "Beard Trim",
-      duration: "20 mins",
-      price: "150,000 VND",
-    },
-    {
-      key: "7",
-      servicename: "Facial",
-      duration: "1 hour",
-      price: "600,000 VND",
-    },
-    {
-      key: "8",
-      servicename: "Manicure",
-      duration: "30 mins",
-      price: "250,000 VND",
-    },
-    {
-      key: "9",
-      servicename: "Pedicure",
-      duration: "45 mins",
-      price: "300,000 VND",
-    },
-    {
-      key: "10",
-      servicename: "Hair Straightening",
-      duration: "2 hours",
-      price: "1,200,000 VND",
-    },
-  ];
+  const data = dataService.map((index) => ({
+    key: index.id,
+    servicename: index.serviceName,
+    duration: index.duration,
+    price: index.price,
+  }));
 
   return (
     <>
