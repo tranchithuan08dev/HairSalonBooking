@@ -1,9 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import dashboardService from "../services/dashboardService";
-import { mappingService, mappingStaff, mappingStylist } from "../helpers";
+import {
+  mappingCustomer,
+  mappingService,
+  mappingStaff,
+  mappingStylist,
+} from "../helpers";
 
 const name = "posts";
 const initialState = {
+  //Customer
+  postCustomer: [],
   //Service
   postService: [],
   postServiceById: {},
@@ -17,6 +24,16 @@ const initialState = {
   postStylistDetailById: [],
   updateStylist: null,
 };
+
+// Customer
+export const fetchPostCustomer = createAsyncThunk(
+  `${name}/fetchPostCustomer`,
+  async () => {
+    const res = await dashboardService.getAllCustomer();
+    const dataCustomer = res.data.customerList.map(mappingCustomer);
+    return dataCustomer;
+  }
+);
 
 //Service'
 export const fetchPostService = createAsyncThunk(
@@ -103,6 +120,11 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    //Customer
+    builder.addCase(fetchPostCustomer.fulfilled, (state, action) => {
+      state.postCustomer = action.payload;
+    });
+
     //Service
     builder.addCase(fetchPostService.fulfilled, (state, action) => {
       state.postService = action.payload;
