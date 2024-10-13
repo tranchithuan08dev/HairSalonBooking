@@ -1,6 +1,11 @@
 import API from "./api";
 
 const dashboardService = {
+  // Customer
+  getAllCustomer: () => {
+    return API.call().get(`/api/v1/customer/getAll`);
+  },
+
   // Service
   getAllService: () => {
     return API.call().get(`/api/v1/service/getAll`);
