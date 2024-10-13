@@ -1,8 +1,13 @@
 import API from "./api";
 
 const dashboardService = {
+  // Service
+  getAllService: () => {
+    return API.call().get(`/api/v1/service/getAll`);
+  },
+
   //Staff
-  getAllSatff: () => {
+  getAllStaff: () => {
     return API.call().get(`/api/v1/staff/getAll`);
   },
   getDetailStaffById: (id) => {
