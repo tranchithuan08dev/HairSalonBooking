@@ -4,6 +4,7 @@ import authService from "../services/authService";
 const initialState = {
   token: null,
   currentUser: null,
+  sendEmail: null,
 };
 
 const name = "auth";
@@ -49,6 +50,26 @@ export const fetchMe = createAsyncThunk(`${name}/fetchMe`, async (token) => {
     };
   }
 });
+export const fetchEmail = createAsyncThunk(
+  `${name}/fetchEmail`,
+  async (email) => {
+    try {
+      const res = await authService.sendEmail(email);
+      const dataEmail = res.data;
+      return {
+        ok: true,
+        data: {
+          dataEmail,
+        },
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Failed to send email.",
+      };
+    }
+  }
+);
 
 const authSlice = createSlice({
   name,
@@ -66,6 +87,11 @@ const authSlice = createSlice({
       if (action.payload.ok) {
         state.token = action.payload.data.token;
         state.currentUser = action.payload.data.currenInfor;
+      }
+    });
+    builder.addCase(fetchEmail.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.sendEmail = action.payload.data.dataEmail;
       }
     });
   },
