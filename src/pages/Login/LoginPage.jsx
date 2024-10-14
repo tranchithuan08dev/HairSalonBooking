@@ -2,7 +2,7 @@ import React from "react";
 import { Form, Input, Button, message } from "antd";
 import { useDispatch } from "react-redux";
 import { Login } from "../../store/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -101,9 +101,9 @@ const LoginPage = () => {
                           </Button>
                         </Form.Item>
 
-                        <a className="small text-muted" href="#!">
+                        <Link to="/forgotPassword" className="small text-muted">
                           Forgot password?
-                        </a>
+                        </Link>
                         <p
                           className="mb-5 pb-lg-2"
                           style={{ color: "#393f81" }}
