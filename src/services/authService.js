@@ -10,5 +10,8 @@ const authService = {
   sendEmail: (email) => {
     return API.call().post(`/api/v1/auth/forgot-password`, email);
   },
+  resetPassword: (data) => {
+    return API.call().post(`/api/v1/auth/reset-password`, data);
+  },
 };
 export default authService;
