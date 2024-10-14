@@ -2,14 +2,19 @@ import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
 import { useDispatch } from "react-redux";
 import { fetchEmail } from "../../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
   const [form] = Form.useForm();
+  const [email, setEmail] = useState(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const onFinish = (values) => {
+    setEmail(values);
     dispatch(fetchEmail(values)).then((res) => {
       if (res.payload.ok) {
         message.success("OTP SEND YOUR EMAIL");
+        navigate("/resetpassword", { state: { email: values.email } });
       } else {
         message.error(`Failed `);
       }
