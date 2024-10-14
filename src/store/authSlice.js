@@ -5,6 +5,7 @@ const initialState = {
   token: null,
   currentUser: null,
   sendEmail: null,
+  resetPassword: null,
 };
 
 const name = "auth";
@@ -71,6 +72,27 @@ export const fetchEmail = createAsyncThunk(
   }
 );
 
+export const fetchResetPassWord = createAsyncThunk(
+  `${name}/fetchResetPassWord`,
+  async (data) => {
+    try {
+      const res = await authService.resetPassword(data);
+      const dataOTP = res.data;
+      return {
+        ok: true,
+        data: {
+          dataOTP,
+        },
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Failed to  OTP",
+      };
+    }
+  }
+);
+
 const authSlice = createSlice({
   name,
   initialState,
@@ -92,6 +114,11 @@ const authSlice = createSlice({
     builder.addCase(fetchEmail.fulfilled, (state, action) => {
       if (action.payload.ok) {
         state.sendEmail = action.payload.data.dataEmail;
+      }
+    });
+    builder.addCase(fetchResetPassWord.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.resetPassword = action.payload.data.dataOTP;
       }
     });
   },
