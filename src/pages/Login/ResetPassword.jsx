@@ -1,11 +1,32 @@
 import React from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import "antd/dist/reset.css"; // Import Ant Design styles
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchResetPassWord } from "../../store/authSlice";
 
 function ResetPassword() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const email = location.state?.email;
+  const dispatch = useDispatch();
+
   const onFinish = (values) => {
-    console.log("Form values:", values);
-    // Handle reset password logic here
+    console.log(values);
+
+    const dataOtp = {
+      email: email,
+      otp: values.otp,
+      newPassword: values.newPassword,
+    };
+    dispatch(fetchResetPassWord(dataOtp)).then((res) => {
+      if (res.payload.ok) {
+        message.success("ResetPassword successfully ");
+        navigate("/login");
+      } else {
+        message.error(`Failed `);
+      }
+    });
   };
 
   return (
