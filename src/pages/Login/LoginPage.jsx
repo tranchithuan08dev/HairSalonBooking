@@ -101,9 +101,9 @@ const LoginPage = () => {
                           </Button>
                         </Form.Item>
 
-                        <a className="small text-muted" href="#!">
+                        <Link to="/forgotPassword" className="small text-muted">
                           Forgot password?
-                        </a>
+                        </Link>
                         <p
                           className="mb-5 pb-lg-2"
                           style={{ color: "#393f81" }}
