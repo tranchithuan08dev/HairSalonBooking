@@ -2,7 +2,7 @@ import React from "react";
 import { Form, Input, Button, message } from "antd";
 import { useDispatch } from "react-redux";
 import { Login } from "../../store/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -109,9 +109,9 @@ const LoginPage = () => {
                           style={{ color: "#393f81" }}
                         >
                           Don't have an account?{" "}
-                          <a href="#!" style={{ color: "#393f81" }}>
+                          <Link to={"/register"} style={{ color: "#393f81" }}>
                             Register here
-                          </a>
+                          </Link>
                         </p>
                         <a href="#!" className="small text-muted">
                           Terms of use.
