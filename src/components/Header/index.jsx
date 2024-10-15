@@ -1,6 +1,11 @@
 import React from "react";
 import "./header.css";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 function Header() {
+  const { currentUser, token } = useSelector((state) => state.AUTH);
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light backgroud-header">
@@ -30,9 +35,15 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">
-                Sign In
-              </a>
+              {!token ? (
+                <Link className="nav-link text-white" to="/login">
+                  Sign-In
+                </Link>
+              ) : (
+                <a className="nav-link text-white" href="#">
+                  {currentUser.record.phoneNumber}
+                </a>
+              )}
             </li>
           </ul>
         </div>

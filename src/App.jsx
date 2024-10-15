@@ -7,8 +7,19 @@ import Stylist from "./pages/Dashboard/Stylist";
 import Staff from "./pages/Dashboard/Staff";
 import User from "./pages/Dashboard/User";
 import Profile from "./pages/Dashboard/Profile";
+import LoginPage from "./pages/Login/LoginPage";
+import { useDispatch } from "react-redux";
+import { fetchMe } from "./store/authSlice";
+import { useEffect } from "react";
+import RegisterPage from "./pages/RegisterPage";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import ResetPassword from "./pages/Login/ResetPassword";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, []);
   return (
     <>
       <Routes>
@@ -26,6 +37,11 @@ function App() {
           <Route path="/dashboard/user" element={<User />} />
           <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
+
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
       </Routes>
     </>
   );
