@@ -10,8 +10,11 @@ const LoginPage = () => {
   const onFinish = (values) => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
-        navigate("/");
-        console.log(res.payload.data.currenInfor);
+        if (res.payload.data.currenInfor.record.role === "Manager") {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
       } else {
         message.open({
           type: "error",
