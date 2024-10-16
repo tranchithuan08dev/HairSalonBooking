@@ -1,59 +1,67 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   Form,
   Input,
   Button,
   Radio,
-  DatePicker,
-  Upload,
   Space,
   Image,
+  InputNumber,
+  message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
+import TextArea from "antd/es/input/TextArea";
+import { useDispatch } from "react-redux";
+import { fetchCreateService } from "../../../store/dashbroadSlice";
 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 };
 
-const dateFormat = "YYYY/MM/DD";
-
 function NewService() {
   const [avatarUrl, setAvatarUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const beforeUpload = (file) => {
-    const isImage = file.type.startsWith("image/");
-    const isSmallEnough = file.size / 1024 / 1024 < 2; // Less than 2MB
+  const dispatch = useDispatch();
 
-    if (!isImage) {
-      alert("You can only upload image files!");
-    } else if (!isSmallEnough) {
-      alert("Image must be smaller than 2MB!");
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarUrl(imageUrl); // Set the avatar preview
     }
-    return isImage && isSmallEnough;
   };
 
-  const handleChangeImage = (info) => {
-    if (info.file.status === "done" || !info.file.status) {
-      setAvatarUrl(URL.createObjectURL(info.file.originFileObj));
-    }
+  const handleUploadClick = () => {
+    fileInputRef.current.click(); // Trigger file input dialog
   };
 
   const onFinish = (values) => {
-    const formattedValues = {
-      ...values,
-      birth: values.birth ? dayjs(values.birth).format(dateFormat) : null,
+    const createService = {
+      img: selectedFile,
+      serviceName: values.serviceName,
+      type: values.type,
+      price: values.price,
+      duration: values.duration,
+      description: values.description,
     };
-    console.log("Form Values:", formattedValues);
-    // Handle form submission logic here
+    dispatch(fetchCreateService(createService))
+      .then(() => {
+        message.success("Create Service successfully!");
+      })
+      .catch((error) => {
+        message.error(`Failed to create Service ${error}`);
+      });
   };
 
   return (
     <>
       <Form
         {...layout}
-        name="nest-messages"
+        name="new-service"
         onFinish={onFinish}
         style={{ maxWidth: 600 }}
       >
@@ -69,65 +77,57 @@ function NewService() {
                 height: "200px",
               }}
             />
-            <Upload
-              name="file"
-              beforeUpload={beforeUpload}
-              onChange={handleChangeImage}
-              showUploadList={false}
-            >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleImageUpload}
+              />
+              <Button icon={<UploadOutlined />} onClick={handleUploadClick}>
+                Upload Avatar
+              </Button>
+            </div>
           </Space>
         </Form.Item>
 
         <Form.Item
-          name="staffname"
-          label="Name"
-          rules={[{ required: true, message: "Please input your name!" }]}
+          name="serviceName"
+          label="Service Name"
+          rules={[
+            { required: true, message: "Please input the service name!" },
+          ]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          label="Gender"
-          name="gender"
-          rules={[{ required: true, message: "Please select your gender!" }]}
+          label="Type"
+          name="type"
+          rules={[{ required: true, message: "Please select the type!" }]}
         >
           <Radio.Group>
-            <Radio value="male">Male</Radio>
-            <Radio value="female">Female</Radio>
+            <Radio value="single">Single</Radio>
+            <Radio value="combo">Combo</Radio>
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item
-          name="phone"
-          label="Phone"
-          rules={[
-            { required: true, message: "Please input your phone!" },
-            { pattern: /^[0-9]{10}$/, message: "Enter a valid phone number!" },
-          ]}
-        >
-          <Input />
+        <Form.Item name="price" label="Price">
+          <InputNumber addonAfter="VND" style={{ width: "100%" }} />
         </Form.Item>
 
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            { type: "email", message: "The input is not valid E-mail!" },
-            { required: true, message: "Please input your E-mail!" },
-          ]}
-        >
-          <Input />
+        <Form.Item name="duration" label="Duration">
+          <InputNumber style={{ width: "100%" }} addonAfter="mins" />
         </Form.Item>
 
-        <Form.Item name="birth" label="Date of Birth">
-          <DatePicker format={dateFormat} />
+        <Form.Item name="description" label="Description">
+          <TextArea rows={4} />
         </Form.Item>
 
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
-            Save Profile
+            Create Service
           </Button>
         </Form.Item>
       </Form>
