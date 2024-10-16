@@ -4,6 +4,8 @@ import authService from "../services/authService";
 const initialState = {
   token: null,
   currentUser: null,
+  sendEmail: null,
+  resetPassword: null,
 };
 
 const name = "auth";
@@ -30,6 +32,37 @@ export const Login = createAsyncThunk(`${name}/Login`, async (params = {}) => {
   }
 });
 
+export const Register = createAsyncThunk(
+  `${name}/Register`,
+  async (params = {}) => {
+    try {
+      console.log(params);
+
+      const response = await authService.register(params);
+      const res = await authService.login({
+        phoneNumber: params.phoneNumber,
+        password: params.password,
+      });
+      const token = res.data.records.accessToken;
+      const currentUser = await authService.fetchWithMe(token);
+      const currenInfor = currentUser.data;
+
+      return {
+        ok: true,
+        data: {
+          token,
+          currenInfor,
+        },
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Registration failed!",
+      };
+    }
+  }
+);
+
 export const fetchMe = createAsyncThunk(`${name}/fetchMe`, async (token) => {
   try {
     if (!token) token = localStorage.getItem("ACCESS_TOKKEN");
@@ -49,6 +82,47 @@ export const fetchMe = createAsyncThunk(`${name}/fetchMe`, async (token) => {
     };
   }
 });
+export const fetchEmail = createAsyncThunk(
+  `${name}/fetchEmail`,
+  async (email) => {
+    try {
+      const res = await authService.sendEmail(email);
+      const dataEmail = res.data;
+      return {
+        ok: true,
+        data: {
+          dataEmail,
+        },
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Failed to send email.",
+      };
+    }
+  }
+);
+
+export const fetchResetPassWord = createAsyncThunk(
+  `${name}/fetchResetPassWord`,
+  async (data) => {
+    try {
+      const res = await authService.resetPassword(data);
+      const dataOTP = res.data;
+      return {
+        ok: true,
+        data: {
+          dataOTP,
+        },
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Failed to  OTP",
+      };
+    }
+  }
+);
 
 const authSlice = createSlice({
   name,
@@ -62,10 +136,27 @@ const authSlice = createSlice({
         state.currentUser = action.payload.data.currenInfor;
       }
     });
+    builder.addCase(Register.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.token = action.payload.data.token;
+        localStorage.setItem("ACCESS_TOKKEN", state.token);
+        state.currentUser = action.payload.data.currenInfor;
+      }
+    });
     builder.addCase(fetchMe.fulfilled, (state, action) => {
       if (action.payload.ok) {
         state.token = action.payload.data.token;
         state.currentUser = action.payload.data.currenInfor;
+      }
+    });
+    builder.addCase(fetchEmail.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.sendEmail = action.payload.data.dataEmail;
+      }
+    });
+    builder.addCase(fetchResetPassWord.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.resetPassword = action.payload.data.dataOTP;
       }
     });
   },

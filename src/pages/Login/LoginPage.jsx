@@ -1,8 +1,8 @@
 import React from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { useDispatch } from "react-redux";
 import { Login } from "../../store/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -11,8 +11,12 @@ const LoginPage = () => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
         navigate("/");
+        console.log(res.payload.data.currenInfor);
       } else {
-        console.log("Login failed");
+        message.open({
+          type: "error",
+          content: "This is an error message",
+        });
       }
     });
   };
@@ -97,17 +101,17 @@ const LoginPage = () => {
                           </Button>
                         </Form.Item>
 
-                        <a className="small text-muted" href="#!">
+                        <Link to="/forgotPassword" className="small text-muted">
                           Forgot password?
-                        </a>
+                        </Link>
                         <p
                           className="mb-5 pb-lg-2"
                           style={{ color: "#393f81" }}
                         >
                           Don't have an account?{" "}
-                          <a href="#!" style={{ color: "#393f81" }}>
+                          <Link to={"/register"} style={{ color: "#393f81" }}>
                             Register here
-                          </a>
+                          </Link>
                         </p>
                         <a href="#!" className="small text-muted">
                           Terms of use.
