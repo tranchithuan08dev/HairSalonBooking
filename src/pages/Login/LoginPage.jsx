@@ -10,8 +10,9 @@ const LoginPage = () => {
   const onFinish = (values) => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
-        navigate("/");
         console.log(res.payload.data.currenInfor);
+        const role = (res.payload.data.currenInfor.record.role).toLowerCase();
+        navigate(`/${role}`);
       } else {
         message.open({
           type: "error",
