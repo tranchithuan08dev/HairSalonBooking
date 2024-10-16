@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Input,
@@ -8,10 +8,11 @@ import {
   Upload,
   Space,
   Image,
-  InputNumber,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPostManagerById } from "../../../store/dashbroadSlice";
 
 const layout = {
   labelCol: { span: 8 },
@@ -22,40 +23,66 @@ const dateFormat = "YYYY/MM/DD";
 
 function Profile() {
   const [avatarUrl, setAvatarUrl] = useState(null);
+  const [form] = Form.useForm();
+  const dataManagerDetail = useSelector(
+    (state) => state.DASHBOARD.postManagerById
+  );
+  console.log("data", dataManagerDetail);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchPostManagerById());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (dataManagerDetail) {
+      form.setFieldsValue({
+        fullName: dataManagerDetail.fullName,
+        gender: dataManagerDetail.gender,
+        yob: dayjs(dataManagerDetail.yob),
+      });
+      setAvatarUrl(dataManagerDetail.avatar);
+    }
+  }, [dataManagerDetail, form]);
 
   const beforeUpload = (file) => {
-    // Add validation logic for file before uploading
-    return false;
+    const isImage = file.type.startsWith("image/");
+    const isSmallEnough = file.size / 1024 / 1024 < 2;
+
+    if (!isImage) {
+      alert("You can only upload image files!");
+    } else if (!isSmallEnough) {
+      alert("Image must be smaller than 2MB!");
+    }
+    return isImage && isSmallEnough;
   };
 
   const handleChangeImage = (info) => {
-    if (info.file.status === "done") {
-      // Get this url from response in real world app
+    if (info.file.status === "done" || !info.file.status) {
       setAvatarUrl(URL.createObjectURL(info.file.originFileObj));
     }
   };
 
   const onFinish = (values) => {
-    console.log("Form Values:", values);
-    // Handle form submission
+    const formattedValues = {
+      ...values,
+      birth: values.birth ? dayjs(values.birth).format(dateFormat) : null,
+    };
+    console.log("Form Values:", formattedValues);
+    // Handle form submission logic here
   };
 
   return (
     <>
       <Form
+        form={form}
         {...layout}
         name="nest-messages"
         onFinish={onFinish}
-        style={{
-          maxWidth: 600,
-        }}
+        style={{ maxWidth: 600 }}
       >
-        <Form.Item
-          wrapperCol={{
-            offset: 4,
-            span: 20,
-          }}
-        >
+        <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
           <Space size={12}>
             <Image
               width={200}
@@ -71,62 +98,59 @@ function Profile() {
               name="file"
               beforeUpload={beforeUpload}
               onChange={handleChangeImage}
-              showUploadList={false} // Hide default upload list
+              showUploadList={false}
             >
               <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
           </Space>
         </Form.Item>
+
         <Form.Item
-          name="staffname"
+          name="fullName"
           label="Name"
           rules={[{ required: true, message: "Please input your name!" }]}
         >
           <Input />
         </Form.Item>
-        <Form.Item label="Gender" name="gender" rules={[{ required: true }]}>
+
+        <Form.Item
+          label="Gender"
+          name="gender"
+          rules={[{ required: true, message: "Please select your gender!" }]}
+        >
           <Radio.Group>
             <Radio value="male">Male</Radio>
             <Radio value="female">Female</Radio>
           </Radio.Group>
         </Form.Item>
+
         <Form.Item
           name="phone"
           label="Phone"
-          rules={[{ required: true, message: "Please input your phone!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          label="Email"
           rules={[
-            {
-              type: "email",
-              message: "The input is not valid E-mail!",
-            },
-            {
-              required: true,
-              message: "Please input your E-mail!",
-            },
+            { required: true, message: "Please input your phone!" },
+            { pattern: /^[0-9]{10}$/, message: "Enter a valid phone number!" },
           ]}
         >
           <Input />
         </Form.Item>
 
-        <Form.Item name="birth" label="Date of Birth">
-          <DatePicker
-            defaultValue={dayjs("2004/08/08", dateFormat)}
-            format={dateFormat}
-          />
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[
+            { type: "email", message: "The input is not valid E-mail!" },
+            { required: true, message: "Please input your E-mail!" },
+          ]}
+        >
+          <Input />
         </Form.Item>
 
-        <Form.Item
-          wrapperCol={{
-            ...layout.wrapperCol,
-            offset: 8,
-          }}
-        >
+        <Form.Item name="yob" label="Date of Birth">
+          <DatePicker format={dateFormat} />
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
             Save Profile
           </Button>
