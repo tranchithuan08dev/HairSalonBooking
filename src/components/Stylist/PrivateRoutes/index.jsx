@@ -1,13 +1,11 @@
 import { useSelector } from "react-redux";
 import { Outlet, Navigate } from "react-router-dom";
 
-function PrivateRoutes() {
-    // const { token, currentInfor } = useSelector((state) => state.auth);
-    // const isLogin = !!token;
-    const isLogin = true; 
 
-    const isStylist = true;
-    // const isStaff = currentInfor?.role ==== "Staff" ; 
+function PrivateRoutes() {
+    const { token, currentUser } = useSelector((state) => state.AUTH);
+    const isLogin = !!token
+    const isStylist = currentUser?.role === "Stylist" ; 
     return (
         <>
             {isLogin && isStylist ? <Outlet /> : <Navigate to="/login" />}
