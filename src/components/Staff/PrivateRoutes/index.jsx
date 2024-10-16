@@ -2,13 +2,10 @@ import { useSelector } from "react-redux";
 import { Outlet, Navigate } from "react-router-dom";
 
 function PrivateRoutes() {
-    // const { token, currentInfor } = useSelector((state) => state.auth);
+    const { token, currentUser } = useSelector((state) => state.AUTH);
 
-    // const isLogin = !!token || !!localStorage.getItem("ACCESS_TOKEN");
-    const isLogin = true;
-
-    // const isStaff = currentInfor?.role === "Staff";
-    const isStaff = true;
+    const isLogin = !!token
+    const isStaff = currentUser?.role === "Staff";
 
     return isLogin && isStaff ? <Outlet /> : <Navigate to="/login" />;
 }
