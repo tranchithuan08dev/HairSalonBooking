@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Drawer,
@@ -34,6 +34,8 @@ const Service = () => {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState();
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
   const [selectServiceId, setSelectServiceId] = useState(null);
   const [form] = Form.useForm();
 
@@ -53,6 +55,7 @@ const Service = () => {
   useEffect(() => {
     if (dataServiceDetail) {
       form.setFieldsValue({
+        img: selectedFile,
         serviceName: dataServiceDetail.serviceName,
         price: dataServiceDetail.price,
         duration: dataServiceDetail.duration,
@@ -75,24 +78,19 @@ const Service = () => {
     setSelectServiceId(null);
   };
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      console.error("You can only upload JPG/PNG file!");
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      console.log("img", imageUrl);
+
+      setAvatarUrl(imageUrl); // Set the avatar preview
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      console.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
   };
 
-  const handleChangeImage = (info) => {
-    if (info.file.status === "done") {
-      const reader = new FileReader();
-      reader.onload = (e) => setAvatarUrl(e.target.result);
-      reader.readAsDataURL(info.file.originFileObj);
-    }
+  const handleUploadClick = () => {
+    fileInputRef.current.click(); // Trigger file input dialog
   };
 
   const onFinish = (values) => {
@@ -188,12 +186,7 @@ const Service = () => {
           onFinish={onFinish}
           style={{ maxWidth: 600 }}
         >
-          <Form.Item
-            wrapperCol={{
-              offset: 4,
-              span: 20,
-            }}
-          >
+          <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
             <Space size={12}>
               <Image
                 width={200}
@@ -205,13 +198,18 @@ const Service = () => {
                   height: "200px",
                 }}
               />
-              <Upload
-                name="file"
-                beforeUpload={beforeUpload}
-                onChange={handleChangeImage}
-              >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-              </Upload>
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleImageUpload}
+                />
+                <Button icon={<UploadOutlined />} onClick={handleUploadClick}>
+                  Upload Avatar
+                </Button>
+              </div>
             </Space>
           </Form.Item>
           <Form.Item name="serviceName" label="Service Name">
