@@ -1,6 +1,10 @@
 import API from "./api";
 
 const dashboardService = {
+  // Profile
+  getDetailManagerById: (id) => {
+    return API.call().get(`/api/v1/manager/detail?id=${id}`);
+  },
   // Customer
   getAllCustomer: () => {
     return API.call().get(`/api/v1/customer/getAll`);
