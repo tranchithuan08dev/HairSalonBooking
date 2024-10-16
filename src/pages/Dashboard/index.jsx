@@ -5,6 +5,7 @@ import {
   PhoneOutlined,
   ScissorOutlined,
   ShoppingCartOutlined,
+  ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
@@ -115,6 +116,18 @@ const DashBroad = () => {
             },
             {
               key: "6",
+              icon: <ShoppingOutlined />,
+              label: (
+                <Link
+                  to={`/dashboard/newService`}
+                  style={{ textDecoration: "none" }}
+                >
+                  New Service
+                </Link>
+              ),
+            },
+            {
+              key: "7",
               icon: <UserOutlined />,
               label: (
                 <Link
