@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import profileStaffService from "../services/profileStaffService";
+import profileStaffService from "../../services/staffServices/profileStaffService";
 
 const initialState = {
     data: {},
@@ -9,7 +9,7 @@ const initialState = {
     showAlert: false,
 };
 
-const name = "staff/profile";
+const name = "staffProfile";
 
 export const fetchStaff = createAsyncThunk(
   `${name}/fetch`, 
