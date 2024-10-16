@@ -36,6 +36,10 @@ const dashboardService = {
       inputParam
     );
   },
+
+  createService: (formData) => {
+    return API.call().post(`/api/v1/service/create`, formData);
+  },
   //Staff
   getAllStaff: () => {
     return API.call().get(`/api/v1/staff/getAll`);
