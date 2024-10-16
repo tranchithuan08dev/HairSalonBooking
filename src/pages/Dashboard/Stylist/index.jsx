@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Drawer,
@@ -40,6 +40,8 @@ const Stylist = () => {
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedStylist, setSelectedStylist] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   useEffect(() => {
@@ -68,6 +70,7 @@ const Stylist = () => {
         level: dataStylistById.level,
         status: dataStylistById.deleted,
       });
+      setAvatarUrl(dataStylistById.avatar);
     }
   }, [dataStylistById, form]);
   console.log(dataStylistById);
@@ -84,31 +87,24 @@ const Stylist = () => {
     setOpen(false);
   };
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      console.error("You can only upload JPG/PNG files!");
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarUrl(imageUrl);
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      console.error("Image must be smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
   };
 
-  const handleChangeImage = (info) => {
-    if (info.file.status === "done") {
-      const reader = new FileReader();
-      reader.onload = (e) => setAvatarUrl(e.target.result);
-      reader.readAsDataURL(info.file.originFileObj);
-    }
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
   };
 
   const onFinish = (values) => {
     const updatedData = {
       stylistID: selectedStylist,
       fullName: values.fullName,
-      avatar: avatarUrl || "avatar3.png", // Use uploaded avatar if available
+      avatar: selectedFile,
       gender: values.gender,
       address: values.address,
       phoneNumber: values.phoneNumber,
@@ -204,12 +200,7 @@ const Stylist = () => {
             maxWidth: 600,
           }}
         >
-          <Form.Item
-            wrapperCol={{
-              offset: 4,
-              span: 20,
-            }}
-          >
+          <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
             <Space size={12}>
               <Image
                 width={200}
@@ -221,13 +212,18 @@ const Stylist = () => {
                   height: "200px",
                 }}
               />
-              <Upload
-                name="file"
-                beforeUpload={beforeUpload}
-                onChange={handleChangeImage}
-              >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-              </Upload>
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleImageUpload}
+                />
+                <Button icon={<UploadOutlined />} onClick={handleUploadClick}>
+                  Upload Avatar
+                </Button>
+              </div>
             </Space>
           </Form.Item>
           <Form.Item name="fullName" label="Stylist Name">
