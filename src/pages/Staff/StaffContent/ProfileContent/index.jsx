@@ -8,7 +8,7 @@ import {
   updateProfile,
   setData,
   setShowAlert,
-} from "../../../../store/profileStaffSlice";
+} from "../../../../store/staffSlice/profileStaffSlice";
 import dayjs from "dayjs";
 
 function Content() {
