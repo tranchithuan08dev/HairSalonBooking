@@ -5,6 +5,10 @@ function Content() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const handleClick = () => {
+    
+  }
+
   const timeSlots = [
     "9:00 - 10:00",
     "10:00 - 11:00",
@@ -75,6 +79,7 @@ function Content() {
                   <td className="slotTime">{slot}</td>
                   {daysOfWeek.map((_, colIndex) => (
                     <td
+                      onClick={handleClick}
                       key={colIndex}
                       className={`slotCell ${getSlotClass(
                         data[rowIndex]?.[colIndex]
