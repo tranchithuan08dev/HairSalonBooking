@@ -1,10 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import PrivateRoutes from "./components/Staff/PrivateRoutes";
-import Layout from "./components/Staff/StaffLayout";
-import Home from "./pages/Staff/Home";
-import BookingDetail from "./pages/Staff/BookingDetail";
-import Profile from "./pages/Staff/Profile";
-import Salary from "./pages/Staff/Salary";
 import HomePage from "./pages/HomePage";
 // import BookingPage from "./pages/BookingPage";
 import LoginPage from "./pages/Login/LoginPage";
@@ -14,6 +8,11 @@ import { useEffect } from "react";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPassword from "./pages/Login/ForgotPassword";
 import ResetPassword from "./pages/Login/ResetPassword";
+import PrivateRoutes from "./components/Stylist/PrivateRoutes";
+import StylistLayout from "./components/Stylist/StylistLayout";
+import WorkShift from "./pages/Stylist/Workshift";
+import Profile from "./pages/Stylist/Profile";
+import Salary from "./pages/Stylist/Salary";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,10 +24,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
 
-        <Route path="/staff/" element={<PrivateRoutes />}>
-          <Route element={<Layout />}>
-            <Route path="home/" element={<Home />} /> 
-            <Route path="home/bookingDetail/:id" element={<BookingDetail />} />
+        <Route path="/stylist/" element={<PrivateRoutes />}>
+          <Route element={<StylistLayout />}>
+            <Route index element={<WorkShift />} />
             <Route path="profile" element={<Profile />} />
             <Route path="salary" element={<Salary />} />
           </Route>
