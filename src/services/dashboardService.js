@@ -1,5 +1,5 @@
 import API from "./api";
-
+const token = localStorage.getItem("ACCESS_TOKKEN");
 const dashboardService = {
   // Profile
   getDetailManagerById: (id) => {
@@ -14,12 +14,18 @@ const dashboardService = {
   },
 
   updateCustomer: (inputParam = {}) => {
-    const { customerID } = inputParam;
+    const { customerID, token } = inputParam;
     return API.call().patch(
       `/api/v1/customer/update?id=${customerID}`,
-      inputParam
+      inputParam,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
   },
+
   // Service
   getAllService: () => {
     return API.call().get(`/api/v1/service/getAll`);
@@ -33,13 +39,23 @@ const dashboardService = {
     const { serviceID } = inputParam;
     return API.call().patch(
       `/api/v1/service/update?id=${serviceID}`,
-      inputParam
+      inputParam,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
   },
 
   createService: (formData) => {
-    return API.call().post(`/api/v1/service/create`, formData);
+    return API.call().post(`/api/v1/service/create`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
+
   //Staff
   getAllStaff: () => {
     return API.call().get(`/api/v1/staff/getAll`);
@@ -49,7 +65,11 @@ const dashboardService = {
   },
   updateStaff: (inputParam = {}) => {
     const { staffID } = inputParam;
-    return API.call().patch(`/api/v1/staff/update?id=${staffID}`, inputParam);
+    return API.call().patch(`/api/v1/staff/update?id=${staffID}`, inputParam, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   // Stylist
   getAllStylist: () => {
@@ -62,7 +82,12 @@ const dashboardService = {
     const { stylistID } = inputParam;
     return API.call().patch(
       `/api/v1/stylist/update?id=${stylistID}`,
-      inputParam
+      inputParam,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
   },
 };
