@@ -6,9 +6,11 @@ import {
   mappingStaff,
   mappingStylist,
 } from "../helpers";
+import authService from "../services/authService";
 
 const name = "posts";
 const initialState = {
+  postManagerById: {},
   //Customer
   postCustomer: [],
   postCustomerById: {},
@@ -27,6 +29,21 @@ const initialState = {
   updateStylist: null,
 };
 
+export const fetchPostManagerById = createAsyncThunk(
+  `${name}/fetchPostById`,
+  async () => {
+    try {
+      let token = localStorage.getItem("ACCESS_TOKKEN");
+      const currentUser = await authService.fetchWithMe(token);
+      const managerId = currentUser.data.actorByRole.managerID;
+      const res = await dashboardService.getDetailManagerById(managerId);
+      const dataManagerId = res.data.manager;
+      return dataManagerId;
+    } catch (error) {
+      console.error("Error fetching manager:", error);
+    }
+  }
+);
 // Customer
 export const fetchPostCustomer = createAsyncThunk(
   `${name}/fetchPostCustomer`,
@@ -138,6 +155,10 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    //Manager
+    builder.addCase(fetchPostManagerById.fulfilled, (state, action) => {
+      state.postManagerById = action.payload;
+    });
     //Customer
     builder.addCase(fetchPostCustomer.fulfilled, (state, action) => {
       state.postCustomer = action.payload;
