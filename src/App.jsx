@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPassword from "./pages/Login/ForgotPassword";
 import ResetPassword from "./pages/Login/ResetPassword";
+import NewService from "./pages/Dashboard/NewService";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ function App() {
           <Route path="/dashboard/service" element={<Service />} />
           <Route path="/dashboard/stylist" element={<Stylist />} />
           <Route path="/dashboard/staff" element={<Staff />} />
+          <Route path="/dashboard/newService" element={<NewService />} />
           <Route path="/dashboard/user" element={<User />} />
           <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
