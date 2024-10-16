@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Drawer,
@@ -35,6 +35,9 @@ const Staff = () => {
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedStylist, setSelectedStylist] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
+
   const [form] = Form.useForm();
 
   const dataStaff = useSelector((state) => state.DASHBOARD.postStaff);
@@ -75,26 +78,19 @@ const Staff = () => {
     setOpen(false);
   };
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG files!");
-      return false;
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      console.log("img", imageUrl);
+
+      setAvatarUrl(imageUrl); // Set the avatar preview
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must be smaller than 2MB!");
-      return false;
-    }
-    return true;
   };
 
-  const handleChangeImage = (info) => {
-    if (info.file.status === "done") {
-      const reader = new FileReader();
-      reader.onload = (e) => setAvatarUrl(e.target.result);
-      reader.readAsDataURL(info.file.originFileObj);
-    }
+  const handleUploadClick = () => {
+    fileInputRef.current.click(); // Trigger file input dialog
   };
 
   const onFinish = (values) => {
@@ -197,15 +193,25 @@ const Staff = () => {
               <Image
                 width={200}
                 src={avatarUrl || "https://via.placeholder.com/200"}
-                style={{ borderRadius: "50%", width: 200, height: 200 }}
+                style={{
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  width: "200px",
+                  height: "200px",
+                }}
               />
-              <Upload
-                name="file"
-                beforeUpload={beforeUpload}
-                onChange={handleChangeImage}
-              >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-              </Upload>
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleImageUpload}
+                />
+                <Button icon={<UploadOutlined />} onClick={handleUploadClick}>
+                  Upload Avatar
+                </Button>
+              </div>
             </Space>
           </Form.Item>
           <Form.Item name="fullName" label="Name">
