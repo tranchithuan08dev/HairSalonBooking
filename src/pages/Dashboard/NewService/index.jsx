@@ -31,6 +31,8 @@ function NewService() {
     if (file) {
       setSelectedFile(file);
       const imageUrl = URL.createObjectURL(file);
+      console.log("img", imageUrl);
+
       setAvatarUrl(imageUrl); // Set the avatar preview
     }
   };
@@ -48,6 +50,7 @@ function NewService() {
       duration: values.duration,
       description: values.description,
     };
+
     dispatch(fetchCreateService(createService))
       .then(() => {
         message.success("Create Service successfully!");
