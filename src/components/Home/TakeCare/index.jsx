@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./takecare.css";
 function TakeCare() {
   return (
     <>

@@ -1,10 +1,10 @@
 import React from "react";
-
+import "./card.css";
 function Item() {
   return (
     <>
       <div className="col-md-4 d-flex justify-content-center mb-4">
-        <div className="card">
+        <div className="card card-booking">
           <img
             src="../assets/image/logo_booking.jpg"
             className="card-img-top"
