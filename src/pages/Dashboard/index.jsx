@@ -141,6 +141,18 @@ const DashBroad = () => {
             },
             {
               key: "8",
+              icon: <UserAddOutlined />,
+              label: (
+                <Link
+                  to={`/dashboard/newStaff`}
+                  style={{ textDecoration: "none" }}
+                >
+                  New Staff
+                </Link>
+              ),
+            },
+            {
+              key: "9",
               icon: <UserOutlined />,
               label: (
                 <Link
