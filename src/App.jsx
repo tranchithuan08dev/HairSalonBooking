@@ -15,6 +15,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ForgotPassword from "./pages/Login/ForgotPassword";
 import ResetPassword from "./pages/Login/ResetPassword";
 import NewService from "./pages/Dashboard/NewService";
+import NewStylist from "./pages/Dashboard/NewStylist";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ function App() {
           <Route path="/dashboard/staff" element={<Staff />} />
           <Route path="/dashboard/newService" element={<NewService />} />
           <Route path="/dashboard/user" element={<User />} />
+          <Route path="/dashboard/newStylist" element={<NewStylist />} />
           <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
 
