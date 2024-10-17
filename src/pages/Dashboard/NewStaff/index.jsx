@@ -45,15 +45,18 @@ function NewStaff() {
   };
 
   const onFinish = (values) => {
-    const createStylist = {
-      img: selectedFile,
-      serviceName: values.serviceName,
-      type: values.type,
-      price: values.price,
-      duration: values.duration,
-      description: values.description,
+    const createStaff = {
+      fullName: values.staffName,
+      avatar: selectedFile, // Use uploaded avatar if available
+      gender: values.gender,
+      address: values.address,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      yob: values.yob.format(dateFormat),
     };
   };
+
+  createService;
 
   return (
     <>
@@ -91,11 +94,9 @@ function NewStaff() {
         </Form.Item>
 
         <Form.Item
-          name="serviceName"
-          label="Stylist Name"
-          rules={[
-            { required: true, message: "Please input the service name!" },
-          ]}
+          name="staffName"
+          label="Staff Name"
+          rules={[{ required: true, message: "Please input the staff name!" }]}
         >
           <Input />
         </Form.Item>

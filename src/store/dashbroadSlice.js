@@ -10,7 +10,7 @@ import authService from "../services/authService";
 
 const name = "posts";
 const initialState = {
-  createStaff: {},
+  createStaff: null,
   //Manager
   postManagerById: {},
   //Customer
@@ -32,11 +32,20 @@ const initialState = {
   updateStylist: null,
 };
 // Create Stylist
-export const fetchCreate = createAsyncThunk(`${name}/fetchCreate`, async () => {
-  const res = await dashboardService.createStaff();
-  console.log(res);
-  return res.data;
-});
+export const fetchCreate = createAsyncThunk(
+  `${name}/fetchCreate`,
+  async (data) => {
+    try {
+      console.log("data", data);
+
+      const res = await dashboardService.createStaff(data);
+      console.log(res);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 //Manager
 export const fetchPostManagerById = createAsyncThunk(
