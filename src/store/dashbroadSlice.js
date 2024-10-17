@@ -10,6 +10,8 @@ import authService from "../services/authService";
 
 const name = "posts";
 const initialState = {
+  createStaff: {},
+  //Manager
   postManagerById: {},
   //Customer
   postCustomer: [],
@@ -29,7 +31,14 @@ const initialState = {
   postStylistDetailById: [],
   updateStylist: null,
 };
+// Create Stylist
+export const fetchCreate = createAsyncThunk(`${name}/fetchCreate`, async () => {
+  const res = await dashboardService.createStaff();
+  console.log(res);
+  return res.data;
+});
 
+//Manager
 export const fetchPostManagerById = createAsyncThunk(
   `${name}/fetchPostById`,
   async () => {
@@ -165,6 +174,10 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    //Create
+    builder.addCase(fetchCreate.fulfilled, (state, action) => {
+      state.createStaff = action.payload;
+    });
     //Manager
     builder.addCase(fetchPostManagerById.fulfilled, (state, action) => {
       state.postManagerById = action.payload;
