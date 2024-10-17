@@ -46,23 +46,31 @@ function NewStaff() {
 
   const onFinish = (values) => {
     const createStaff = {
+      role: "Staff",
+      password: "1111",
       fullName: values.staffName,
-      avatar: selectedFile, // Use uploaded avatar if available
+      avatar: selectedFile,
       gender: values.gender,
       address: values.address,
       phoneNumber: values.phoneNumber,
       email: values.email,
       yob: values.yob.format(dateFormat),
     };
+    dispatch(fetchCreate(createStaff))
+      .then(() => {
+        message.success("Create staff successfully!");
+      })
+      .catch((error) => {
+        message.error(`Failed to staff Stylist ${error}`);
+      });
+    form.resetFields();
   };
-
-  createService;
 
   return (
     <>
       <Form
         {...layout}
-        name="new-service"
+        name="new-staff"
         onFinish={onFinish}
         style={{ maxWidth: 600 }}
       >
@@ -144,9 +152,6 @@ function NewStaff() {
 
         <Form.Item name="address" label="Address">
           <Input.TextArea />
-        </Form.Item>
-        <Form.Item name="level" label="Level">
-          <InputNumber />
         </Form.Item>
 
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
