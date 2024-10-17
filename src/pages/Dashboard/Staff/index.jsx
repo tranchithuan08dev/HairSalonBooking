@@ -97,7 +97,7 @@ const Staff = () => {
     const updatedData = {
       staffID: selectedStylist,
       fullName: values.fullName,
-      avatar: avatarUrl || "avatar3.png", // Use uploaded avatar if available
+      avatar: selectedFile,
       gender: values.gender,
       address: values.address,
       phoneNumber: values.phoneNumber,
