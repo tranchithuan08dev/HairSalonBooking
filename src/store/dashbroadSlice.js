@@ -36,10 +36,7 @@ export const fetchCreate = createAsyncThunk(
   `${name}/fetchCreate`,
   async (data) => {
     try {
-      console.log("data", data);
-
       const res = await dashboardService.createStaff(data);
-      console.log(res);
       return res.data;
     } catch (error) {
       console.log(error);
