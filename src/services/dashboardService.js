@@ -1,6 +1,10 @@
 import API from "./api";
 const token = localStorage.getItem("ACCESS_TOKKEN");
 const dashboardService = {
+  //Create Stylist and Staff
+  createStaff: () => {
+    API.call().get(`/api/v1/auth/register`, data);
+  },
   // Profile
   getDetailManagerById: (id) => {
     return API.call().get(`/api/v1/manager/detail?id=${id}`, {
