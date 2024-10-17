@@ -54,6 +54,7 @@ function NewStylist() {
       gender: values.gender,
       phoneNumber: values.phoneNumber,
       certificateURL: values.certificate,
+      level: values.level,
       password: "1111",
     };
     dispatch(fetchCreate(createStylist))
