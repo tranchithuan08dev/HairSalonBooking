@@ -23,7 +23,7 @@ function NewService() {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-
+  const [form] = Form.useForm();
   const dispatch = useDispatch();
 
   const handleImageUpload = (event) => {
@@ -58,11 +58,13 @@ function NewService() {
       .catch((error) => {
         message.error(`Failed to create Service ${error}`);
       });
+    form.resetFields();
   };
 
   return (
     <>
       <Form
+        form={form}
         {...layout}
         name="new-service"
         onFinish={onFinish}
