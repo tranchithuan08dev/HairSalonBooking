@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Form,
   Input,
@@ -24,6 +24,8 @@ const dateFormat = "YYYY/MM/DD";
 function Profile() {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [form] = Form.useForm();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
   const dataManagerDetail = useSelector(
     (state) => state.DASHBOARD.postManagerById
   );
@@ -38,30 +40,28 @@ function Profile() {
   useEffect(() => {
     if (dataManagerDetail) {
       form.setFieldsValue({
-        fullName: dataManagerDetail.fullName,
-        gender: dataManagerDetail.gender,
-        yob: dayjs(dataManagerDetail.yob),
+        fullName: dataManagerDetail.manager.fullName,
+        gender: dataManagerDetail.manager.gender,
+        yob: dayjs(dataManagerDetail.manager.yob),
+        phone: dataManagerDetail.user.phoneNumber,
+        email: dataManagerDetail.user.email,
+        address: dataManagerDetail.manager.address,
       });
       setAvatarUrl(dataManagerDetail.avatar);
     }
   }, [dataManagerDetail, form]);
 
-  const beforeUpload = (file) => {
-    const isImage = file.type.startsWith("image/");
-    const isSmallEnough = file.size / 1024 / 1024 < 2;
-
-    if (!isImage) {
-      alert("You can only upload image files!");
-    } else if (!isSmallEnough) {
-      alert("Image must be smaller than 2MB!");
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarUrl(imageUrl);
     }
-    return isImage && isSmallEnough;
   };
 
-  const handleChangeImage = (info) => {
-    if (info.file.status === "done" || !info.file.status) {
-      setAvatarUrl(URL.createObjectURL(info.file.originFileObj));
-    }
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
   };
 
   const onFinish = (values) => {
@@ -94,14 +94,18 @@ function Profile() {
                 height: "200px",
               }}
             />
-            <Upload
-              name="file"
-              beforeUpload={beforeUpload}
-              onChange={handleChangeImage}
-              showUploadList={false}
-            >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleImageUpload}
+              />
+              <Button icon={<UploadOutlined />} onClick={handleUploadClick}>
+                Upload Avatar
+              </Button>
+            </div>
           </Space>
         </Form.Item>
 
@@ -113,6 +117,9 @@ function Profile() {
           <Input />
         </Form.Item>
 
+        <Form.Item name="yob" label="Date of Birth">
+          <DatePicker format={dateFormat} />
+        </Form.Item>
         <Form.Item
           label="Gender"
           name="gender"
@@ -146,8 +153,8 @@ function Profile() {
           <Input />
         </Form.Item>
 
-        <Form.Item name="yob" label="Date of Birth">
-          <DatePicker format={dateFormat} />
+        <Form.Item name="address" label="Address">
+          <Input.TextArea />
         </Form.Item>
 
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

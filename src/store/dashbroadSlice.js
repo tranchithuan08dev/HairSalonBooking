@@ -53,7 +53,7 @@ export const fetchPostManagerById = createAsyncThunk(
       const currentUser = await authService.fetchWithMe(token);
       const managerId = currentUser.data.actorByRole.managerID;
       const res = await dashboardService.getDetailManagerById(managerId);
-      const dataManagerId = res.data.manager;
+      const dataManagerId = res.data.data;
       return dataManagerId;
     } catch (error) {
       console.error("Error fetching manager:", error);
