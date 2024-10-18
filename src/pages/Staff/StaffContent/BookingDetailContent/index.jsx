@@ -160,29 +160,11 @@ function Content() {
                   />
                 </div>
                 <div className="form-group">
-                  <strong>Service ID:</strong>
+                  <strong>Services:</strong>
                   <input
                     type="text"
                     name="serviceID"
                     value={formData.serviceID}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <strong>Stylist ID:</strong>
-                  <input
-                    type="text"
-                    name="stylistID"
-                    value={formData.stylistID}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <strong>Staff ID:</strong>
-                  <input
-                    type="text"
-                    name="staffID"
-                    value={formData.staffID}
                     onChange={handleChange}
                   />
                 </div>
