@@ -3,7 +3,12 @@ const token = localStorage.getItem("ACCESS_TOKKEN");
 const dashboardService = {
   //Create Stylist and Staff
   createStaff: (data) => {
-    return API.call().post(`/api/v1/auth/register`, data);
+    return API.call().post(`/api/v1/auth/register`, data, {
+      headers: {
+        token: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   // Profile
   getDetailManagerById: (id) => {
