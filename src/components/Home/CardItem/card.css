@@ -14,7 +14,11 @@
 .card-booking {
   margin-left: 70px;
   width: 18rem;
-  height: 400px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-booking:hover {
+  transform: translateY(-10px);
 }
 
 .card-left {
