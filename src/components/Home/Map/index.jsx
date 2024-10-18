@@ -3,7 +3,7 @@ import React from "react";
 function Map() {
   return (
     <>
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto py-8" style={{ marginBottom: "20px" }}>
         <div className="text-center mb-6">
           <h2 className="service-title text-3xl font-semibold text-black">
             Find Us
