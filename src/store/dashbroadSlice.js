@@ -13,6 +13,7 @@ const initialState = {
   createStaff: null,
   //Manager
   postManagerById: {},
+  updateManager: null,
   //Customer
   postCustomer: [],
   postCustomerById: {},
@@ -57,6 +58,19 @@ export const fetchPostManagerById = createAsyncThunk(
       return dataManagerId;
     } catch (error) {
       console.error("Error fetching manager:", error);
+    }
+  }
+);
+
+export const fetchUpdateManager = createAsyncThunk(
+  `${name}/fetchUpdateManager`,
+  async (data) => {
+    try {
+      const res = await dashboardService.updateManager(data);
+      console.log(res);
+      return res.data;
+    } catch (error) {
+      console.log(error);
     }
   }
 );
@@ -187,6 +201,10 @@ const dashboardSlice = createSlice({
     //Manager
     builder.addCase(fetchPostManagerById.fulfilled, (state, action) => {
       state.postManagerById = action.payload;
+    });
+
+    builder.addCase(fetchUpdateManager.fulfilled, (state, action) => {
+      state.updateManager = action.payload;
     });
     //Customer
     builder.addCase(fetchPostCustomer.fulfilled, (state, action) => {
