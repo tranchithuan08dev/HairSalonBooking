@@ -16,7 +16,7 @@ function Sidebar() {
         <div className="sidebar__menu">
           <ul>
             <li>
-              <NavLink to={`/staff/home`} className={navLinkActive}>
+              <NavLink to={`/staff`} className={navLinkActive} end>
                 Home
               </NavLink>
             </li>

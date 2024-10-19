@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 function Content() {
   const dispatch = useDispatch();
   const { data, loading, error, showAlert, message } = useSelector(
-    (state) => state.StaffProfile
+    (state) => state.STAFF
   );
   const [date, setDate] = useState(null);
 
