@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 import "../../../../assets/css/stylist/workshift.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getAll } from "../../../../store/stylistSlice/stylistWorkShiftSlice";
 
 function Content() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [data, setData] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.AUTH);
+  console.log("user", currentUser.actorByRole);
 
-  const handleClick = () => {
-    
+  useEffect(() => {
+    dispatch(getAll);
+  }, []);
+
+  const handleClick = (e) => {
+    console.log(e);
   }
 
   const timeSlots = [
@@ -24,28 +33,28 @@ function Content() {
 
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  useEffect(() => {
-    setTimeout(() => {
-      const fakeData = [
-        ["booked", "booked", "", "", "", "", ""],
-        ["", "booked", "", "booked", "", "", ""],
-        ["", "", "booked", "booked", "", "", ""],
-        ["booked", "", "", "booked", "", "", ""],
-        ["", "booked", "", "booked", "", "", ""],
-        ["", "", "", "", "booked", "", ""],
-        ["", "", "booked", "", "", "booked", ""],
-        ["", "", "booked", "booked", "", "", ""],
-        ["booked", "", "", "", "booked", "", ""],
-        ["", "", "", "", "", "booked", "booked"],
-      ];
-      setData(fakeData);
-      setLoading(false);
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     const fakeData = [
+  //       ["booked", "booked", "", "", "", "", ""],
+  //       ["", "booked", "", "booked", "", "", ""],
+  //       ["", "", "booked", "booked", "", "", ""],
+  //       ["booked", "", "", "booked", "", "", ""],
+  //       ["", "booked", "", "booked", "", "", ""],
+  //       ["", "", "", "", "booked", "", ""],
+  //       ["", "", "booked", "", "", "booked", ""],
+  //       ["", "", "booked", "booked", "", "", ""],
+  //       ["booked", "", "", "", "booked", "", ""],
+  //       ["", "", "", "", "", "booked", "booked"],
+  //     ];
+  //     setData(fakeData);
+  //     setLoading(false);
+  //   }, 1000);
+  // }, []);
 
-  if (loading) {
-    return <p>Đang tải dữ liệu...</p>;
-  }
+  // if (loading) {
+  //   return <p>Đang tải dữ liệu...</p>;
+  // }
 
   const getSlotClass = (content) => {
     if (content === "booked") return "booked";
@@ -54,7 +63,7 @@ function Content() {
 
   return (
     <>
-      <h2 className="header-cus">WorkShift</h2>
+      {/* <h2 className="header-cus">WorkShift</h2>
       <div className="container customContainer">
         <div className="calendar-view">
           <table className="table table-bordered customTable">
@@ -93,7 +102,7 @@ function Content() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
