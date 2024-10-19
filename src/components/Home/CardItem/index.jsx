@@ -1,6 +1,8 @@
 import React from "react";
 import "./card.css";
-function Item() {
+function Item({ data }) {
+  if (!data) return <></>;
+  const { fullName } = data;
   return (
     <>
       <div className="col-md-4 d-flex justify-content-center mb-4">
@@ -18,7 +20,7 @@ function Item() {
                 href="./StylistDetail.html"
                 style={{ textDecoration: "none" }}
               >
-                Trần Chí Thuận
+                {fullName}
               </a>
             </h3>
           </div>
