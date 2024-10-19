@@ -121,13 +121,12 @@ const dashboardService = {
     });
   },
   // Stylist
-  getAllStylist: () => {
+  getAllStylist: (inputParam = {}) => {
     return API.call().get(`/api/v1/stylist/getAll`, {
-      headers: {
-        token: `Bearer ${token}`,
-      },
+      params: inputParam,
     });
   },
+
   getDetailStylistById: (id) => {
     return API.call().get(`/api/v1/stylist/detail?id=${id}`, {
       headers: {
