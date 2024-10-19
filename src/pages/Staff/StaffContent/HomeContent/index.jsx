@@ -71,6 +71,30 @@ function Content() {
   ]);
   const [filteredBookings, setFilteredBookings] = useState(bookings);
 
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
+  // const limit = 4;
+
+  // // Lấy dữ liệu bookings dựa trên trang hiện tại
+  // useEffect(() => {
+  //   fetchBookings(currentPage);
+  // }, [currentPage]);
+
+  // const fetchBookings = async (page) => {
+  //   try {
+  //     const response = await bookingDetailStaffService.getAll(page, limit);
+  //     setBookings(response.data.items); // Dữ liệu từ backend
+  //     setTotalPages(response.data.totalPages); // Số trang tổng cộng từ backend
+  //   } catch (error) {
+  //     console.error("Error fetching bookings:", error);
+  //   }
+  // };
+
+  // Xử lý khi chuyển trang
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   useEffect(() => {
     console.log("--------------------------------------");
     console.log("Initial bookings:", bookings);
