@@ -18,6 +18,14 @@ const dashboardService = {
       },
     });
   },
+
+  updateManager: (data) => {
+    return API.call().patch(`/api/v1/manager/update`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
   // Customer
   getAllCustomer: () => {
     return API.call().get(`/api/v1/customer/getAll`, {
