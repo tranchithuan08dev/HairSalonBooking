@@ -9,7 +9,7 @@ const initialState = {
     showAlert: false,
 };
 
-const name = "StylistProfile";
+const name = "stylistProfile";
 
 export const fetchStylist = createAsyncThunk(
   `${name}/fetch`, 
