@@ -165,8 +165,8 @@ export const fetchUpdateStaff = createAsyncThunk(
 //Stylist
 export const fetchPostStylist = createAsyncThunk(
   `${name}/fetchAllStylist`,
-  async () => {
-    const res = await dashboardService.getAllStylist();
+  async (inputParam = {}) => {
+    const res = await dashboardService.getAllStylist(inputParam);
     const data = res.data.data.users.map(mappingStylist);
     return data;
   }
