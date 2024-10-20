@@ -8,24 +8,28 @@ import {
   updateProfile,
   setData,
   setShowAlert,
-} from "../../../../store/stylistSlice/stylistProfileSlice";
+} from "../../../../store/stylistSlice/ProfileSlice";
 import dayjs from "dayjs";
 
 function Content() {
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.AUTH);
+  const stylistID = currentUser?.actorByRole.stylistID;
+
   const { data, loading, error, showAlert, message } = useSelector(
-    (state) => state.STYLIST);
+    (state) => state.STYLIST.profile
+  );
   const [date, setDate] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
-      const resultAction = await dispatch(fetchStylist("SL001")).unwrap();
+      const resultAction = await dispatch(fetchStylist(stylistID)).unwrap();
       if (resultAction.ok && resultAction.data && resultAction.data.dob) {
         setDate(dayjs(resultAction.data.dob));
       }
     };
     fetch();
-  }, [dispatch]);
+  }, [dispatch, stylistID]);
 
   const handleChangeDate = (date) => {
     setDate(date);
@@ -47,7 +51,7 @@ function Content() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("before dispatch: ", data);
-    const check = dispatch(updateProfile({ id: "ST001", data }));
+    const check = dispatch(updateProfile({ id: stylistID, data }));
     console.log(check);
   };
 
@@ -253,15 +257,15 @@ function Content() {
               </div>
             </div>
             {showAlert && (
-                <div
-                  className={`alert ${
-                    message ? "alert-success" : "alert-danger"
-                  } mt-3`}
-                  role="alert"
-                >
-                  {message || error}
-                </div>
-              )}
+              <div
+                className={`alert ${
+                  message ? "alert-success" : "alert-danger"
+                } mt-3`}
+                role="alert"
+              >
+                {message || error}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,25 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "../../../../assets/css/stylist/workshift.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAll } from "../../../../store/stylistSlice/stylistWorkShiftSlice";
+import { getAll } from "../../../../store/stylistSlice/WorkShiftSlice";
+import { useNavigate } from "react-router-dom";
 
 function Content() {
-  // const [data, setData] = useState([]);
-  // const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  console.log("user", currentUser.actorByRole);
+  const { data, loading, error } = useSelector((state) => state.STYLIST.workshift);
+  const stylistID = currentUser.actorByRole.stylistID;
 
   useEffect(() => {
-    dispatch(getAll);
-  }, []);
+    const fetchData = async () => {
+      try {
+        await dispatch(getAll(stylistID)).unwrap();
+      } catch (e) {
+        console.error("Error fetching data:", e);
+      }
+    };
+    fetchData();
+  }, [stylistID, dispatch]);
 
-  const handleClick = (e) => {
-    console.log(e);
-  }
+  const handleClick = (shift) => {
+    if (shift) {
+      navigate(`bookingDetail?id=B001`);
+    }
+  };
 
   const timeSlots = [
-    "9:00 - 10:00",
+    "08:00 - 09:00",
+    "09:00 - 10:00",
     "10:00 - 11:00",
     "11:00 - 12:00",
     "12:00 - 13:00",
@@ -31,39 +42,43 @@ function Content() {
     "18:00 - 19:00",
   ];
 
-  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     const fakeData = [
-  //       ["booked", "booked", "", "", "", "", ""],
-  //       ["", "booked", "", "booked", "", "", ""],
-  //       ["", "", "booked", "booked", "", "", ""],
-  //       ["booked", "", "", "booked", "", "", ""],
-  //       ["", "booked", "", "booked", "", "", ""],
-  //       ["", "", "", "", "booked", "", ""],
-  //       ["", "", "booked", "", "", "booked", ""],
-  //       ["", "", "booked", "booked", "", "", ""],
-  //       ["booked", "", "", "", "booked", "", ""],
-  //       ["", "", "", "", "", "booked", "booked"],
-  //     ];
-  //     setData(fakeData);
-  //     setLoading(false);
-  //   }, 1000);
-  // }, []);
-
-  // if (loading) {
-  //   return <p>Đang tải dữ liệu...</p>;
-  // }
-
-  const getSlotClass = (content) => {
-    if (content === "booked") return "booked";
-    return "";
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(":");
+    return `${hours}:${minutes}`;
   };
+
+  const getWorkshiftData = (day, slot) => {
+    const startTime = slot.split(" - ")[0];
+    const foundShift = data.find(
+      (shift) =>
+        shift.shiftDay === day &&
+        formatTime(shift.startTime) === startTime &&
+        !shift.deleted
+    );
+    return foundShift;
+  };
+
+  if (loading) {
+    return <p>Đang tải dữ liệu...</p>;
+  }
+
+  if (error) {
+    return <p>Lỗi: {error}</p>;
+  }
 
   return (
     <>
-      {/* <h2 className="header-cus">WorkShift</h2>
+      <h2 className="header-cus">WorkShift</h2>
       <div className="container customContainer">
         <div className="calendar-view">
           <table className="table table-bordered customTable">
@@ -86,23 +101,26 @@ function Content() {
               {timeSlots.map((slot, rowIndex) => (
                 <tr key={rowIndex} className="calendar-month-row slotDetail">
                   <td className="slotTime">{slot}</td>
-                  {daysOfWeek.map((_, colIndex) => (
-                    <td
-                      onClick={handleClick}
-                      key={colIndex}
-                      className={`slotCell ${getSlotClass(
-                        data[rowIndex]?.[colIndex]
-                      )}`}
-                    >
-                      <div className="detail">see detail→</div>
-                    </td>
-                  ))}
+                  {daysOfWeek.map((day, colIndex) => {
+                    const shift = getWorkshiftData(day, slot);
+                    return (
+                      <td
+                        onClick={() => handleClick(shift)}
+                        key={colIndex}
+                        className={`slotCell ${shift ? "booked" : ""}`}
+                      >
+                        {shift ? (
+                          <div className="detail">see detail →</div>
+                        ) : null}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div> */}
+      </div>
     </>
   );
 }
