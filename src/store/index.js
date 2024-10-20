@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "./authSlice";
-import stylistProfileReducer from "./stylistSlice/stylistProfileSlice";
+import stylistReducer from "./stylistSlice";
 
 
 const store = configureStore({
   reducer: {
     AUTH: authReducer,
-    STYLIST: stylistProfileReducer,
+    STYLIST: stylistReducer,
   },
 });
 
