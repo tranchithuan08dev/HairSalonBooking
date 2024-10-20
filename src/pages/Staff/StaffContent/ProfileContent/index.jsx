@@ -14,13 +14,15 @@ import dayjs from "dayjs";
 function Content() {
   const dispatch = useDispatch();
   const { data, loading, error, showAlert, message } = useSelector(
-    (state) => state.STAFF
+    (state) => state.STAFF.profile
   );
+  const { currentUser } = useSelector((state) => state.AUTH);
+  const staffID = currentUser?.actorByRole.staffID;
   const [date, setDate] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
-      const resultAction = await dispatch(fetchStaff("ST001")).unwrap();
+      const resultAction = await dispatch(fetchStaff(staffID)).unwrap();
       if (resultAction.ok && resultAction.data && resultAction.data.dob) {
         setDate(dayjs(resultAction.data.dob));
       }
@@ -41,8 +43,8 @@ function Content() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    dispatch(setData({ [name]: value }));
+    const { name, defaultValue } = e.target;
+    dispatch(setData({ [name]: defaultValue }));
     console.log(data);
   };
 
@@ -55,7 +57,7 @@ function Content() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateProfile({ id: "ST001", data }));
+    dispatch(updateProfile({ id: staffID, data }));
   };
 
   useEffect(() => {
@@ -69,6 +71,10 @@ function Content() {
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error</div>;
   }
 
   return (
@@ -242,7 +248,7 @@ function Content() {
                     <DatePicker
                       className="form-control-date"
                       name="yob"
-                      value={date}
+                      defaultValue={date}
                       dateFormat="yyyy-MM-dd"
                       onChange={handleChangeDate}
                     />
@@ -258,8 +264,8 @@ function Content() {
                       Staff
                     </span>
                   </div>
-                  <input type="hidden" name="userID" value={data.userID} />
-                  <input type="hidden" name="email" value={data.email} />
+                  <input type="hidden" name="userID" defaultValue={data.userID} />
+                  <input type="hidden" name="email" defaultValue={data.email} />
                   <button className="btn btn-primary" type="submit">
                     Save changes
                   </button>

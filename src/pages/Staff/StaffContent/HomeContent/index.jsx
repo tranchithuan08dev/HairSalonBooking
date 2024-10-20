@@ -1,143 +1,103 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../../../assets/css/staff/home.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilterStatus from "../../../../components/Staff/FilterStatus";
 import { getBadgeClass } from "../../../../helpers/getBadgeClass";
 import Search from "../../../../components/Staff/Search";
 import DayPicker from "../../../../components/Staff/DayPicker";
 import { searchFilter } from "../../../../helpers/searchFilter";
-import Pagination from "../../../../components/Staff/Pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBookings } from "../../../../store/staffSlice/bookingSlice";
+import { Pagination } from "antd";
 
 function Content() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [itemOffset, setItemOffset] = useState(0);
+  const [filteredBookings, setFilteredBookings] = useState([]); // Mặc định là mảng
+  const { data, loading } = useSelector((state) => state.STAFF.booking);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   const handleClick = (id) => {
-    navigate(`bookingDetail?bookingID=${id}`);
-  };
-
-  const [bookings, setBookings] = useState([
-    {
-      bookingID: "G001",
-      name: "Nguyen Van A",
-      phone: "0919888333",
-      bookingDate: "24/09/2024",
-      serviceDate: "28/09/2024",
-      stylist: "Ho Van A",
-      totalPrice: 99,
-      status: "In-progress",
-    },
-    {
-      bookingID: "C002",
-      name: "Nguyen Van B",
-      phone: "0912312334",
-      bookingDate: "24/09/2024",
-      serviceDate: "27/09/2024",
-      stylist: "Ho Van B",
-      totalPrice: 89,
-      status: "In-progress",
-    },
-    {
-      bookingID: "C003",
-      name: "Nguyen Van C",
-      phone: "0912312312",
-      bookingDate: "25/09/2024",
-      serviceDate: "29/09/2024",
-      stylist: "Ho Van C",
-      totalPrice: 79,
-      status: "In-progress",
-    },
-    {
-      bookingID: "G004",
-      name: "Nguyen Van A",
-      phone: "0973645892",
-      bookingDate: "24/09/2024",
-      serviceDate: "28/09/2024",
-      stylist: "Ho Van A",
-      totalPrice: 99,
-      status: "Cancelled",
-    },
-    {
-      bookingID: "G005",
-      name: "Nguyen Van B",
-      phone: "0973645789",
-      bookingDate: "24/09/2024",
-      serviceDate: "28/09/2024",
-      stylist: "Ho Van A",
-      totalPrice: 99,
-      status: "Rejected",
-    },
-  ]);
-  const [filteredBookings, setFilteredBookings] = useState(bookings);
-
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [totalPages, setTotalPages] = useState(1);
-  // const limit = 4;
-
-  // // Lấy dữ liệu bookings dựa trên trang hiện tại
-  // useEffect(() => {
-  //   fetchBookings(currentPage);
-  // }, [currentPage]);
-
-  // const fetchBookings = async (page) => {
-  //   try {
-  //     const response = await bookingDetailStaffService.getAll(page, limit);
-  //     setBookings(response.data.items); // Dữ liệu từ backend
-  //     setTotalPages(response.data.totalPages); // Số trang tổng cộng từ backend
-  //   } catch (error) {
-  //     console.error("Error fetching bookings:", error);
-  //   }
-  // };
-
-  // Xử lý khi chuyển trang
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+    navigate(`dataDetail?dataID=${id}`);
   };
 
   useEffect(() => {
-    console.log("--------------------------------------");
-    console.log("Initial bookings:", bookings);
-    console.log("useEffect is running");
+    const fetchBookingsData = async () => {
+      const response = await dispatch(
+        fetchBookings({ page: currentPage - 1, perPage: itemsPerPage })
+      ).unwrap();
+
+      
+      if (response && response.data) {
+        setFilteredBookings(response.data || []); 
+      }
+    };
+    fetchBookingsData();
+
+  }, [dispatch, currentPage]);
+
+  useEffect(() => {
     const type = searchParams.get("type");
-    const key = decodeURIComponent(searchParams.get("key"));
+    const key = decodeURIComponent(searchParams.get("key") || "");
     const status = searchParams.get("status") || "All";
-    const bookingDate = searchParams.get("bookingDate");
-    console.log("type: " + type);
-    console.log("key: " + key);
-    console.log("status: " + status);
-    console.log("bookingDate: " + bookingDate);
-    const page = parseInt(searchParams.get("page")) || 1;
-    const newOffset = (page - 1) * 4;
-    setItemOffset(newOffset);
+    const appoinmentAt = searchParams.get("appoinmentAt");
 
-    let filteredBookings = bookings;
+    let updatedBookings = data;
 
+    // Lọc theo trạng thái
     if (status !== "All") {
-      filteredBookings = filteredBookings.filter(
+      updatedBookings = updatedBookings.filter(
         (item) => item.status === status
       );
-      console.log("filter by status: ");
-      console.log(filteredBookings.length);
     }
 
+    // Lọc theo tìm kiếm
     if (type && key) {
-      const { filtered } = searchFilter(filteredBookings, key);
-      filteredBookings = filtered;
+      const { filtered } = searchFilter(updatedBookings, key);
+      updatedBookings = Array.isArray(filtered) ? filtered : []; // Đảm bảo filtered là mảng
     }
 
-    if (bookingDate) {
-      filteredBookings = filteredBookings.filter((item) => {
-        return item.bookingDate === bookingDate;
-      });
+    // Lọc theo ngày
+    if (appoinmentAt) {
+      updatedBookings = updatedBookings.filter(
+        (item) => item.appoinmentAt === appoinmentAt
+      );
     }
 
-    const endOffset = itemOffset + 4;
-    const paginatedBookings = filteredBookings.slice(itemOffset, endOffset);
+    setFilteredBookings(updatedBookings);
+  }, [searchParams, data, currentPage]);
 
-    setFilteredBookings(paginatedBookings);
-    console.log("Filtered bookings:", filteredBookings);
-  }, [searchParams, bookings]);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setSearchParams({
+      page,
+      type: searchParams.get("type"),
+      key: searchParams.get("key"),
+      status: searchParams.get("status"),
+      appoinmentAt: searchParams.get("appoinmentAt"),
+    });
+  };
+
+  function formatDateTime(dateTimeString) {
+    const date = new Date(dateTimeString);
+  
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const year = date.getFullYear();
+  
+    return `${hours}:${minutes}:${seconds} ${day}-${month}-${year}`;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -147,13 +107,13 @@ function Content() {
           <div className="card-body row card-body-custom">
             <div className="col-md-6">
               <FilterStatus
-                bookings={bookings}
+                bookings={data}
                 setFilteredBookings={setFilteredBookings}
               />
             </div>
             <div className="col-md-6">
               <Search
-                bookings={bookings}
+                bookings={data}
                 setFilteredBookings={setFilteredBookings}
               />
             </div>
@@ -166,15 +126,16 @@ function Content() {
           <div className="col-md-6">
             <div className="input-group mb-3">
               <DayPicker
-                bookings={bookings}
+                bookings={data}
                 setFilteredBookings={setFilteredBookings}
               />
             </div>
           </div>
         </div>
         <div className="mt-4 custom-mt">
-          {filteredBookings.map((item, index) => (
-            <div key={index}>
+          {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? (
+            filteredBookings.map((item, index) => (
+              <div key={index}>
               <div
                 className="card mb-3 hover-card card-custom-booking"
                 onClick={() => handleClick(item.bookingID)}
@@ -186,9 +147,8 @@ function Content() {
                         BookingID: {item.bookingID}
                       </h5>
                       <p className="card-text">
-                        Contact Phone: {item.phone}
+                        Contact Phone: 0912313131232
                         <br />
-                        Name: {item.name}
                       </p>
                     </div>
                   </div>
@@ -198,12 +158,12 @@ function Content() {
                       <span className="block-span">{item.stylist}</span>
                     </div>
                     <div className="BookingDate">
-                      <h6>Booking Date</h6>
-                      <span className="block-span">{item.bookingDate}</span>
+                      <h6>Created At</h6>
+                      <span className="block-span">{formatDateTime(item.createdAt)}</span>
                     </div>
                     <div className="ServiceDate">
-                      <h6>Service Date</h6>
-                      <span className="block-span">{item.serviceDate}</span>
+                      <h6>Appoinment At</h6>
+                      <span className="block-span">{item.appoinmentAt}</span>
                     </div>
                     <div className="TotalPrice">
                       <h6>Total Price</h6>
@@ -222,13 +182,20 @@ function Content() {
                 </div>
               </div>
             </div>
-          ))}
+            ))
+          ) : (
+            <div>No bookings found.</div> 
+          )}
         </div>
-        <Pagination
-          bookings={bookings}
-          setFilteredBookings={setFilteredBookings}
-          itemsPerPage={4}
-        />
+        <div>
+          <Pagination
+            style={{ display: "flex", justifyContent: "center" }}
+            current={currentPage}
+            pageSize={itemsPerPage}
+            total={filteredBookings.length}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>
     </>
   );
