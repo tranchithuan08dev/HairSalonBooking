@@ -1,8 +1,8 @@
 import API from "../api";
 
-const bookingDetailStaffService = {
-    getAll: () => {
-        return API.call().get(`api/v1/booking/getAll`);
+const bookingService = {
+    getAll: (page, perpage) => {
+        return API.call().get(`api/v1/booking/getAll?page=${page}&perpage=${perpage}`);
     },
     getDetail: (id) => {
         return API.call().get(`api/v1/booking/detail?bookingID=${id}`);
@@ -12,4 +12,4 @@ const bookingDetailStaffService = {
     }
 }
 
-export default bookingDetailStaffService;
+export default bookingService;
