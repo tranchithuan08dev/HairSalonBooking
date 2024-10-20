@@ -13,7 +13,7 @@ function DayPicker(props) {
       const dateValue = date.toLocaleDateString("en-GB");
       console.log(dateValue);
       const params = new URLSearchParams(searchParams);
-      params.set("bookingDate", dateValue);
+      params.set("appoinmentAt", dateValue);
       setSearchParams(params);
       const filtered = bookings.filter(
         (item) => item.bookingDate === dateValue
@@ -30,7 +30,7 @@ function DayPicker(props) {
     <>
       <div style={{display: 'flex', flexDirection: 'column'}}>
         <div>
-          <label htmlFor="bookingDate">Search by booking date</label>
+          <label htmlFor="appoinmentAt">Search by appoinment date</label>
         </div>
         <div>
           <form
