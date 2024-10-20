@@ -23,6 +23,12 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
+
         <Route path="/staff/" element={<PrivateRoutes />}>
           <Route element={<Layout />}>
             <Route index element={<Home />} /> 
@@ -31,10 +37,6 @@ function App() {
             <Route path="salary" element={<Salary />} />
           </Route>
         </Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
       </Routes>
     </>
   );
