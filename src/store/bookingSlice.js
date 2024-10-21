@@ -4,6 +4,7 @@ import bookingService from "../services/bookingService";
 const name = "booking";
 const initialState = {
   workshift: [],
+  booking: [],
 };
 
 export const fetchWorkShift = createAsyncThunk(
@@ -18,6 +19,19 @@ export const fetchWorkShift = createAsyncThunk(
   }
 );
 
+export const fetchBooking = createAsyncThunk(
+  `${name}/fetchBooking`,
+  async (data) => {
+    try {
+      const res = await bookingService.booking(data);
+      console.log("Ressss", res);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const bookingSlice = createSlice({
   name,
   initialState,
@@ -25,6 +39,9 @@ const bookingSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchWorkShift.fulfilled, (state, action) => {
       state.workshift = action.payload;
+    });
+    builder.addCase(fetchBooking.fulfilled, (state, action) => {
+      state.booking = action.payload;
     });
   },
 });
