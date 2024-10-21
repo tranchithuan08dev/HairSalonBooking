@@ -106,7 +106,7 @@ export const fetchPostService = createAsyncThunk(
   `${name}/fetchPostService`,
   async () => {
     const res = await dashboardService.getAllService();
-    const dataService = res.data.userList.map(mappingService);
+    const dataService = res.data.service.map(mappingService);
     return dataService;
   }
 );
