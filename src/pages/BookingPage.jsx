@@ -8,7 +8,8 @@ import {
   fetchPostStylist,
   fetchPostStylistDetailById,
 } from "../store/dashbroadSlice";
-import { fetchWorkShift } from "../store/bookingSlice";
+import { fetchBooking, fetchWorkShift } from "../store/bookingSlice";
+import { fetchMe } from "../store/authSlice";
 
 function BookingPage() {
   const dispatch = useDispatch();
@@ -19,11 +20,13 @@ function BookingPage() {
     (state) => state.DASHBOARD.postStylistDetailById
   );
   const dataWorkShift = useSelector((state) => state.BOOKING.workshift);
-
+  const auth = useSelector((state) => state.AUTH.currentUser);
+  const token = localStorage.getItem("ACCESS_TOKKEN");
   console.log("dataService", dataService);
   // console.log("dataStylist", dataStylist);
   // console.log("dataStylistById", dataStylistById);
   console.log("dataWorkShift", dataWorkShift);
+  console.log("tokennnn", auth);
 
   // USE State AND GET ALL DATA
   const [selectedServices, setSelectedServices] = useState([]);
@@ -34,15 +37,36 @@ function BookingPage() {
   const [totalDuration, setTotalDuration] = useState(0);
   const [selectedTime, setSelectedTime] = useState(null); // Store the selected time
   const [currentHour, setCurrentHour] = useState(new Date().getHours()); // Get the current hour
-
+  const [stylistIDs, setStylistIDs] = useState([]);
   console.log("selectedServices", selectedServices);
+  const HandleBooking = (e) => {
+    e.preventDefault();
+    const booking = {
+      customerID: auth.actorByRole.customerID,
+      stylistID: selectedStylist,
+      serviceID: stylistIDs,
+      totalPrice: totalPrice,
+      stylistWorkShiftID: selectStylistWorkShift,
+    };
+    dispatch(fetchBooking(booking));
+  };
+  console.log("stylistIDs", stylistIDs);
 
   useEffect(() => {
+    dispatch(fetchMe(token));
     dispatch(fetchPostStylist());
     dispatch(fetchPostService());
   }, [dispatch]);
 
   // SELECT STYLIST
+  useEffect(() => {
+    const ids = selectedServices.map((item) => {
+      const parsedItem = JSON.parse(item);
+      return parsedItem.id;
+    });
+    setStylistIDs(ids);
+  }, [selectedServices]);
+
   const handleServiceChange = (index, value) => {
     const newSelectedServices = [...selectedServices];
     newSelectedServices[index] = value;
@@ -348,7 +372,7 @@ function BookingPage() {
                       slot.status === "active" ||
                       formatTimeToHHmm(slot.startTime) <= currentHour
                         ? "not-allowed"
-                        : "pointer", // Cursor behavior
+                        : "pointer",
                   }}
                 >
                   {formatTimeToHHmm(slot.startTime)}
@@ -370,6 +394,7 @@ function BookingPage() {
             <button
               className="btn btn-dark mt-3"
               style={{ width: "100%", border: "1px solid" }}
+              onClick={HandleBooking}
             >
               Booking
             </button>
