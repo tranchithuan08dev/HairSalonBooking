@@ -57,11 +57,9 @@ const dashboardService = {
   },
 
   // Service
-  getAllService: () => {
+  getAllService: (inputParam = {}) => {
     return API.call().get(`/api/v1/service/getAll`, {
-      headers: {
-        token: `Bearer ${token}`,
-      },
+      params: inputParam,
     });
   },
 
