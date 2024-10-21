@@ -4,8 +4,6 @@ import bookingService from "../services/bookingService";
 const name = "booking";
 const initialState = {
   workshift: [],
-  loading: false,
-  error: null,
 };
 
 export const fetchWorkShift = createAsyncThunk(
@@ -13,9 +11,7 @@ export const fetchWorkShift = createAsyncThunk(
   async (id) => {
     try {
       const res = await bookingService.getWorkshfit(id);
-      console.log("res", res);
-
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.log(error);
     }
