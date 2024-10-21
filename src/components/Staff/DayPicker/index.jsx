@@ -16,7 +16,7 @@ function DayPicker(props) {
       params.set("appoinmentAt", dateValue);
       setSearchParams(params);
       const filtered = bookings.filter(
-        (item) => item.bookingDate === dateValue
+        (item) => item.appoinmentAt === dateValue
       );
       setFilteredBookings(filtered);
     }
@@ -42,10 +42,10 @@ function DayPicker(props) {
             <DatePicker
               selected={date}
               onChange={handleDateChange}
-              placeholderText="DD/MM/YYYY"
+              placeholderText="DD-MM-YYYY"
               className="form-control-Date"
-              dateFormat="dd/MM/yyyy"
-              id="bookingdate"
+              dateFormat="dd-MM-yyyy"
+              id="appoinmentAt"
             />
             <button type="submit" className="dateFind">
               Find

@@ -6,17 +6,16 @@ function FilterStatus(props) {
 
   const handleFilterStatus = (status) => {
     const params = new URLSearchParams(searchParams);
-  
-    if (status === "All") {
-      setSearchParams(new URLSearchParams());
-      setFilteredBookings(bookings);
-      return;
-    } else {
-      params.set("status", status);
-      const filteredBookings = bookings.filter((item) => item.status === status);
-      setFilteredBookings(filteredBookings);
-      setSearchParams(params);
-    }
+    
+      if (status === "All") {
+        setSearchParams(new URLSearchParams());
+        setFilteredBookings(bookings);
+      } else {
+        params.set("status", status);
+        const filteredBookings = bookings.filter((item) => item.status === status);
+        setFilteredBookings(filteredBookings);
+        setSearchParams(params);
+      }
     
   };
 
@@ -33,12 +32,6 @@ function FilterStatus(props) {
         onClick={() => handleFilterStatus("Confirmed")}
       >
         Confirmed
-      </button>
-      <button
-        className="btn btn-sm ml-1 btn-outline-danger"
-        onClick={() => handleFilterStatus("Rejected")}
-      >
-        Rejected
       </button>
       <button
         className="btn btn-sm ml-1 btn-outline-info"

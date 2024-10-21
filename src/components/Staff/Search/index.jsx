@@ -9,16 +9,15 @@ function Search(props) {
   const handleSearch = () => {
     if (searchRef.current) {
       const value = searchRef.current.value;
-      const { type, key, filtered } = searchFilter(bookings, value);
+      const { key, filtered } = searchFilter(bookings, value);
 
       const param = new URLSearchParams(searchParams);
       if (type) {
-        param.set("type", type);
         param.set("key", encodeURIComponent(key));
         setSearchParams(param);
         setFilteredBookings(filtered);
       } else {
-        alert("Please enter any word or number!");
+        alert("Please enter any number!");
       }
     }
   };
@@ -35,7 +34,7 @@ function Search(props) {
           ref={searchRef}
           type="text"
           className="form-control"
-          placeholder="Search by phone or name"
+          placeholder="Search by phone"
         />
         <input type="submit" className="searchSubmit" />
       </form>
