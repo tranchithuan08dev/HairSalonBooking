@@ -8,6 +8,7 @@ import {
   fetchPostStylist,
   fetchPostStylistDetailById,
 } from "../store/dashbroadSlice";
+import { fetchWorkShift } from "../store/bookingSlice";
 
 function BookingPage() {
   const dispatch = useDispatch();
@@ -17,32 +18,58 @@ function BookingPage() {
   const dataStylistById = useSelector(
     (state) => state.DASHBOARD.postStylistDetailById
   );
+  const dataWorkShift = useSelector((state) => state.BOOKING.workshift);
 
   console.log("dataService", dataService);
-  console.log("dataStylist", dataStylist);
-  console.log("dataStylistById", dataStylistById);
-  // USE State
+  // console.log("dataStylist", dataStylist);
+  // console.log("dataStylistById", dataStylistById);
+  console.log("dataWorkShift", dataWorkShift);
+
+  // USE State AND GET ALL DATA
   const [selectedServices, setSelectedServices] = useState([]);
   const [selects, setSelects] = useState([1]);
   const [selectedStylist, setSelectedStylist] = useState({});
+  const [selectStylistWorkShift, setSelectStylistWorkShift] = useState({});
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
+  const [selectedTime, setSelectedTime] = useState(null); // Store the selected time
+  const [currentHour, setCurrentHour] = useState(new Date().getHours()); // Get the current hour
 
+  console.log("selectedServices", selectedServices);
+
+  useEffect(() => {
+    dispatch(fetchPostStylist());
+    dispatch(fetchPostService());
+  }, [dispatch]);
+
+  // SELECT STYLIST
   const handleServiceChange = (index, value) => {
     const newSelectedServices = [...selectedServices];
     newSelectedServices[index] = value;
     setSelectedServices(newSelectedServices);
   };
 
+  // SELECT SERVICE AND SHOW ADD MORE
+  const dataTotal = selectedServices
+    .map((item) => JSON.parse(item))
+    .reduce(
+      (acc, service) => ({
+        totalPrice: acc.totalPrice + parseFloat(service.price),
+        totalDuration: acc.totalDuration + service.duration,
+      }),
+      { totalPrice: 0, totalDuration: 0 }
+    );
+  useEffect(() => {
+    setTotalPrice(dataTotal.totalPrice);
+    setTotalDuration(dataTotal.totalDuration);
+  }, [selectedServices]);
+
   const handleStylistChange = (event) => {
     const stylistId = event.target.value;
     setSelectedStylist(stylistId);
+    dispatch(fetchWorkShift(stylistId));
     dispatch(fetchPostStylistDetailById(stylistId));
   };
-  console.log("id Stylist", selectedStylist);
-
-  useEffect(() => {
-    dispatch(fetchPostStylist());
-    dispatch(fetchPostService());
-  }, [dispatch]);
 
   // Hàm thêm select nếu số lượng dưới 3
   const handleAddSelect = (event) => {
@@ -58,13 +85,30 @@ function BookingPage() {
       // Remove the select
       const newSelects = selects.filter((_, i) => i !== index);
       setSelects(newSelects);
-
       const newSelectedServices = [...selectedServices];
       newSelectedServices.splice(index, 1);
       setSelectedServices(newSelectedServices);
     }
   };
 
+  // SELECTED TIME AND CHECK REAL TIME
+  const handleTimeClick = (time, id) => {
+    setSelectedTime(time); // Allow only one selection
+    setSelectStylistWorkShift(id);
+  };
+  console.log("selectStylistWorkShift", selectStylistWorkShift);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHour(new Date().getHours()); // Update the hour in real-time
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
+  const formatTimeToHHmm = (timeString) => {
+    const [hours, minutes] = timeString.split(":");
+    return `${hours}:${minutes}`;
+  };
   return (
     <>
       <div className="container-fluid bg-dark">
@@ -151,28 +195,33 @@ function BookingPage() {
                   </select>
                 </div>
                 {/* Stylist Profile */}
+
                 <div className="col-md-4">
-                  <div className="card">
-                    <div className="card-body">
-                      <div className="d-flex align-items-center">
-                        {/* Stylist Profile */}
-                        <img
-                          src="public/assets/image/avatar.jpg"
-                          alt="Stylist Image"
-                          className="rounded-circle me-3"
-                          style={{ width: 60, height: 60, objectFit: "cover" }}
-                        />
-                        <div>
-                          <h5 className="mb-0">Nguyễn Văn A</h5>
-                          <p className="mb-0">
-                            4 <i className="bi bi-star-fill text-warning" />
-                          </p>
+                  {Object.keys(dataStylistById).length > 0 && (
+                    <div className="card">
+                      <div className="card-body">
+                        <div className="d-flex align-items-center">
+                          {/* Stylist Profile */}
+                          <img
+                            src=" ../public/assets/image/avatar.jpg"
+                            alt={`${dataStylistById.fullName}'s Image`}
+                            className="rounded-circle me-3"
+                            style={{
+                              width: 60,
+                              height: 60,
+                              objectFit: "cover",
+                            }}
+                          />
+                          <div>
+                            <h5 className="mb-0">{dataStylistById.fullName}</h5>
+                            <p className="mb-0">
+                              <i className="bi bi-star-fill text-warning" />
+                            </p>
+                          </div>
                         </div>
                       </div>
-
-                      {/* Gallery End */}
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -192,8 +241,8 @@ function BookingPage() {
                       Choose service
                     </option>
                     {dataService.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.serviceName}
+                      <option key={item.id} value={JSON.stringify(item)}>
+                        {item.serviceName} - {item.price.toLocaleString()} VND
                       </option>
                     ))}
                   </select>
@@ -220,12 +269,13 @@ function BookingPage() {
             <div className="row">
               <div className="col-md-6 text-white">
                 <p>
-                  <strong>Total:</strong> 300.000 VND
+                  <strong>Total: </strong>
+                  {totalPrice} VND
                 </p>
               </div>
               <div className="col-md-6 text-white">
                 <p>
-                  <strong>Estimated Duration:</strong> 120 minutes
+                  <strong>Estimated Duration: </strong> {totalDuration} minutes
                 </p>
               </div>
             </div>
@@ -258,26 +308,52 @@ function BookingPage() {
               Select service time slot:
             </label>
             <div className="row mt-3">
-              <div className="col-2 time-slot btn btn-light">10:00</div>
-              <div className="col-2 time-slot btn btn-light">10:30</div>
-              <div className="col-2 time-slot btn btn-light">11:00</div>
-              <div className="col-2 time-slot btn btn-light">11:30</div>
-              <div className="col-2 time-slot btn btn-light">12:00</div>
-              <div className="col-2 time-slot btn btn-light">12:30</div>
-              <div className="col-2 time-slot btn btn-light">13:00</div>
-              <div className="col-2 time-slot btn btn-light">13:30</div>
-              <div className="col-2 time-slot btn btn-light">14:00</div>
-              <div className="col-2 time-slot btn btn-light">14:30</div>
-              <div className="col-2 time-slot btn btn-light">15:00</div>
-              <div className="col-2 time-slot btn btn-light">15:30</div>
-              <div className="col-2 time-slot btn btn-light">16:00</div>
-              <div className="col-2 time-slot btn btn-light">16:30</div>
-              <div className="col-2 time-slot btn btn-light">17:00</div>
-              <div className="col-2 time-slot btn btn-light">17:30</div>
-              <div className="col-2 time-slot btn btn-light">18:00</div>
-              <div className="col-2 time-slot btn btn-light">18:30</div>
-              <div className="col-2 time-slot btn btn-light">19:00</div>
-              <div className="col-2 time-slot btn btn-light">19:30</div>
+              {dataWorkShift.map((slot) => (
+                <div
+                  key={slot.id}
+                  className={`col-2 time-slot btn btn-light ${
+                    selectedTime === formatTimeToHHmm(slot.startTime)
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    slot.status !== "active" &&
+                    handleTimeClick(
+                      formatTimeToHHmm(slot.startTime),
+                      slot.stylistWorkShiftID
+                    )
+                  } // Disable click if status is "active"
+                  style={{
+                    pointerEvents:
+                      slot.status === "active" ||
+                      formatTimeToHHmm(slot.startTime) <= currentHour
+                        ? "none"
+                        : "auto", // Disable if status is active or time is in the past
+                    backgroundColor:
+                      slot.status === "active" ||
+                      formatTimeToHHmm(slot.startTime) <= currentHour
+                        ? "#e0e0e0"
+                        : selectedTime === formatTimeToHHmm(slot.startTime)
+                        ? "#4caf50"
+                        : "#fff", // Adjust background color
+                    color:
+                      selectedTime === formatTimeToHHmm(slot.startTime)
+                        ? "white"
+                        : "black", // Text color
+                    borderColor:
+                      selectedTime === formatTimeToHHmm(slot.startTime)
+                        ? "#4caf50"
+                        : "#ced4da", // Border color
+                    cursor:
+                      slot.status === "active" ||
+                      formatTimeToHHmm(slot.startTime) <= currentHour
+                        ? "not-allowed"
+                        : "pointer", // Cursor behavior
+                  }}
+                >
+                  {formatTimeToHHmm(slot.startTime)}
+                </div>
+              ))}
             </div>
             {/* TIME END */}
             {/* NOTE */}
