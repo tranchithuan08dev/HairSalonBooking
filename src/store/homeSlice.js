@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import dashboardService from "../services/dashboardService";
-import { mappingStylist } from "../helpers";
+import { mappingService, mappingStylist } from "../helpers";
 
 const name = "home";
 const initialState = {
   // Stylist
   stylist: [],
+  service: [],
 };
 
 export const fetchHomeStylist = createAsyncThunk(
@@ -19,6 +20,15 @@ export const fetchHomeStylist = createAsyncThunk(
   }
 );
 
+export const fetchHomeService = createAsyncThunk(
+  `${name}/fetchHomeService`,
+  async (inputParam = {}) => {
+    const res = await dashboardService.getAllService(inputParam);
+    const dataService = res.data.services.map(mappingService);
+    return dataService;
+  }
+);
+
 const homeSlice = createSlice({
   name,
   initialState,
@@ -26,6 +36,9 @@ const homeSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchHomeStylist.fulfilled, (state, action) => {
       state.stylist = action.payload;
+    });
+    builder.addCase(fetchHomeService.fulfilled, (state, action) => {
+      state.service = action.payload;
     });
   },
 });
