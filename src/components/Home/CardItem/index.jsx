@@ -2,7 +2,7 @@ import React from "react";
 import "./card.css";
 function Item({ data }) {
   if (!data) return <></>;
-  const { fullName } = data;
+  const { fullName, serviceName } = data;
   return (
     <>
       <div className="col-md-4 d-flex justify-content-center mb-4">
@@ -20,7 +20,7 @@ function Item({ data }) {
                 href="./StylistDetail.html"
                 style={{ textDecoration: "none" }}
               >
-                {fullName}
+                {fullName || serviceName}
               </a>
             </h3>
           </div>
