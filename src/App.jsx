@@ -19,6 +19,7 @@ import NewService from "./pages/Dashboard/NewService";
 import NewStylist from "./pages/Dashboard/NewStylist";
 import NewStaff from "./pages/Dashboard/NewStaff";
 import ContactPage from "./pages/ContactPage";
+import ServiceDetailPage from "./pages/ServiceDetailPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/service/:id" element={<ServiceDetailPage />} />
         <Route element={<DashBroad />}>
           <Route
             path="/dashboard"
