@@ -7,5 +7,8 @@ const bookingService = {
   booking: (data) => {
     return API.call().post(`/api/v1/booking/create`, data);
   },
+  bookingDetail: (id) => {
+    return API.call().get(`/api/v1/booking/detail?bookingID=${id}`);
+  },
 };
 export default bookingService;
