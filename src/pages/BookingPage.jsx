@@ -129,9 +129,10 @@ function BookingPage() {
 
     return () => clearInterval(interval); // Cleanup interval on unmount
   }, []);
+
   const formatTimeToHHmm = (timeString) => {
-    const [hours, minutes] = timeString.split(":");
-    return `${hours}:${minutes}`;
+    const [hours] = timeString.split(":");
+    return hours;
   };
   return (
     <>
@@ -375,7 +376,7 @@ function BookingPage() {
                         : "pointer",
                   }}
                 >
-                  {formatTimeToHHmm(slot.startTime)}
+                  {formatTimeToHHmm(slot.startTime)}:00
                 </div>
               ))}
             </div>
