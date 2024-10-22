@@ -13,9 +13,9 @@ function Header() {
           {/* Left Side */}
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">
+              <Link to="/contact" className="nav-link text-white">
                 Contact
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <a className="nav-link text-white" href="#">
@@ -24,15 +24,15 @@ function Header() {
             </li>
           </ul>
           {/* Center*/}
-          <a className="navbar-brand mx-auto" href="#">
+          <Link to="/" className="navbar-brand mx-auto">
             <h1 className="text-white">Harmony</h1>
-          </a>
+          </Link>
           {/* Right Side */}
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">
+              <Link to="/booking" className="nav-link text-white">
                 Booking
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               {!token ? (
