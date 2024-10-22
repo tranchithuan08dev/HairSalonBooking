@@ -63,7 +63,7 @@ function StylistDetailPage() {
       <div
         style={{
           backgroundImage: "url(https://4rau.vn/images/bg_main.jpg)",
-          backgroundSize: "cover", // Make the background image cover the entire div
+          backgroundSize: "cover",
         }}
       >
         <div className="container mx-auto p-4">
