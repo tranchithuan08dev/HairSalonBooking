@@ -20,6 +20,7 @@ import NewStylist from "./pages/Dashboard/NewStylist";
 import NewStaff from "./pages/Dashboard/NewStaff";
 import ContactPage from "./pages/ContactPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
+import StylistDetailPage from "./pages/StylistDetailPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ function App() {
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/service/:id" element={<ServiceDetailPage />} />
+        <Route path="/stylist/:id" element={<StylistDetailPage />} />
         <Route element={<DashBroad />}>
           <Route
             path="/dashboard"
