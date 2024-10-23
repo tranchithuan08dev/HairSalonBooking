@@ -9,9 +9,9 @@ const initialState = {
 
 export const fetchWorkShift = createAsyncThunk(
   `${name}/fetchWorkShift`,
-  async (id) => {
+  async (inputParams = {}) => {
     try {
-      const res = await bookingService.getWorkshfit(id);
+      const res = await bookingService.getWorkshift(inputParams);
       return res.data.data;
     } catch (error) {
       console.log(error);
