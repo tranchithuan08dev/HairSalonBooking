@@ -10,8 +10,8 @@ const bookingService = {
     getDetail: (id) => {
         return API.call().get(`api/v1/booking/detail?bookingID=${id}`);
     },
-    updateBooking: (id, data) => {
-        return API.call().patch(`api/v1/booking/update?bookingID=${id}`);
+    updateBooking: (data) => {
+        return API.call().patch(`api/v1/booking/update`, data);
     },
     generateQR: (data) => {
         return API.call().post(`api/v1/payment/generateQR`, data);
@@ -24,8 +24,10 @@ const bookingService = {
     },
     createPayment: (data) => {
         return API.call().post(`api/v1/payment/create`, data);
+    },
+    updatePayment: (id, data) => {
+        return API.call().patch(`api/v1/payment/update?id=${id}`, data);
     }
-    
 }
 
 export default bookingService;
