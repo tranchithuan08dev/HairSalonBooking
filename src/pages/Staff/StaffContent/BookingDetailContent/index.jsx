@@ -1,134 +1,104 @@
 import { useLocation } from "react-router-dom";
 import "../../../../assets/css/staff/bookingDetail.css";
 import { useEffect, useState } from "react";
-import axios from "axios"; 
+import {
+  createPayment,
+  fetchBookingDetail,
+  generateQR,
+  setDetail,
+  setShowAlert,
+  updateBooking,
+} from "../../../../store/staffSlice/bookingSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Content() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const bookingId = queryParams.get("bookingID");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
-
-  const bookingDetails = [
-    {
-      bookingID: "G001",
-      bookingDate: "24/09/2024",
-      serviceDate: "28/09/2024",
-      serviceTime: "10:00 AM",
-      serviceID: "S123456",
-      serviceName: "Haircut",
-      duration: "2-3 hours",
-      stylistID: "SL23423",
-      staffID: "ST23423",
-      username: "Ho Van A",
-      bookingphone: "09123123123",
-      role: "Customer",
-      totalPrice: 99,
-      status: "Pending",
-      method: "Bank Transfer",
-      paymentstatus: "unpaid",
-    },
-    {
-      bookingID: "C002",
-      bookingDate: "24/09/2024",
-      serviceDate: "27/09/2024",
-      serviceTime: "11:00 AM",
-      serviceID: "S123457",
-      serviceName: "Shaving",
-      duration: "1 hour",
-      stylistID: "SL23423",
-      staffID: "ST23423",
-      username: "Ho Van A",
-      bookingphone: "09123123123",
-      role: "Customer",
-      totalPrice: 89,
-      status: "Completed",
-      method: "Cash",
-      paymentstatus: "paid",
-    },
-    {
-      bookingID: "C003",
-      bookingDate: "25/09/2024",
-      serviceDate: "29/09/2024",
-      serviceTime: "2:00 PM",
-      serviceID: "S123458",
-      serviceName: "Facial",
-      duration: "1.5 hours",
-      stylistID: "SL23423",
-      staffID: "ST23423",
-      username: "Ho Van A",
-      bookingphone: "09123123123",
-      role: "Customer",
-      totalPrice: 79,
-      status: "Pending",
-      method: "Bank Transfer",
-      paymentstatus: "unpaid",
-    },
-  ];
-
-  const booking = bookingDetails.find((app) => app.bookingID === bookingId);
-
-  const [formData, setFormData] = useState({
-    bookingID: booking?.bookingID,
-    bookingDate: booking?.bookingDate,
-    serviceDate: booking?.serviceDate,
-    serviceID: booking?.serviceID,
-    serviceName: booking?.serviceName,
-    duration: booking?.duration,
-    stylistID: booking?.stylistID,
-    staffID: booking?.staffID,
-    username: booking?.username,
-    bookingphone: booking?.bookingphone,
-    role: booking?.role,
-    totalPrice: booking?.totalPrice,
-    status: booking?.status,
-    method: booking?.method,
-    paymentstatus: booking?.paymentstatus,
-  });
+  const bookingID = queryParams.get("bookingID");
+  const [status, setStatus] = useState();
+  const [showForm, setShowForm] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [qr, setQr] = useState(null);
+  const { detail, loading, qrCode, message, error, showAlert } = useSelector(
+    (state) => state.STAFF.booking
+  );
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchBookingDetail(bookingID));
+    };
+    fetchData();
+    setStatus(detail.data?.status || "");
+  }, [dispatch, bookingID]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { value } = e.target;
+    setStatus(value);
+    dispatch(
+      setDetail({
+        ...detail,
+        data: {
+          ...detail.data,
+          status: value,
+        },
+      })
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted form data:", formData);
+    let { stylistName, servicesName, ok, ...cleanedDetail } = detail;
+    console.log(cleanedDetail);
 
-    try {
-      const response = await axios.patch(`/api/bookings/${formData.bookingID}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 200) {
-        setMessage("Update successfully!");
-        setError("");
-        setShowAlert(true);
-      }
-    } catch (error) {
-      setError("Cannot update!");
-      setMessage("");
-      setShowAlert(true);
+    await dispatch(updateBooking({ id: bookingID, cleanedDetail }));
+  };
+
+  const formattedAmount =
+    detail.data?.totalPrice !== undefined
+      ? typeof detail.data.totalPrice === "number"
+        ? detail.data.totalPrice.toFixed(2)
+        : parseFloat(detail.data.totalPrice).toFixed(2)
+      : "0.00";
+
+  const handleGenerate = async () => {
+    console.log("pushed");
+    const value = {
+      Amount: formattedAmount || "0",
+      Description: "Chuyen Khoan",
+    };
+
+    const result = await dispatch(generateQR(value));
+    if (result.payload) {
+      setQr(result.payload.data.qrCode); 
     }
   };
 
+  const handleClickCreate = () => {
+    setShowForm(true); 
+};
+
+const handlePaymentSubmit = (e) => {
+    e.preventDefault(); 
+
+    let data = {
+      bookingID: detail.data?.bookingID || "",
+      method: paymentMethod,
+      status: "paid"
+    }
+    dispatch(createPayment(data));
+    setShowForm(false);
+};
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
-        setShowAlert(false);
+        dispatch(setShowAlert(false));
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
 
-  if (!formData) {
-    return <div>BookingID not found</div>;
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -139,14 +109,14 @@ function Content() {
             <h5>Booking Detail</h5>
           </div>
           <div className="card-body row">
-            <form onSubmit={handleSubmit} className="col-md-6">
+            <form className="col-md-6">
               <div className="formBody">
                 <div className="form-group">
                   <strong>Booking ID:</strong>
                   <input
                     type="text"
                     name="bookingID"
-                    value={formData.bookingID}
+                    value={detail.data?.bookingID || ""}
                     readOnly
                   />
                 </div>
@@ -154,45 +124,48 @@ function Content() {
                   <strong>Booking Date:</strong>
                   <input
                     type="text"
-                    name="bookingDate"
-                    value={formData.bookingDate}
-                    onChange={handleChange}
+                    name="createdAt"
+                    value={detail.data?.createdAt || ""}
+                    readOnly
                   />
                 </div>
                 <div className="form-group">
                   <strong>Services:</strong>
-                  <input
-                    type="text"
-                    name="serviceID"
-                    value={formData.serviceID}
-                    onChange={handleChange}
+                  <textarea
+                    name="servicesName"
+                    defaultValue={Array.isArray(detail.servicesName) && detail.servicesName.length > 0
+                      ? detail.servicesName.join(", ")
+                      : "No services available"}
+                    readOnly
+                    rows={4}
+                    className="form-control text"
                   />
                 </div>
                 <div className="form-group">
-                  <strong>Username:</strong>
+                  <strong>FullName:</strong>
                   <input
                     type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
+                    name="fullName"
+                    value={detail.data?.fullName || ""}
+                    readOnly
                   />
                 </div>
                 <div className="form-group">
-                  <strong>Booking Phone:</strong>
+                  <strong>Phone Number:</strong>
                   <input
                     type="text"
-                    name="bookingphone"
-                    value={formData.bookingphone}
-                    onChange={handleChange}
+                    name="phoneNumber"
+                    value={detail.data?.phoneNumber || ""}
+                    readOnly
                   />
                 </div>
                 <div className="form-group">
-                  <strong>User Role:</strong>
+                  <strong>Stylist Name:</strong>
                   <input
                     type="text"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
+                    name="stylistName"
+                    value={detail.stylistName || ""}
+                    readOnly
                   />
                 </div>
                 <div className="form-group">
@@ -200,15 +173,15 @@ function Content() {
                   <input
                     type="number"
                     name="totalPrice"
-                    value={formData.totalPrice}
-                    onChange={handleChange}
+                    value={formattedAmount.slice(0, -3)}
+                    readOnly
                   />
                 </div>
                 <div className="form-group">
                   <strong>Status:</strong>
                   <select
                     name="status"
-                    value={formData.status}
+                    value={status}
                     onChange={handleChange}
                   >
                     <option value="Cancelled">Cancelled</option>
@@ -216,19 +189,14 @@ function Content() {
                     <option value="Completed">Completed</option>
                   </select>
                 </div>
-                </div>
-                <div className="form-group">
-                  <strong>Method:</strong>
-                  <select
-                    name="method"
-                    value={formData.method}
-                    onChange={handleChange}
-                  >
-                    <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="Cash">Cash</option>
-                  </select>
-                </div>
               </div>
+              <button
+                type="button"
+                onClick={handleGenerate}
+                className="generateQR"
+              >
+                Generate QR
+              </button>
 
               {showAlert && (
                 <div
@@ -240,17 +208,48 @@ function Content() {
                   {message || error}
                 </div>
               )}
-              <button type="submit" className="buttonSubmit">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="buttonSubmit"
+              >
                 Update
               </button>
+              
+              <button
+                type="button"
+                onClick={handleClickCreate}
+                className="buttonCreatePayment"
+            >
+                Pay
+            </button>
             </form>
+            {showForm && (
+                <div className="payment-form" style={{width: "492px"}}>
+                    <form onSubmit={handlePaymentSubmit}>
+                        <label htmlFor="payment-method">Select Payment Method:</label>
+                        <select
+                            id="payment-method"
+                            value={paymentMethod}
+                            onChange={(e) => setPaymentMethod(e.target.value)}
+                        >
+                            <option value="Cash">Cash</option>
+                            <option value="Banking">Banking</option>
+                        </select>
+                        <button type="submit" style={{margin: "5px"}}>Submit Payment</button>
+                        <button type="button" style={{margin: "5px"}} onClick={() => setShowForm(false)}>Cancel</button>
+                    </form>
+                </div>
+            )}
+            
 
-            {formData.method === "Bank Transfer" && (
+            {qr && (
               <div className="col-md-6 QR">
                 <div className="Image justify-content align-items">
                   <div className="imageContainer">
                     <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
+                      style={{ width: "400px", height: "400px" }}
+                      src={qr}
                       alt="QR Code"
                     />
                   </div>
