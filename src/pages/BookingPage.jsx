@@ -318,9 +318,7 @@ function BookingPage() {
                     className="form-select"
                     onChange={(e) => handleServiceChange(index, e.target.value)}
                   >
-                    <option value="" disabled>
-                      Choose service
-                    </option>
+                    <option selected="">Choose service</option>
                     {dataService.map((item) => (
                       <option key={item.id} value={JSON.stringify(item)}>
                         {item.serviceName} - {item.price.toLocaleString()} VND
