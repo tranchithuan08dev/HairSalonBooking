@@ -3,24 +3,18 @@ import { useSearchParams } from "react-router-dom";
 import { searchFilter } from "../../../helpers/searchFilter";
 
 function Search(props) {
-  const { bookings, setFilteredBookings } = props;
+  const { bookings } = props;
   const [searchParams, setSearchParams] = useSearchParams();
   const searchRef = useRef(null);
   const handleSearch = () => {
     if (searchRef.current) {
-      const value = searchRef.current.value;
-      const { key, filtered } = searchFilter(bookings, value);
-
-      const param = new URLSearchParams(searchParams);
-      if (type) {
+        const value = searchRef.current.value.trim();
+        const { key } = searchFilter(bookings, value); 
+        const param = new URLSearchParams(searchParams);
         param.set("key", encodeURIComponent(key));
         setSearchParams(param);
-        setFilteredBookings(filtered);
-      } else {
-        alert("Please enter any number!");
-      }
     }
-  };
+};
 
   return (
     <>

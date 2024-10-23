@@ -1,7 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 
-function FilterStatus(props) {
-  const { bookings, setFilteredBookings } = props;
+function FilterStatus() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleFilterStatus = (status) => {
@@ -9,11 +8,8 @@ function FilterStatus(props) {
     
       if (status === "All") {
         setSearchParams(new URLSearchParams());
-        setFilteredBookings(bookings);
       } else {
         params.set("status", status);
-        const filteredBookings = bookings.filter((item) => item.status === status);
-        setFilteredBookings(filteredBookings);
         setSearchParams(params);
       }
     
@@ -26,12 +22,6 @@ function FilterStatus(props) {
         onClick={() => handleFilterStatus("All")}
       >
         All
-      </button>
-      <button
-        className="btn btn-sm ml-1 btn-outline-primary"
-        onClick={() => handleFilterStatus("Confirmed")}
-      >
-        Confirmed
       </button>
       <button
         className="btn btn-sm ml-1 btn-outline-info"

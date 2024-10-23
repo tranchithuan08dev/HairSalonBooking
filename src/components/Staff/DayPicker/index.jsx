@@ -3,24 +3,20 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSearchParams } from "react-router-dom";
 
-function DayPicker(props) {
-  const { bookings, setFilteredBookings } = props;
+function DayPicker() {
   const [date, setDate] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmitDate = () => {
     if (date) {
-      const dateValue = date.toLocaleDateString("en-GB");
-      console.log(dateValue);
-      const params = new URLSearchParams(searchParams);
-      params.set("appoinmentAt", dateValue);
-      setSearchParams(params);
-      const filtered = bookings.filter(
-        (item) => item.appoinmentAt === dateValue
-      );
-      setFilteredBookings(filtered);
+        const dateValue = date.toLocaleDateString("en-GB"); 
+        console.log(dateValue);
+        const params = new URLSearchParams(searchParams);
+        params.set("appointmentAt", dateValue); 
+        setSearchParams(params);
     }
-  };
+};
+
 
   const handleDateChange = (selectedDate) => {
     setDate(selectedDate);
