@@ -22,35 +22,46 @@ function BookingPage() {
   const dataWorkShift = useSelector((state) => state.BOOKING.workshift);
   const auth = useSelector((state) => state.AUTH.currentUser);
   const token = localStorage.getItem("ACCESS_TOKKEN");
-  console.log("dataService", dataService);
+  // console.log("dataService", dataService);
   // console.log("dataStylist", dataStylist);
   // console.log("dataStylistById", dataStylistById);
-  console.log("dataWorkShift", dataWorkShift);
+  // console.log("dataWorkShift", dataWorkShift);
   console.log("tokennnn", auth);
 
   // USE State AND GET ALL DATA
+  const [phone, setPhone] = useState(null);
+  const [name, setName] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [selects, setSelects] = useState([1]);
-  const [selectedStylist, setSelectedStylist] = useState({});
+  const [selectedStylist, setSelectedStylist] = useState(null);
   const [selectStylistWorkShift, setSelectStylistWorkShift] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
-  const [selectedTime, setSelectedTime] = useState(null); // Store the selected time
-  const [currentHour, setCurrentHour] = useState(new Date().getHours()); // Get the current hour
-  const [stylistIDs, setStylistIDs] = useState([]);
-  console.log("selectedServices", selectedServices);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [currentHour, setCurrentHour] = useState(new Date().getHours());
+  const [serviceIDs, setServiceIDs] = useState([]);
+  const [selectedToday, setSelectedToday] = useState("");
+  const [selectedTomorrow, setSelectedTomorrow] = useState("");
+  const [todayDayOfWeek, setTodayDayOfWeek] = useState("");
+  const [tomorrowDayOfWeek, setTomorrowDayOfWeek] = useState("");
+  useEffect(() => {
+    setPhone(auth?.record?.phoneNumber);
+    setName(auth?.record?.email);
+  }, [auth]);
+
+  // console.log("selectedServices", selectedServices);
   const HandleBooking = (e) => {
     e.preventDefault();
     const booking = {
       customerID: auth.actorByRole.customerID,
       stylistID: selectedStylist,
-      serviceID: stylistIDs,
+      serviceID: serviceIDs,
       totalPrice: totalPrice,
       stylistWorkShiftID: selectStylistWorkShift,
     };
     dispatch(fetchBooking(booking));
   };
-  console.log("stylistIDs", stylistIDs);
+  // console.log("StylistId", selectedStylist);
 
   useEffect(() => {
     dispatch(fetchMe(token));
@@ -64,7 +75,7 @@ function BookingPage() {
       const parsedItem = JSON.parse(item);
       return parsedItem.id;
     });
-    setStylistIDs(ids);
+    setServiceIDs(ids);
   }, [selectedServices]);
 
   const handleServiceChange = (index, value) => {
@@ -91,7 +102,7 @@ function BookingPage() {
   const handleStylistChange = (event) => {
     const stylistId = event.target.value;
     setSelectedStylist(stylistId);
-    dispatch(fetchWorkShift(stylistId));
+
     dispatch(fetchPostStylistDetailById(stylistId));
   };
 
@@ -120,7 +131,7 @@ function BookingPage() {
     setSelectedTime(time); // Allow only one selection
     setSelectStylistWorkShift(id);
   };
-  console.log("selectStylistWorkShift", selectStylistWorkShift);
+  // console.log("selectStylistWorkShift", selectStylistWorkShift);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -134,6 +145,49 @@ function BookingPage() {
     const [hours] = timeString.split(":");
     return hours;
   };
+  //SELECT TODAY OR TOMORROW
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  useEffect(() => {
+    // Get today's date
+    const today = new Date();
+    const dayToday = String(today.getDate()).padStart(2, "0");
+    const monthToday = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const yearToday = today.getFullYear();
+    const todayDay = daysOfWeek[today.getDay()];
+    setTodayDayOfWeek(todayDay);
+    setSelectedToday(`${dayToday}/${monthToday}/${yearToday}`);
+
+    // Get tomorrow's date
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Increment the day by 1
+    const dayTomorrow = String(tomorrow.getDate()).padStart(2, "0");
+    const monthTomorrow = String(tomorrow.getMonth() + 1).padStart(2, "0");
+    const yearTomorrow = tomorrow.getFullYear();
+    const tomorrowDay = daysOfWeek[tomorrow.getDay()];
+    setSelectedTomorrow(`${dayTomorrow}/${monthTomorrow}/${yearTomorrow}`);
+    setTomorrowDayOfWeek(tomorrowDay);
+  }, []);
+
+  const handleChangeDay = (event) => {
+    const value = event.target.value;
+    console.log("value", value);
+    if (value === "1") {
+      dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+    } else {
+      dispatch(
+        fetchWorkShift({ id: selectedStylist, shiftDate: tomorrowDayOfWeek })
+      );
+    }
+  };
+
   return (
     <>
       <div className="container-fluid bg-dark">
@@ -179,7 +233,8 @@ function BookingPage() {
             <input
               type="tel"
               className="form-control"
-              id="inputPhone"
+              value={phone}
+              disabled
               placeholder="Please enter your phone number"
             />
             {/* Name Input */}
@@ -189,14 +244,15 @@ function BookingPage() {
             <input
               type="text"
               className="form-control"
-              id="inputName"
+              value={name}
+              disabled
               placeholder="Please enter your name"
             />
             {/* Stylist Input */}
             <div className="container mt-4">
               {/* Dropdown to Select Stylist */}
               <div className="row">
-                <div className="col-md-8">
+                <div className="col-md-8" style={{ marginLeft: "-11px" }}>
                   <label
                     htmlFor="stylistSelect"
                     className="form-label text-white"
@@ -322,11 +378,22 @@ function BookingPage() {
             <label htmlFor="inputPhone" className="form-label text-white mt-3">
               Appointment date:
             </label>
-            <select className="form-select" aria-label="Default select example">
-              <option selected="">Appointment date</option>
-              <option value={1}>To day</option>
-              <option value={2}>Tomorrow</option>
-            </select>
+            {selectedStylist && (
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                onChange={handleChangeDay}
+              >
+                <option selected="">Appointment date</option>
+                <option value={1}>
+                  {selectedToday}||{todayDayOfWeek}
+                </option>
+                <option value={2}>
+                  {selectedTomorrow} || {tomorrowDayOfWeek}
+                </option>
+              </select>
+            )}
+
             {/* Appointment date */}
             {/* TIME */}
             <label htmlFor="inputPhone" className="form-label text-white mt-3">
