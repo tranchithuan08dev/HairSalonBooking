@@ -10,8 +10,8 @@ const bookingDetailService = {
   getStylistDetail: (id) => {
     return API.call().get(`api/v1/stylist/detail?id=${id}`);
   },
-  updateStatus: (id, data) => {
-    return API.call().get(`api/v1/booking/update?bookingID=${id}`, data);
+  updateStatus: (data) => {
+    return API.call().patch(`api/v1/booking/update`, data);
   },
 };
 
