@@ -1,6 +1,6 @@
 import "../../../../assets/css/stylist/bookingDetail.css";
 import { useEffect } from "react";
-import { fetchBookingDetail, updateStatus, setData, setShowAlert } from "../../../../store/stylistSlice/BookingDetailSlice";
+import { fetchBookingDetail, updateStatus, setShowAlert } from "../../../../store/stylistSlice/BookingDetailSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 function Content() {
@@ -23,13 +23,6 @@ function Content() {
     changeDate();
     console.log(data);
   }, [dispatch, stylistID, updateStatus]);
-
-  const formattedAmount =
-    data.data?.totalPrice !== undefined
-      ? typeof data.data.totalPrice === "number"
-        ? data.data.totalPrice.toFixed(2)
-        : parseFloat(data.data.totalPrice).toFixed(2)
-      : "0.00";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -163,7 +156,7 @@ function Content() {
                     <input
                       type="number"
                       name="totalPrice"
-                      value={formattedAmount.slice(0, -3)}
+                      value={data.data?.totalPrice || ""}
                       readOnly
                     />
                   </div>
