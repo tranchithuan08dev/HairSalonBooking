@@ -1,11 +1,11 @@
 import API from "../api";
 
 const salaryStaffService = {
-    getTotalBookingOfStaff: (id) => {
-        return API.call().get(`api/v1/totalBooking?staffID=${id}`);
+    getTotalBooking: (id) => {
+        return API.call().get(`api/v1/booking`);
     },
-    getSalary: (id) => {
-        return API.call().get(`api/v1/salary?staffID=${id}`);
+    getTotalBooking: (id) => {
+        return API.call().get(`api/v1/salary/getAll?id=${id}`);
     }
 }
 
