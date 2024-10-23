@@ -11,40 +11,58 @@ const initialState = {
 
 const name = "bookingDetail";
 
-export const getBooking = createAsyncThunk(`${name}/getBooking`, async (id) => {
-  try {
-    const response = await bookingDetailService.getDetail(id);
-    console.log("response", response.data.booking);
-    return {
-      ok: true,
-      data: response.data.booking,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      message: "Cannot get this booking!",
-    };
-  }
-});
-
-export const updateStatus = createAsyncThunk(
-  `${name}/update`,
-  async ({ id, data }) => {
+export const fetchBookingDetail = createAsyncThunk(
+  `${name}/fetchDetail`,
+  async (bookingID) => {
     try {
-      const response = await bookingDetailService.updateStatus(id, data);
-      console.log("data update: ", response);
+      let servicesNameArray = [];
+      let stylistName = "";
+      const response = await bookingDetailService.getDetail(bookingID);
+      let detail = response.data.details;
+      let data = response.data.booking[0];
+      for (let index = 0; index < detail.length; index++) {
+        const service = await bookingDetailService.getServiceDetail(
+          detail[index].serviceID
+        );
+        let name = service.data.service.serviceName;
+        servicesNameArray[index] = name;
+      }
+      const stylist = await bookingDetailService.getStylistDetail(
+        data.stylistID
+      );
+      let name = stylist.data.data.user.fullName;
+      stylistName = name;
       return {
         ok: true,
-        data: response.data.data,
+        data: data,
+        detail: detail,
+        servicesName: servicesNameArray,
+        stylistName: stylistName,
       };
     } catch (error) {
       return {
         ok: false,
-        message: "Cannot update!",
+        message: "Error fetching booking detail!",
       };
     }
   }
 );
+
+export const updateStatus = createAsyncThunk(`${name}/update`, async (data) => {
+  try {
+    const response = await bookingDetailService.updateStatus(data);
+    console.log("data update: ", response);
+    return {
+      ok: true,
+      data: response.data.data,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: "Cannot update!",
+    };
+  }
+});
 
 const bookingDetailSlice = createSlice({
   name,
@@ -53,20 +71,38 @@ const bookingDetailSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setData: (state, action) => {
+      state.data = { ...state.data, ...action.payload };
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setMessage: (state, action) => {
+      state.message = action.payload;
+    },
+    setShowAlert: (state) => {
+      state.showAlert = !state.showAlert;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getBooking.pending, (state) => {
+      .addCase(fetchBookingDetail.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getBooking.fulfilled, (state, action) => {
+      .addCase(fetchBookingDetail.fulfilled, (state, action) => {
         state.loading = false;
         if (action.payload.ok) {
-          state.data = action.payload.data;
+          state.data = action.payload;
         } else {
           state.error = action.payload.message;
         }
+      })
+      .addCase(fetchBookingDetail.rejected, (state) => {
+        state.error = action.payload.message;
       })
       .addCase(updateStatus.pending, (state) => {
         state.loading = true;
@@ -88,4 +124,6 @@ const bookingDetailSlice = createSlice({
   },
 });
 
+export const { setData, setLoading, setError, setMessage, setShowAlert } =
+  bookingDetailSlice.actions;
 export default bookingDetailSlice.reducer;
