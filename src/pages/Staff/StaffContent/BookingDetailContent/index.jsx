@@ -66,7 +66,7 @@ function Content() {
 
     const form = {
       bookingID: detail.data?.bookingID,
-      stylistID: "SL001",
+      stylistID: detail.data?.stylistID,
       serviceID: serviceIDs,
       totalPrice: detail.data?.totalPrice,
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
