@@ -108,6 +108,15 @@ const DashBroad = () => {
             },
             {
               key: "5",
+              icon: <PhoneOutlined />,
+              label: (
+                <Link to={`/dashboard/news`} style={{ textDecoration: "none" }}>
+                  News
+                </Link>
+              ),
+            },
+            {
+              key: "6",
               icon: <ContactsOutlined />,
               label: (
                 <Link to={`/dashboard/user`} style={{ textDecoration: "none" }}>
@@ -116,7 +125,7 @@ const DashBroad = () => {
               ),
             },
             {
-              key: "6",
+              key: "7",
               icon: <ShoppingOutlined />,
               label: (
                 <Link
@@ -128,7 +137,7 @@ const DashBroad = () => {
               ),
             },
             {
-              key: "7",
+              key: "8",
               icon: <UserAddOutlined />,
               label: (
                 <Link
@@ -140,7 +149,7 @@ const DashBroad = () => {
               ),
             },
             {
-              key: "8",
+              key: "9",
               icon: <UserAddOutlined />,
               label: (
                 <Link
@@ -152,7 +161,7 @@ const DashBroad = () => {
               ),
             },
             {
-              key: "9",
+              key: "10",
               icon: <UserOutlined />,
               label: (
                 <Link
