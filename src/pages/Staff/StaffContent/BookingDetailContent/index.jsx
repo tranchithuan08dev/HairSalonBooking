@@ -8,6 +8,7 @@ import {
   setDetail,
   setShowAlert,
   updateBooking,
+  updatePayment,
 } from "../../../../store/staffSlice/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,7 +21,7 @@ function Content() {
   const [showForm, setShowForm] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [qr, setQr] = useState(null);
-  const { detail, loading, qrCode, message, error, showAlert } = useSelector(
+  const { detail, loading, message, error, showAlert, paymentID } = useSelector(
     (state) => state.STAFF.booking
   );
   useEffect(() => {
@@ -28,8 +29,22 @@ function Content() {
       await dispatch(fetchBookingDetail(bookingID));
     };
     fetchData();
-    setStatus(detail.data?.status || "");
+    const dataCreate = {
+      bookingID: detail.data?.bookingID || "",
+      method: "Cash",
+      status: "unpaid"
+    }
+    if(detail.data?.status === "Completed"){
+      const create = async () => {
+        await dispatch(createPayment(dataCreate))
+      }
+      create();
+    }
   }, [dispatch, bookingID]);
+
+  useEffect(() => {
+    setStatus(detail.data?.status || "");
+  }, [detail]); 
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -47,10 +62,17 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let { stylistName, servicesName, ok, ...cleanedDetail } = detail;
-    console.log(cleanedDetail);
+    const serviceIDs = detail.detail?.map(detail => detail.serviceID);
 
-    await dispatch(updateBooking({ id: bookingID, cleanedDetail }));
+    const form = {
+      bookingID: detail.data?.bookingID,
+      stylistID: "SL001",
+      serviceID: serviceIDs,
+      totalPrice: detail.data?.totalPrice,
+      stylistWorkShiftID: detail.data?.stylistWorkShiftID,
+      status: detail.data?.status
+    }
+    await dispatch(updateBooking(form));
   };
 
   const formattedAmount =
@@ -73,6 +95,15 @@ function Content() {
     }
   };
 
+  const changeDate = (date) => {
+    if (!date) return "";
+    let year = date.slice(0, 4);
+    let month = date.slice(5, 7);
+    let day = date.slice(8, 10);
+    return `${day}-${month}-${year}`;
+  };
+
+
   const handleClickCreate = () => {
     setShowForm(true); 
 };
@@ -84,7 +115,7 @@ const handlePaymentSubmit = (e) => {
       method: paymentMethod,
       status: "paid"
     }
-    dispatch(createPayment(data));
+    dispatch(updatePayment({id: paymentID, data}));
     setShowForm(false);
 };
   useEffect(() => {
@@ -120,11 +151,20 @@ const handlePaymentSubmit = (e) => {
                   />
                 </div>
                 <div className="form-group">
-                  <strong>Booking Date:</strong>
+                  <strong>Created At:</strong>
                   <input
                     type="text"
                     name="createdAt"
-                    value={detail.data?.createdAt || ""}
+                    value={changeDate(detail.data?.createdAt) || ""}
+                    readOnly
+                  />
+                </div>
+                <div className="form-group">
+                  <strong>Appoinment At:</strong>
+                  <input
+                    type="text"
+                    name="appointmentAt"
+                    value={changeDate(detail.data?.appointmentAt) || ""}
                     readOnly
                   />
                 </div>
