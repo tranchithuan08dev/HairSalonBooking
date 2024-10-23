@@ -9,6 +9,8 @@ function Stylist() {
   const dispatch = useDispatch();
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const dataStylist = useSelector((state) => state.HOME.stylist);
+  console.log("dataStylist", dataStylist);
+
   const total = useSelector((state) => state.DASHBOARD.postStylist);
   useEffect(() => {
     dispatch(fetchPostStylist());
@@ -29,7 +31,7 @@ function Stylist() {
           {/* Row 1 */}
           <div className="row d-flex justify-content-center flex-wrap">
             {dataStylist.map((item) => (
-              <Item key={item.id} data={item} />
+              <Item key={item.id} data={item} slug="stylist" />
             ))}
           </div>
         </div>

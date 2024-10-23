@@ -3,6 +3,7 @@ import Item from "../CardItem";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPostService } from "../../../store/dashbroadSlice";
 import { fetchHomeService } from "../../../store/homeSlice";
+import { Link } from "react-router-dom";
 
 function Service() {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ function Service() {
           <div className="row d-flex justify-content-center flex-wrap">
             <div className="row d-flex justify-content-center flex-wrap">
               {dataService.map((item) => (
-                <Item key={item.id} data={item} />
+                <Item key={item.id} data={item} slug="service" />
               ))}
             </div>
           </div>

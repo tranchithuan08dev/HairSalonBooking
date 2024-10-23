@@ -1,8 +1,11 @@
 import React from "react";
 import "./card.css";
-function Item({ data }) {
+import { Link } from "react-router-dom";
+function Item({ data, slug }) {
   if (!data) return <></>;
-  const { fullName, serviceName } = data;
+  if (!slug) return <></>;
+  const { fullName, serviceName, id } = data;
+
   return (
     <>
       <div className="col-md-4 d-flex justify-content-center mb-4">
@@ -15,13 +18,14 @@ function Item({ data }) {
           />
           <div className="card-body">
             <h3 className="text-center">
-              <a
+              <Link
+                to={`/${slug}/${id}`}
                 className="text-black"
                 href="./StylistDetail.html"
                 style={{ textDecoration: "none" }}
               >
                 {fullName || serviceName}
-              </a>
+              </Link>
             </h3>
           </div>
         </div>

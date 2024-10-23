@@ -88,7 +88,7 @@ export const fetchPostCustomerById = createAsyncThunk(
   `${name}/fetchPostCustomerById`,
   async (id) => {
     const res = await dashboardService.getDetailCustomerById(id);
-    const dataCustomerId = res.data.customer;
+    const dataCustomerId = res.data.data;
     return dataCustomerId;
   }
 );
