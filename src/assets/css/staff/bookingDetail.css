@@ -46,10 +46,23 @@
 .buttonSubmit {
     padding: 20px 40px;
     position: relative;
-    top: -80px;
-    left: 600px;
+    top: 30px;
+    left: 550px;
     background-color: rgb(29, 169, 29);
     color: white;
+}
+
+.generateQR {
+    padding: 20px 40px;
+    position: relative;
+    top: 30px;
+    left: 500px;
+    background-color: rgb(29, 169, 29);
+    color: white;
+}
+
+.generateQR:hover {
+    background-color: blueviolet;
 }
 
 .buttonSubmit:hover{
@@ -63,4 +76,29 @@
     z-index: 9999; 
     min-width: 200px; 
   }
-  
+  .text {
+    margin-left: 178px;
+  }
+
+  .buttonCreatePayment{
+    padding: 20px 40px;
+    position: relative;
+    top: 30px;
+    left: 600px;
+    background-color: rgb(29, 169, 29);
+    color: white;
+  }
+
+  .buttonCreatePayment:hover{
+    background-color: blueviolet;
+  }
+
+  .payment-form {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-top: 500px;
+    margin-left: -525px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    height: 100px;
+}

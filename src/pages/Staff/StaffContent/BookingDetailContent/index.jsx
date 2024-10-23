@@ -211,24 +211,11 @@ function Content() {
                     value={formData.status}
                     onChange={handleChange}
                   >
-                    <option value="Pending">Pending</option>
-                    <option value="Confirm">Confirm</option>
-                    <option value="Rejected">Rejected</option>
                     <option value="Cancelled">Cancelled</option>
                     <option value="In-progress">In-progress</option>
                     <option value="Completed">Completed</option>
                   </select>
                 </div>
-                <div className="form-group">
-                  <strong>Payment Status:</strong>
-                  <select
-                    name="paymentstatus"
-                    value={formData.paymentstatus}
-                    onChange={handleChange}
-                  >
-                    <option value="unpaid">Unpaid</option>
-                    <option value="paid">Paid</option>
-                  </select>
                 </div>
                 <div className="form-group">
                   <strong>Method:</strong>
@@ -261,7 +248,6 @@ function Content() {
             {formData.method === "Bank Transfer" && (
               <div className="col-md-6 QR">
                 <div className="Image justify-content align-items">
-                  <h3>QR</h3>
                   <div className="imageContainer">
                     <img
                       src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
