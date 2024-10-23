@@ -22,6 +22,7 @@ import ContactPage from "./pages/ContactPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
 import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
+import News from "./pages/Dashboard/News";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ function App() {
           <Route path="/dashboard/service" element={<Service />} />
           <Route path="/dashboard/stylist" element={<Stylist />} />
           <Route path="/dashboard/staff" element={<Staff />} />
+          <Route path="/dashboard/news" element={<News />} />
           <Route path="/dashboard/newService" element={<NewService />} />
           <Route path="/dashboard/user" element={<User />} />
           <Route path="/dashboard/newStylist" element={<NewStylist />} />
