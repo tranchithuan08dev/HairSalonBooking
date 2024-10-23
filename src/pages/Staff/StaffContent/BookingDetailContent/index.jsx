@@ -79,7 +79,6 @@ function Content() {
 
 const handlePaymentSubmit = (e) => {
     e.preventDefault(); 
-
     let data = {
       bookingID: detail.data?.bookingID || "",
       method: paymentMethod,

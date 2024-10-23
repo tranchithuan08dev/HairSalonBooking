@@ -4,7 +4,7 @@ import bookingService from "../../services/staffServices/bookingDetailStaffServi
 const initialState = {
   all: {},
   data: {},
-  qrCode: "",
+  paymentID: "",
   detail: {},
   loading: true,
   error: null,
@@ -69,9 +69,9 @@ export const fetchBookingDetail = createAsyncThunk(
 
 export const updateBooking = createAsyncThunk(
   `${name}/update`,
-  async ({id, data}) => {
+  async (data) => {
     try {
-      const response = await bookingService.updateBooking(id, data);
+      const response = await bookingService.updateBooking(data);
       console.log("Data update: ", response);
       return {
         ok: true,
@@ -104,15 +104,34 @@ export const generateQR = createAsyncThunk(
   }
 );
 
+export const updatePayment = createAsyncThunk(
+  `${name}/updatePayment`,
+  async ({id, data}) => {
+    try{
+      const response = await bookingService.updatePayment(id, data);
+      console.log(response.data);
+      return {
+        ok: true,
+        message: "Payment updated successfully!",
+      };
+    }catch(error){
+      return {
+        ok: false,
+        message: "Cannot update!",
+      };
+    }
+  }
+)
+
 export const createPayment = createAsyncThunk(
   `${name}/createPayment`,
   async (data) => {
     try{
       const response = await bookingService.createPayment(data);
-      console.log(response.data);
+      console.log("paymentCreate", response.data);
       return {
         ok: true,
-        message: "Payment created successfully!",
+        data: response.data.data.paymentID
       };
     }catch(error){
       return {
@@ -144,9 +163,6 @@ const bookingSlice = createSlice({
     },
     setShowAlert: (state) => {
       state.showAlert = !state.showAlert;
-    },
-    setQRCode: (state, action) => {
-      state.qrCode = { ...state.qrCode, ...action.payload };
     }
   },
   extraReducers: (builder) => {
@@ -163,7 +179,7 @@ const bookingSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(fetchBookings.rejected, (state) => {
+      .addCase(fetchBookings.rejected, (state, action) => {
         state.error = action.payload.message;
       })
       .addCase(fetchBookingDetail.pending, (state) => {
@@ -178,8 +194,36 @@ const bookingSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(fetchBookingDetail.rejected, (state) => {
+      .addCase(fetchBookingDetail.rejected, (state, action) => {
         state.error = action.payload.message;
+      })
+      .addCase(createPayment.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createPayment.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.ok) {
+          state.paymentID = action.payload.data;
+        } else {
+          state.error = action.payload.message;
+        }
+      })
+      .addCase(createPayment.rejected, (state, action) => {
+        state.error = action.payload.message;
+      })
+      .addCase(updatePayment.rejected, (state) => {
+        state.error = action.payload.message;
+      })
+      .addCase(updatePayment.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updatePayment.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.ok) {
+          state.message = action.payload.message;
+        } else {
+          state.error = action.payload.message;
+        }
       })
       .addCase(updateBooking.pending, (state) => {
         state.loading = true;
@@ -195,7 +239,7 @@ const bookingSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(updateBooking.rejected, (state) => {
+      .addCase(updateBooking.rejected, (state, action) => {
         state.error = action.payload.message;
       })
       .addCase(generateQR.pending, (state) => {
@@ -212,22 +256,7 @@ const bookingSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(generateQR.rejected, (state) => {
-        state.error = action.payload.message;
-      })
-      .addCase(createPayment.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(createPayment.fulfilled, (state, action) => {
-        state.loading = false;
-        if (action.payload.ok) {
-          state.showAlert = true;
-          state.message = action.payload.message;
-        } else {
-          state.error = action.payload.message;
-        }
-      })
-      .addCase(createPayment.rejected, (state) => {
+      .addCase(generateQR.rejected, (state, action) => {
         state.error = action.payload.message;
       })
   },

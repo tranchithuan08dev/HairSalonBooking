@@ -1,7 +1,6 @@
 import "../../../../assets/css/staff/salary.css";
 
 
-function Content() {
   return (
     <>
       <div className="container test-container">
