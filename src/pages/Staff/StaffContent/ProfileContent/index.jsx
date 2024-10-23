@@ -154,6 +154,7 @@ function Content() {
                       id="inputEmail"
                       type="text"
                       name="email"
+                      disabled
                       onChange={handleChange}
                       defaultValue={data.email}
                     />
