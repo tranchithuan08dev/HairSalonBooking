@@ -75,17 +75,10 @@ function Content() {
     await dispatch(updateBooking(form));
   };
 
-  const formattedAmount =
-    detail.data?.totalPrice !== undefined
-      ? typeof detail.data.totalPrice === "number"
-        ? detail.data.totalPrice.toFixed(2)
-        : parseFloat(detail.data.totalPrice).toFixed(2)
-      : "0.00";
-
   const handleGenerate = async () => {
     console.log("pushed");
     const value = {
-      Amount: formattedAmount || "0",
+      Amount: detail.data?.totalPrice || "0",
       Description: "Chuyen Khoan",
     };
 
@@ -212,7 +205,7 @@ const handlePaymentSubmit = (e) => {
                   <input
                     type="number"
                     name="totalPrice"
-                    value={formattedAmount.slice(0, -3)}
+                    value={detail.data?.totalPrice || ""}
                     readOnly
                   />
                 </div>
