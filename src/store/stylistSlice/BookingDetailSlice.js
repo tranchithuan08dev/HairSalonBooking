@@ -48,21 +48,24 @@ export const fetchBookingDetail = createAsyncThunk(
   }
 );
 
-export const updateStatus = createAsyncThunk(`${name}/update`, async (data) => {
-  try {
-    const response = await bookingDetailService.updateStatus(data);
-    console.log("data update: ", response);
-    return {
-      ok: true,
-      data: response.data.data,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      message: "Cannot update!",
-    };
+export const updateStatus = createAsyncThunk(
+  `${name}/update`,
+  async (data) => {
+    try {
+      const response = await bookingDetailService.updateStatus(data);
+      console.log("Data update: ", response);
+      return {
+        ok: true,
+        data: response.data.data
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Cannot update booking!",
+      };
+    }
   }
-});
+);
 
 const bookingDetailSlice = createSlice({
   name,
@@ -101,7 +104,7 @@ const bookingDetailSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(fetchBookingDetail.rejected, (state) => {
+      .addCase(fetchBookingDetail.rejected, (state, action) => {
         state.error = action.payload.message;
       })
       .addCase(updateStatus.pending, (state) => {
@@ -112,15 +115,15 @@ const bookingDetailSlice = createSlice({
         state.loading = false;
         state.showAlert = true;
         if (action.payload.ok) {
-          state.data = action.payload.data;
+          state.data = { ...state.data, ...action.payload.data };
+          state.message = "Booking updated successfully!";
         } else {
           state.error = action.payload.message;
         }
       })
       .addCase(updateStatus.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      });
+        state.error = action.payload.message;
+      })
   },
 });
 
