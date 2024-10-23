@@ -22,7 +22,7 @@ function Content() {
     fetch();
     changeDate();
     console.log(data);
-  }, [dispatch, stylistID]);
+  }, [dispatch, stylistID, updateStatus]);
 
   const formattedAmount =
     data.data?.totalPrice !== undefined
@@ -33,20 +33,17 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let value = "Completed";
-    dispatch(
-      setData({
-        ...detail,
-        data: {
-          ...detail.data,
-          status: value,
-        },
-      })
-    );
-    let { stylistName, servicesName, ok, ...cleanedDetail } = detail;
-    console.log(cleanedDetail);
 
-    await dispatch(updateStatus(cleanedDetail));
+    const serviceIDs = data.detail?.map(detail => detail.serviceID);
+    const form = {
+      bookingID: data.data?.bookingID,
+      stylistID: data.data?.stylistID,
+      serviceID: serviceIDs,
+      totalPrice: data.data?.totalPrice,
+      stylistWorkShiftID: data.data?.stylistWorkShiftID,
+      status: "Completed"
+    }
+    await dispatch(updateStatus(form));
   };
 
   useEffect(() => {
@@ -180,7 +177,7 @@ function Content() {
                     />
                   </div>
                 </div>
-                <button type="submit" onSubmit={handleSubmit} className="buttonSubmit">
+                <button type="submit" onClick={handleSubmit} className="buttonSubmit">
                   Done
                 </button>
               </form>

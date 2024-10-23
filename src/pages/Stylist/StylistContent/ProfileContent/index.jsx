@@ -130,6 +130,7 @@ function Content() {
                       className="form-control"
                       id="inputPhoneNumber"
                       type="text"
+                      disabled
                       name="phoneNumber"
                       defaultValue={data.phoneNumber}
                     />
@@ -143,6 +144,7 @@ function Content() {
                       id="inputEmail"
                       type="text"
                       name="email"
+                      disabled
                       defaultValue={data.email}
                     />
                   </div>
