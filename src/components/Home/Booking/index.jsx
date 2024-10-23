@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./bookingButton.css";
-import { Drawer } from "antd";
+import { Button, Drawer, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 
 function Booking() {
-  const token = localStorage.getItem("ACCESS_TOKEN");
+  const datatoken = localStorage.getItem("ACCESS_TOKKEN");
   const [open, setOpen] = useState(false);
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    setToken(datatoken);
+  }, [datatoken]);
+  console.log(token);
 
   const showDrawer = () => {
     setOpen(true);
@@ -14,7 +19,9 @@ function Booking() {
   const onClose = () => {
     setOpen(false);
   };
-
+  const onFinish = (value) => {
+    console.log("value", value);
+  };
   return (
     <>
       <div className="position-relative">
@@ -35,9 +42,47 @@ function Booking() {
               </button>
               <Drawer title="Booking Details" onClose={onClose} open={open}>
                 <h4>Submit form to booking</h4>
-                <p>Your upcoming appointment details will be shown here.</p>
-                <p>To view or manage your bookings, please use this panel.</p>
-                {/* You can add more booking-related content here */}
+                <Form layout="vertical" onFinish={onFinish}>
+                  <Form.Item
+                    label="Your Name"
+                    name="fullName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your name!",
+                      },
+                    ]}
+                  >
+                    <Input size="large" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Your Phone"
+                    name="phoneNumber"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your phone number!",
+                      },
+                      {
+                        pattern: /^[0-9]{10,}$/,
+                        message: "Please enter a valid phone number!",
+                      },
+                    ]}
+                  >
+                    <Input size="large" type="number" />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="btn-block"
+                      size="large"
+                      style={{ width: "100%" }}
+                    >
+                      Booking
+                    </Button>
+                  </Form.Item>
+                </Form>
               </Drawer>
             </>
           )}
