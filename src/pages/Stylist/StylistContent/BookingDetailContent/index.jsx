@@ -1,6 +1,6 @@
 import "../../../../assets/css/stylist/bookingDetail.css";
 import { useEffect } from "react";
-import { getBooking } from "../../../../store/stylistSlice/BookingDetailSlice";
+import { fetchBookingDetail, updateStatus, setData, setShowAlert } from "../../../../store/stylistSlice/BookingDetailSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 function Content() {
@@ -15,15 +15,39 @@ function Content() {
     (state) => state.STYLIST.bookingDetail
   );
 
-  const services = ["S001", "S002", "S003", "S004"];
-
   useEffect(() => {
     const fetch = async () => {
-      await dispatch(getBooking(id));
+      await dispatch(fetchBookingDetail(id));
     };
     fetch();
     changeDate();
+    console.log(data);
   }, [dispatch, stylistID]);
+
+  const formattedAmount =
+    data.data?.totalPrice !== undefined
+      ? typeof data.data.totalPrice === "number"
+        ? data.data.totalPrice.toFixed(2)
+        : parseFloat(data.data.totalPrice).toFixed(2)
+      : "0.00";
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let value = "Completed";
+    dispatch(
+      setData({
+        ...detail,
+        data: {
+          ...detail.data,
+          status: value,
+        },
+      })
+    );
+    let { stylistName, servicesName, ok, ...cleanedDetail } = detail;
+    console.log(cleanedDetail);
+
+    await dispatch(updateStatus(cleanedDetail));
+  };
 
   useEffect(() => {
     if (showAlert) {
@@ -42,28 +66,12 @@ function Content() {
     return `${day}-${month}-${year}`;
   };
 
-  const formattedDate = data.appointmentAt ? changeDate(data.appointmentAt) : '';
-
-  function formatCreatedAt(dateString) {
-    const date = new Date(dateString);
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-    const year = date.getFullYear();
-  
-    return `${hours}:${minutes}:${seconds} ${day}-${month}-${year}`;
-  }
-
-  const createdAt = data.createdAt ? formatCreatedAt(data.createdAt) : "";
-
   if (loading) {
     return <div>Loading...</div>;
   }
 
   if (error) {
-    return <p>Lỗi: {error}</p>;
+    return <p>Error: {error}</p>;
   }
   return (
     <>
@@ -89,85 +97,76 @@ function Content() {
                     <input
                       type="text"
                       name="bookingID"
-                      defaultValue={data.bookingID}
+                      value={data.data?.bookingID || ""}
                       readOnly
                     />
                   </div>
                   <div className="form-group">
-                    <strong>Appointment at</strong>
-                    <input
-                      type="text"
-                      name="appointmentAt"
-                      defaultValue={formattedDate}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-group">
-                    <strong>Created at</strong>
+                    <strong>Created At:</strong>
                     <input
                       type="text"
                       name="createdAt"
-                      defaultValue={createdAt}
+                      value={changeDate(data.data?.createdAt) || ""}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-group">
+                    <strong>Appoinment At:</strong>
+                    <input
+                      type="text"
+                      name="appointmentAt"
+                      value={changeDate(data.data?.appointmentAt) || ""}
                       readOnly
                     />
                   </div>
                   <div className="form-group">
                     <strong>Services:</strong>
                     <textarea
-                      name="serviceID"
-                      defaultValue={services.join(", ")}
+                      name="servicesName"
+                      defaultValue={
+                        Array.isArray(data.servicesName) &&
+                        data.servicesName.length > 0
+                          ? data.servicesName.join(", ")
+                          : "No services available"
+                      }
                       readOnly
-                      rows={4} 
+                      rows={4}
                       className="form-control text"
                     />
                   </div>
                   <div className="form-group">
-                    <strong>Booking Phone:</strong>
+                    <strong>FullName:</strong>
                     <input
                       type="text"
-                      name="bookingphone"
-                      defaultValue="091313123123"
+                      name="fullName"
+                      value={data.data?.fullName || ""}
                       readOnly
                     />
                   </div>
-                  {data.customerID ? (
-                    <div className="form-group">
-                      <strong>Customer</strong>
-                      <input
-                        type="text"
-                        name="customerID"
-                        defaultValue={data.customerID}
-                        readOnly
-                      />
-                    </div>
-                  ) : (
-                    <div className="form-group">
-                      <strong>Guest</strong>
-                      <input
-                        type="text"
-                        name="guestID"
-                        defaultValue={data.guestID}
-                        readOnly
-                      />
-                    </div>
-                  )}
                   <div className="form-group">
-                    <strong>Note:</strong>
-                    <textarea
-                      name="note"
-                      defaultValue={data.note}
+                    <strong>Phone Number:</strong>
+                    <input
+                      type="text"
+                      name="phoneNumber"
+                      value={data.data?.phoneNumber || ""}
                       readOnly
-                      rows={4} 
-                      className="form-control text-2"
                     />
                   </div>
-
+                  <div className="form-group">
+                    <strong>Stylist Name:</strong>
+                    <input
+                      type="text"
+                      name="stylistName"
+                      value={data.stylistName || ""}
+                      readOnly
+                    />
+                  </div>
                   <div className="form-group">
                     <strong>Total Price:</strong>
                     <input
                       type="number"
                       name="totalPrice"
-                      defaultValue={data.totalPrice}
+                      value={formattedAmount.slice(0, -3)}
                       readOnly
                     />
                   </div>
@@ -176,12 +175,12 @@ function Content() {
                     <input
                       type="text"
                       name="status"
-                      defaultValue={data.status}
+                      value={data.data?.status}
                       readOnly
                     />
                   </div>
                 </div>
-                <button type="submit" className="buttonSubmit">
+                <button type="submit" onSubmit={handleSubmit} className="buttonSubmit">
                   Done
                 </button>
               </form>

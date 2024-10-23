@@ -24,7 +24,7 @@ function Content() {
 
   const handleClick = (shift) => {
     if (shift) {
-      navigate(`bookingDetail?id=B001`);
+      navigate(`bookingDetail?id=${shift.bookingID}`);
     }
   };
 
@@ -73,7 +73,7 @@ function Content() {
   }
 
   if (error) {
-    return <p>Lỗi: {error}</p>;
+    return <p>{error}</p>;
   }
 
   return (
