@@ -8,7 +8,6 @@ import {
   setDetail,
   setShowAlert,
   updateBooking,
-  updatePayment,
 } from "../../../../store/staffSlice/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,7 +20,7 @@ function Content() {
   const [showForm, setShowForm] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [qr, setQr] = useState(null);
-  const { detail, loading, message, error, showAlert, paymentID } = useSelector(
+  const { detail, loading, message, error, showAlert } = useSelector(
     (state) => state.STAFF.booking
   );
   useEffect(() => {
@@ -29,22 +28,11 @@ function Content() {
       await dispatch(fetchBookingDetail(bookingID));
     };
     fetchData();
-    const dataCreate = {
-      bookingID: detail.data?.bookingID || "",
-      method: "Cash",
-      status: "unpaid"
-    }
-    if(detail.data?.status === "Completed"){
-      const create = async () => {
-        await dispatch(createPayment(dataCreate))
-      }
-      create();
-    }
   }, [dispatch, bookingID]);
 
   useEffect(() => {
     setStatus(detail.data?.status || "");
-  }, [detail]); 
+  }, [detail]);
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -62,7 +50,7 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const serviceIDs = detail.detail?.map(detail => detail.serviceID);
+    const serviceIDs = detail.detail?.map((detail) => detail.serviceID);
 
     const form = {
       bookingID: detail.data?.bookingID,
@@ -70,8 +58,8 @@ function Content() {
       serviceID: serviceIDs,
       totalPrice: detail.data?.totalPrice,
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
-      status: detail.data?.status
-    }
+      status: detail.data?.status,
+    };
     await dispatch(updateBooking(form));
   };
 
@@ -79,12 +67,12 @@ function Content() {
     console.log("pushed");
     const value = {
       Amount: detail.data?.totalPrice || "0",
-      Description: "Chuyen Khoan",
+      Description: "Paid for hairsalon services",
     };
 
     const result = await dispatch(generateQR(value));
     if (result.payload) {
-      setQr(result.payload.data.qrCode); 
+      setQr(result.payload.data.qrCode);
     }
   };
 
@@ -96,21 +84,24 @@ function Content() {
     return `${day}-${month}-${year}`;
   };
 
-
   const handleClickCreate = () => {
-    setShowForm(true); 
-};
+    setShowForm(true);
+  };
 
-const handlePaymentSubmit = (e) => {
-    e.preventDefault(); 
-    let data = {
+  const handlePaymentSubmit = (e) => {
+    e.preventDefault();
+    const dataCreate = {
       bookingID: detail.data?.bookingID || "",
-      method: paymentMethod,
-      status: "paid"
-    }
-    dispatch(updatePayment({id: paymentID, data}));
+      method: "Cash",
+      status: "paid",
+    };
+
+    const create = async () => {
+      await dispatch(createPayment(dataCreate));
+    };
+    create();
     setShowForm(false);
-};
+  };
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
@@ -165,9 +156,12 @@ const handlePaymentSubmit = (e) => {
                   <strong>Services:</strong>
                   <textarea
                     name="servicesName"
-                    defaultValue={Array.isArray(detail.servicesName) && detail.servicesName.length > 0
-                      ? detail.servicesName.join(", ")
-                      : "No services available"}
+                    defaultValue={
+                      Array.isArray(detail.servicesName) &&
+                      detail.servicesName.length > 0
+                        ? detail.servicesName.join(", ")
+                        : "No services available"
+                    }
                     readOnly
                     rows={4}
                     className="form-control text"
@@ -211,25 +205,35 @@ const handlePaymentSubmit = (e) => {
                 </div>
                 <div className="form-group">
                   <strong>Status:</strong>
-                  <select
-                    name="status"
-                    value={status}
-                    onChange={handleChange}
-                  >
+                  <select name="status" value={status} onChange={handleChange}>
                     <option value="Cancelled">Cancelled</option>
                     <option value="In-progress">In-progress</option>
                     <option value="Completed">Completed</option>
                   </select>
                 </div>
+                {detail.payment?.status && (
+                  <div className="form-group">
+                    <strong>Payment Status:</strong>
+                    <input
+                      type="text"
+                      name="paymentStatus"
+                      value={detail.payment?.status}
+                      readOnly
+                    />
+                  </div>
+                )}
               </div>
-              <button
-                type="button"
-                onClick={handleGenerate}
-                className="generateQR"
-              >
-                Generate QR
-              </button>
-
+              {!detail.payment?.status || detail.payment?.status === "" ? (
+                <button
+                  type="button"
+                  onClick={handleGenerate}
+                  className="generateQR"
+                >
+                  Generate QR
+                </button>
+              ) : (
+                <></>
+              )}
               {showAlert && (
                 <div
                   className={`alert ${
@@ -247,33 +251,43 @@ const handlePaymentSubmit = (e) => {
               >
                 Update
               </button>
-              
-              <button
-                type="button"
-                onClick={handleClickCreate}
-                className="buttonCreatePayment"
-            >
-                Pay
-            </button>
+              {!detail.payment?.status || detail.payment?.status === "" ? (
+                <button
+                  type="button"
+                  onClick={handleClickCreate}
+                  className="buttonCreatePayment"
+                >
+                  Pay
+                </button>
+              ) : (
+                <></>
+              )}
             </form>
             {showForm && (
-                <div className="payment-form" style={{width: "492px"}}>
-                    <form onSubmit={handlePaymentSubmit}>
-                        <label htmlFor="payment-method">Select Payment Method:</label>
-                        <select
-                            id="payment-method"
-                            value={paymentMethod}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                        >
-                            <option value="Cash">Cash</option>
-                            <option value="Banking">Banking</option>
-                        </select>
-                        <button type="submit" style={{margin: "5px"}}>Submit Payment</button>
-                        <button type="button" style={{margin: "5px"}} onClick={() => setShowForm(false)}>Cancel</button>
-                    </form>
-                </div>
+              <div className="payment-form" style={{ width: "492px" }}>
+                <form onSubmit={handlePaymentSubmit}>
+                  <label htmlFor="payment-method">Select Payment Method:</label>
+                  <select
+                    id="payment-method"
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="Banking">Banking</option>
+                  </select>
+                  <button type="submit" style={{ margin: "5px" }}>
+                    Submit Payment
+                  </button>
+                  <button
+                    type="button"
+                    style={{ margin: "5px" }}
+                    onClick={() => setShowForm(false)}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              </div>
             )}
-            
 
             {qr && (
               <div className="col-md-6 QR">

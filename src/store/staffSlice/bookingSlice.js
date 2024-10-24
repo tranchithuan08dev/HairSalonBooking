@@ -106,31 +106,11 @@ export const generateQR = createAsyncThunk(
   }
 );
 
-export const updatePayment = createAsyncThunk(
-  `${name}/updatePayment`,
-  async ({id, data}) => {
-    try{
-      const response = await bookingService.updatePayment(id, data);
-      console.log(response.data);
-      return {
-        ok: true,
-        message: "Payment updated successfully!",
-      };
-    }catch(error){
-      return {
-        ok: false,
-        message: "Cannot update!",
-      };
-    }
-  }
-)
-
 export const createPayment = createAsyncThunk(
   `${name}/createPayment`,
   async (data) => {
     try{
       const response = await bookingService.createPayment(data);
-      console.log("paymentCreate", response.data);
       return {
         ok: true,
         data: response.data.data.paymentID
@@ -212,20 +192,6 @@ const bookingSlice = createSlice({
       })
       .addCase(createPayment.rejected, (state, action) => {
         state.error = action.payload.message;
-      })
-      .addCase(updatePayment.rejected, (state) => {
-        state.error = action.payload.message;
-      })
-      .addCase(updatePayment.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(updatePayment.fulfilled, (state, action) => {
-        state.loading = false;
-        if (action.payload.ok) {
-          state.message = action.payload.message;
-        } else {
-          state.error = action.payload.message;
-        }
       })
       .addCase(updateBooking.pending, (state) => {
         state.loading = true;
