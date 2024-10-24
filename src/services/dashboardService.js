@@ -2,8 +2,10 @@ import API from "./api";
 const token = localStorage.getItem("ACCESS_TOKKEN");
 const dashboardService = {
   //News
-  getAllNews: () => {
-    return API.call().get(`/api/v1/news/getAll`);
+  getAllNews: (inputParam) => {
+    return API.call().get(`/api/v1/news/getAll`, {
+      params: inputParam,
+    });
   },
   //Create Stylist and Staff
   createStaff: (data) => {
