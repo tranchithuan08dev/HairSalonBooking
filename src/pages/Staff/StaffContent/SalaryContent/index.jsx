@@ -36,7 +36,7 @@ function Content() {
   return (
     <>
       <div className="container test-container">
-        <div className="row row-cols-1 row-cols-md-2 row-cols-xl-4 custom-tumlum">
+        <div className="row row-edit row-cols-1 row-cols-md-2 row-cols-xl-4 custom-tumlum">
           <div className="col-6">
             <div className="card radius-10 border-start border-0 border-3 border-danger test-radius">
               <div className="card-body testcard-body">
@@ -53,7 +53,7 @@ function Content() {
             </div>
           </div>
         </div>
-        <div className="row rowPay">
+        <div className="row row-edit rowPay">
           <div className="col-12">
             <div
               className="card radius-10 border-start border-0 border-3 border-warning customPay"

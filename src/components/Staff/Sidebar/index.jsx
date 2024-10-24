@@ -5,7 +5,13 @@ function Sidebar() {
   const navLinkActive = (e) => {
     return e.isActive ? "sidebar__menu__li__link sidebar__menu__li__link--active" : "sidebar__menu__li__link";
   };
+  const handleLogout =() =>{
+    console.log("before");
+    let item = localStorage.removeItem("ACCESS_TOKKEN");
+    console.log(item);
+    console.log("after");
 
+  }
   return (
     <>
       <div className="sidebar">
@@ -32,7 +38,7 @@ function Sidebar() {
             </li>
           </ul>
           <div className="sidebar__menu--logout">
-            <NavLink to="/" className={navLinkActive}>
+            <NavLink to="/" className={navLinkActive} onClick={handleLogout}>
               Logout
             </NavLink>
           </div>
