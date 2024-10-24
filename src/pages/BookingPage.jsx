@@ -59,6 +59,8 @@ function BookingPage() {
       totalPrice: totalPrice,
       stylistWorkShiftID: selectStylistWorkShift,
     };
+    console.log("Booking", booking);
+
     dispatch(fetchBooking(booking));
   };
   // console.log("StylistId", selectedStylist);

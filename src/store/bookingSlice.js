@@ -27,7 +27,7 @@ export const fetchBooking = createAsyncThunk(
       console.log("Ressss", res);
       return res;
     } catch (error) {
-      console.log(error);
+      console.log("errrr", error);
     }
   }
 );
