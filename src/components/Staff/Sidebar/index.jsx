@@ -36,6 +36,11 @@ function Sidebar() {
                 Salary
               </NavLink>
             </li>
+            <li>
+              <NavLink to={`/staff/updateStylistWorkshift`} className={navLinkActive}>
+                Update Stylist Workshift
+              </NavLink>
+            </li>
           </ul>
           <div className="sidebar__menu--logout">
             <NavLink to="/" className={navLinkActive} onClick={handleLogout}>
