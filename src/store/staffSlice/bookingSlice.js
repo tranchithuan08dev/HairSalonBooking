@@ -41,8 +41,7 @@ export const fetchBookingDetail = createAsyncThunk(
       let servicesNameArray = [];
       let stylistName = "";
       const response = await bookingService.getDetail(bookingID);
-      // const payment = await bookingService.getAllPayment();
-      // console.log(payment);
+      const payment = await bookingService.getAllPayment();
       let detail = response.data.details; 
       let data = response.data.booking[0];
       for (let index = 0; index < detail.length; index++) {
@@ -53,12 +52,15 @@ export const fetchBookingDetail = createAsyncThunk(
       const stylist = await bookingService.getStylistDetail(data.stylistID);
       let name = stylist.data.data.user.fullName;
       stylistName = name;
+      let paymentList = payment.data.paymentList;
+      const foundPayment = paymentList.find(paymentItem => paymentItem.bookingID === bookingID);
       return {
         ok: true,
         data: data,
         detail: detail,
         servicesName: servicesNameArray,
-        stylistName: stylistName
+        stylistName: stylistName,
+        payment: foundPayment
       };
     } catch (error) {
       return {
@@ -111,14 +113,15 @@ export const createPayment = createAsyncThunk(
   async (data) => {
     try{
       const response = await bookingService.createPayment(data);
+      console.log(response.data);
       return {
         ok: true,
-        data: response.data.data.paymentID
+        message: "Created payment successfully!"
       };
     }catch(error){
       return {
         ok: false,
-        message: "This booking was paid!",
+        error: "This booking was paid!",
       };
     }
   }
@@ -184,10 +187,11 @@ const bookingSlice = createSlice({
       })
       .addCase(createPayment.fulfilled, (state, action) => {
         state.loading = false;
+        state.showAlert = true;
         if (action.payload.ok) {
-          state.paymentID = action.payload.data;
+          state.message = action.payload.message;
         } else {
-          state.error = action.payload.message;
+          state.error = action.payload.error;
         }
       })
       .addCase(createPayment.rejected, (state, action) => {
