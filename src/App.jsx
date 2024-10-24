@@ -28,6 +28,7 @@ import ContactPage from "./pages/ContactPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
 import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
+import UpdateStylistWorkshift from "./pages/Staff/UpdateStylistWorkshift";
 
 function App() {
   const dispatch = useDispatch();
@@ -69,6 +70,7 @@ function App() {
             <Route path="bookingDetail" element={<BookingDetailStaff />} />
             <Route path="profile" element={<ProfileStaff />} />
             <Route path="salary" element={<SalaryStaff />} />
+            <Route path="updateStylistWorkshift" element={<UpdateStylistWorkshift />} />
           </Route>
         </Route>
       </Routes>
