@@ -21,16 +21,20 @@ function BookingPage() {
   );
   const dataWorkShift = useSelector((state) => state.BOOKING.workshift);
   const auth = useSelector((state) => state.AUTH.currentUser);
+  const guest = useSelector((state) => state.BOOKING.createGuest);
   const token = localStorage.getItem("ACCESS_TOKKEN");
   // console.log("dataService", dataService);
   // console.log("dataStylist", dataStylist);
   // console.log("dataStylistById", dataStylistById);
   // console.log("dataWorkShift", dataWorkShift);
   console.log("tokennnn", auth);
+  console.log("Guest", guest);
 
   // USE State AND GET ALL DATA
   const [phone, setPhone] = useState(null);
   const [name, setName] = useState(null);
+  const [customerID, setCustomerID] = useState(null);
+  const [guestID, setGuestID] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [selects, setSelects] = useState([1]);
   const [selectedStylist, setSelectedStylist] = useState(null);
@@ -44,16 +48,20 @@ function BookingPage() {
   const [selectedTomorrow, setSelectedTomorrow] = useState("");
   const [todayDayOfWeek, setTodayDayOfWeek] = useState("");
   const [tomorrowDayOfWeek, setTomorrowDayOfWeek] = useState("");
+
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber);
     setName(auth?.record?.email);
+    setCustomerID(auth?.actorByRole?.customerID || null);
+    setGuestID(guest.guest.guestID);
   }, [auth]);
-
+  console.log("customerID", customerID);
   // console.log("selectedServices", selectedServices);
   const HandleBooking = (e) => {
     e.preventDefault();
     const booking = {
-      customerID: auth.actorByRole.customerID,
+      guestID: guestID,
+      customerID: customerID,
       stylistID: selectedStylist,
       serviceID: serviceIDs,
       totalPrice: totalPrice,
