@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./bookingButton.css";
 import { Button, Drawer, Form, Input } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchGuest } from "../../../store/bookingSlice";
 
 function Booking() {
   const datatoken = localStorage.getItem("ACCESS_TOKKEN");
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [token, setToken] = useState(null);
+  const dispatch = useDispatch();
   useEffect(() => {
     setToken(datatoken);
   }, [datatoken]);
@@ -20,7 +24,14 @@ function Booking() {
     setOpen(false);
   };
   const onFinish = (value) => {
-    console.log("value", value);
+    console.log("valuse", value);
+
+    const createGuest = {
+      phone: value.phoneNumber,
+      fullName: value.fullName,
+    };
+    dispatch(fetchGuest(createGuest));
+    navigate("/booking");
   };
   return (
     <>
