@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Item({ data, slug }) {
   if (!data) return <></>;
   if (!slug) return <></>;
-  const { fullName, serviceName, id } = data;
+  const { fullName, serviceName, id, title } = data;
 
   return (
     <>
@@ -24,7 +24,7 @@ function Item({ data, slug }) {
                 href="./StylistDetail.html"
                 style={{ textDecoration: "none" }}
               >
-                {fullName || serviceName}
+                {fullName || serviceName || title}
               </Link>
             </h3>
           </div>
