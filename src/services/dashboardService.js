@@ -1,6 +1,10 @@
 import API from "./api";
 const token = localStorage.getItem("ACCESS_TOKKEN");
 const dashboardService = {
+  //News
+  getAllNews: () => {
+    return API.call().get(`/api/v1/news/getAll`);
+  },
   //Create Stylist and Staff
   createStaff: (data) => {
     return API.call().post(`/api/v1/auth/register`, data, {
