@@ -167,22 +167,22 @@ function Content() {
                         </p>
                       </div>
                     </div>
-                    <div className="col-md-7 text-center">
+                    <div className="col-md-7 text-center-test">
                       <div className="BookingDate">
                         <h6>Created At</h6>
-                        <span className="block-span">
+                        <span className="block-span-edit">
                           {formatDateTime(item.createdAt)}
                         </span>
                       </div>
                       <div className="ServiceDate">
                         <h6>Appoinment At</h6>
-                        <span className="block-span">
+                        <span className="block-span-edit">
                           {formatDate(item.appointmentAt)}
                         </span>
                       </div>
                       <div className="TotalPrice">
                         <h6>Total Price</h6>
-                        <span className="block-span">{item.totalPrice}$</span>
+                        <span className="block-span-edit">{item.totalPrice}$</span>
                       </div>
                       <div className="Status">
                         <h6>Status</h6>

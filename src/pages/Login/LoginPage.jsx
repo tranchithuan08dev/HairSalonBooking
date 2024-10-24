@@ -10,9 +10,19 @@ const LoginPage = () => {
   const onFinish = (values) => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
-        console.log(res.payload.data.currenInfor);
         const role = (res.payload.data.currenInfor.record.role).toLowerCase();
-        navigate(`/${role}`);
+        console.log(res.payload.data.currenInfor);
+        switch (role) {
+          case "staff":
+            navigate(`/${role}`);
+            break;
+             case "manager":
+              navigate("/dashboard");
+              break;
+          default:
+            navigate("/");
+            break;
+        }
       } else {
         message.open({
           type: "error",
@@ -32,7 +42,7 @@ const LoginPage = () => {
                 <div className="row g-0">
                   <div className="col-md-6 col-lg-5 d-none d-md-block">
                     <img
-                      src="./public/assets/image/login.jpg"
+                      src="../public/assets/image/login.jpg"
                       alt="login form"
                       className="img-fluid"
                       style={{ borderRadius: "1rem 0 0 1rem" }}

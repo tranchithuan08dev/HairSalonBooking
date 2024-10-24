@@ -1,0 +1,8 @@
+.ant-menu-item a {
+  color: #fff;
+  transition: color 0.3s;
+}
+
+.ant-menu-item:hover a {
+  color: #f0a500; /* A nice accent color on hover */
+}

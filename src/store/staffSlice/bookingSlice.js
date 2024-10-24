@@ -41,6 +41,8 @@ export const fetchBookingDetail = createAsyncThunk(
       let servicesNameArray = [];
       let stylistName = "";
       const response = await bookingService.getDetail(bookingID);
+      // const payment = await bookingService.getAllPayment();
+      // console.log(payment);
       let detail = response.data.details; 
       let data = response.data.booking[0];
       for (let index = 0; index < detail.length; index++) {

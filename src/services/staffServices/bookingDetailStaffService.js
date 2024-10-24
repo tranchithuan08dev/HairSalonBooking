@@ -27,7 +27,10 @@ const bookingService = {
     },
     updatePayment: (id, data) => {
         return API.call().patch(`api/v1/payment/update?id=${id}`, data);
-    }
+    },
+    // getAllPayment: () => {
+    //     return API.call().get(`api/v1/payment/getAll`);
+    // }
 }
 
 export default bookingService;

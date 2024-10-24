@@ -12,7 +12,9 @@ const name = "auth";
 
 export const Login = createAsyncThunk(`${name}/Login`, async (params = {}) => {
   try {
+    console.log(params);
     const res = await authService.login(params);
+    console.log(res);
     const token = res.data.records.accessToken;
     const currentUser = await authService.fetchWithMe(token);
     const currenInfor = currentUser.data;
