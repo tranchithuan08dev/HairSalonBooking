@@ -11,6 +11,8 @@ import authService from "../services/authService";
 const name = "posts";
 const initialState = {
   createStaff: null,
+  //News
+  postNews: [],
   //Manager
   postManagerById: {},
   updateManager: null,
@@ -39,6 +41,19 @@ export const fetchCreate = createAsyncThunk(
     try {
       const res = await dashboardService.createStaff(data);
       return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+// NEWS
+export const fetchPostNews = createAsyncThunk(
+  `${name}/fetchPostNews`,
+  async () => {
+    try {
+      const res = await dashboardService.getAllNews();
+      console.log("res", res);
+      return res.data.data;
     } catch (error) {
       console.log(error);
     }
@@ -197,6 +212,10 @@ const dashboardSlice = createSlice({
     //Create
     builder.addCase(fetchCreate.fulfilled, (state, action) => {
       state.createStaff = action.payload;
+    });
+    //News
+    builder.addCase(fetchPostNews.fulfilled, (state, action) => {
+      state.postNews = action.payload;
     });
     //Manager
     builder.addCase(fetchPostManagerById.fulfilled, (state, action) => {
