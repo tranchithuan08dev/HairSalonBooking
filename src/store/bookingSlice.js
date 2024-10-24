@@ -3,9 +3,22 @@ import bookingService from "../services/bookingService";
 
 const name = "booking";
 const initialState = {
+  createGuest: [],
   workshift: [],
   booking: [],
 };
+
+export const fetchGuest = createAsyncThunk(
+  `${name}/fetchGuest`,
+  async (data) => {
+    try {
+      const res = await bookingService.createGuest(data);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 export const fetchWorkShift = createAsyncThunk(
   `${name}/fetchWorkShift`,
@@ -37,6 +50,9 @@ const bookingSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(fetchGuest.fulfilled, (state, action) => {
+      state.createGuest = action.payload;
+    });
     builder.addCase(fetchWorkShift.fulfilled, (state, action) => {
       state.workshift = action.payload;
     });
