@@ -28,6 +28,7 @@ function Content() {
       if (resultAction.ok && resultAction.data) {
         if (resultAction.data.yob) {
           setDate(dayjs(resultAction.data.yob));
+          setHireDate(dayjs(resultAction.data.hireDate));
         }
       }
     };
@@ -39,6 +40,10 @@ function Content() {
       setDate(dateIn);
       dispatch(setData({ yob: dateIn.format("YYYY-MM-DD") }));
     }
+  };
+
+  const getDateOnly = (isoDate) => {
+    return dayjs(isoDate).format("YYYY-MM-DD");
   };
 
   const handleChange = (e) => {
@@ -177,7 +182,7 @@ function Content() {
                         name="email"
                         disabled
                         onChange={handleChange}
-                        defaultValue={data.email || ""}
+                        defaultValue={data.email ? data.email : ""}
                       />
                     </div>
                   </div>
@@ -239,19 +244,34 @@ function Content() {
                       </select>
                     </div>
                   </div>
-                  <div className="mb-3">
-                    <label className="small mb-1" htmlFor="inputFullName">
-                      FullName
-                    </label>
-                    <input
-                      className="form-control"
-                      id="inputFullName"
-                      type="text"
-                      name="fullName"
-                      placeholder="Enter your fullname"
-                      defaultValue={data.fullName}
-                      onChange={handleChange}
-                    />
+                  <div className="row gx-3 mb-3">
+                    <div className="col-md-6">
+                      <label className="small mb-1" htmlFor="inputFullName">
+                        FullName
+                      </label>
+                      <input
+                        className="form-control"
+                        id="inputFullName"
+                        type="text"
+                        name="fullName"
+                        placeholder="Enter your fullname"
+                        defaultValue={data.fullName}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="small mb-1" htmlFor="inputFullName">
+                        HireDate
+                      </label>
+                      <input
+                        className="form-control"
+                        id="inputHireDate"
+                        type="text"
+                        name="hireDate"
+                        defaultValue={getDateOnly(data.hireDate)}
+                        disabled
+                      />
+                    </div>
                   </div>
                   <div className="mb-3">
                     <label className="small mb-1" htmlFor="inputAddress">
@@ -280,16 +300,27 @@ function Content() {
                       onChange={handleChangeDate}
                     />
                   </div>
-                  <div className="mb-3">
-                    <label className="small mb-1" htmlFor="role">
-                      Role:
-                    </label>
-                    <span
-                      className="badge bg-warning text-dark"
-                      style={{ marginLeft: "10px" }}
-                    >
-                      Staff
-                    </span>
+                  <div className="row gx-3 mb-3">
+                    <div className="col-md-6">
+                      <label className="small mb-1" htmlFor="role">
+                        Role:
+                      </label>
+                      <span
+                        className="badge bg-warning text-dark"
+                        style={{ marginLeft: "10px" }}
+                      >
+                        Staff
+                      </span>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        className="form-control"
+                        type="text"
+                        name="level"
+                        defaultValue={data.level || ""}
+                        disabled
+                      />
+                    </div>
                   </div>
                   <button className="btn btn-primary" type="submit">
                     Save changes
@@ -306,32 +337,34 @@ function Content() {
                   </div>
                 )}
               </div>
-              <div
-                className="card"
-                style={{
-                  width: "450px",
-                  height: "200px",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                }}
-              >
+              {data.certificateURL && (
                 <div
-                  className="card-body"
-                  style={{ width: "100%", height: "100%" }}
+                  className="card"
+                  style={{
+                    width: "450px",
+                    height: "200px",
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                  }}
                 >
-                  <img
-                    src="https://thegioimenu.com/wp-content/uploads/2022/05/in-bang-khen-mau-1-2.jpg"
-                    alt="Certificate Image"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <div
+                    className="card-body"
+                    style={{ width: "100%", height: "100%" }}
+                  >
+                    <img
+                      src=""
+                      alt="Certificate Image"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </form>
