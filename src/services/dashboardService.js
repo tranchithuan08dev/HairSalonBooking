@@ -7,6 +7,21 @@ const dashboardService = {
       params: inputParam,
     });
   },
+
+  getDetailNews: (inputParam) => {
+    return API.call().get(`/api/v1/news/getAll`, {
+      params: inputParam,
+    });
+  },
+
+  updateNews: (data) => {
+    return API.call().patch(`api/v1/news/update?id=${data.newsID}`, data, {
+      headers: {
+        token: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
   //Create Stylist and Staff
   createStaff: (data) => {
     return API.call().post(`/api/v1/auth/register`, data, {
