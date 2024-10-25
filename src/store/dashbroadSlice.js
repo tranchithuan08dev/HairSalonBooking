@@ -13,6 +13,8 @@ const initialState = {
   createStaff: null,
   //News
   postNews: [],
+  postNewsDetailId: {},
+  updateNews: null,
   //Manager
   postManagerById: {},
   updateManager: null,
@@ -49,9 +51,9 @@ export const fetchCreate = createAsyncThunk(
 // NEWS
 export const fetchPostNews = createAsyncThunk(
   `${name}/fetchPostNews`,
-  async () => {
+  async (inputParam = {}) => {
     try {
-      const res = await dashboardService.getAllNews();
+      const res = await dashboardService.getAllNews(inputParam);
       console.log("res", res);
       return res.data.data;
     } catch (error) {
@@ -60,6 +62,31 @@ export const fetchPostNews = createAsyncThunk(
   }
 );
 
+export const fetchPostNewsByID = createAsyncThunk(
+  `${name}/fetchPostNewsByID`,
+  async (inputParam = {}) => {
+    try {
+      const res = await dashboardService.getDetailNews(inputParam);
+      console.log("res", res);
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchUpdateNews = createAsyncThunk(
+  `${name}/fetchUpdateNews`,
+  async (data) => {
+    try {
+      const res = await dashboardService.updateNews(data);
+      console.log("res", res);
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 //Manager
 export const fetchPostManagerById = createAsyncThunk(
   `${name}/fetchPostById`,
@@ -216,6 +243,9 @@ const dashboardSlice = createSlice({
     //News
     builder.addCase(fetchPostNews.fulfilled, (state, action) => {
       state.postNews = action.payload;
+    });
+    builder.addCase(fetchPostNewsByID.fulfilled, (state, action) => {
+      state.postNewsDetailId = action.payload;
     });
     //Manager
     builder.addCase(fetchPostManagerById.fulfilled, (state, action) => {
