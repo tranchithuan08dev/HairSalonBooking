@@ -9,8 +9,10 @@ const workshiftService = {
     },
     getAllWorkshift: () => {
         return API.call().get(`api/v1/workshift/getAll`);
+    },
+    getAllHaveBooking: (id) => {
+        return API.call().get(`api/v1/workshift/getWorkshiftDetail?id=${id}`);
     }
-
 }
 
 export default workshiftService;
