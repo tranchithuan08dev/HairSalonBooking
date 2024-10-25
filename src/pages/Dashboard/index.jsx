@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import {
+  BarChartOutlined,
   ContactsOutlined,
   FileDoneOutlined,
+  FormOutlined,
   PhoneOutlined,
   ScissorOutlined,
   ShoppingCartOutlined,
@@ -9,16 +11,19 @@ import {
   UserAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu, Space, theme } from "antd";
 import { Outlet, Link } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 
 const DashBroad = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [showDropDown, setShowDropDown] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
+  function HandleDropDown() {
+    setShowDropDown(!showDropDown);
+  }
   return (
     <Layout
       style={{
@@ -108,7 +113,7 @@ const DashBroad = () => {
             },
             {
               key: "5",
-              icon: <PhoneOutlined />,
+              icon: <FormOutlined />,
               label: (
                 <Link to={`/dashboard/news`} style={{ textDecoration: "none" }}>
                   News
@@ -126,6 +131,11 @@ const DashBroad = () => {
             },
             {
               key: "7",
+              icon: <BarChartOutlined />,
+              label: <Space onClick={HandleDropDown}>Managerments</Space>,
+            },
+            showDropDown && {
+              key: "8",
               icon: <ShoppingOutlined />,
               label: (
                 <Link
@@ -136,8 +146,8 @@ const DashBroad = () => {
                 </Link>
               ),
             },
-            {
-              key: "8",
+            showDropDown && {
+              key: "9",
               icon: <UserAddOutlined />,
               label: (
                 <Link
@@ -148,8 +158,8 @@ const DashBroad = () => {
                 </Link>
               ),
             },
-            {
-              key: "9",
+            showDropDown && {
+              key: "10",
               icon: <UserAddOutlined />,
               label: (
                 <Link
@@ -161,7 +171,7 @@ const DashBroad = () => {
               ),
             },
             {
-              key: "10",
+              key: "11",
               icon: <UserOutlined />,
               label: (
                 <Link
@@ -178,28 +188,28 @@ const DashBroad = () => {
 
       <Layout
         style={{
-          marginLeft: collapsed ? 80 : 200, // Adjust margin based on the collapsed state
-          transition: "margin-left 0.2s", // Smooth transition when collapsing the sidebar
+          marginLeft: collapsed ? 80 : 200,
+          transition: "margin-left 0.2s",
         }}
       >
         <Header
           style={{
-            display: "flex", // Use Flexbox for alignment
-            justifyContent: "center", // Center the content horizontally
-            alignItems: "center", // Center the content vertically
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             padding: "20px 0",
             background: colorBgContainer,
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
-            height: "100px", // Set a fixed height for proper centering
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+            height: "100px",
           }}
         >
           <h1
             style={{
               margin: 0,
-              fontSize: "36px", // Increase font size for emphasis
+              fontSize: "36px",
               fontWeight: "bold",
-              color: "#454548", // Custom text color
-              textTransform: "uppercase", // Uppercase for a stylistic touch
+              color: "#454548",
+              textTransform: "uppercase",
             }}
           >
             Haimony Salon
