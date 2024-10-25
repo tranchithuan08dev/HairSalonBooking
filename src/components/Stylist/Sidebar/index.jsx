@@ -30,6 +30,11 @@ function Sidebar() {
                 Salary
               </NavLink>
             </li>
+            <li>
+              <NavLink to={`/stylist/createStylistWorkshift`} className={navLinkActive}>
+                Choose Workshift Schedule
+              </NavLink>
+            </li>
           </ul>
           <div className="sidebar__menu--logout">
             <NavLink to="/" className={navLinkActive}>
