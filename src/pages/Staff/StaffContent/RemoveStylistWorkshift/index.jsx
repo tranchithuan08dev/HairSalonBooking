@@ -4,12 +4,12 @@ import {
   getAll,
   updateStatus,
   setShowAlert,
-} from "../../../../store/staffSlice/updateWorkshift";
+} from "../../../../store/staffSlice/removeWorkshift";
 
 function Content() {
   const dispatch = useDispatch();
   const { data, showAlert, message, error } = useSelector(
-    (state) => state.STAFF.updateWorkshift
+    (state) => state.STAFF.removeWorkshift
   );
 
   const [stylistID, setStylistID] = useState("");
@@ -22,15 +22,12 @@ function Content() {
 
     if (Array.isArray(data) && data.length > 0) {
       const groupedWorkShifts = data.reduce((acc, item) => {
-        if (item.status === "Active") {
           const timeRange = `${item.startTime} - ${item.endTime}`;
-
           if (acc[item.shiftDay]) {
             acc[item.shiftDay].push(timeRange);
           } else {
             acc[item.shiftDay] = [timeRange];
           }
-        }
         return acc;
       }, {});
 
@@ -85,7 +82,7 @@ function Content() {
         stylistWorkShiftID: selectedShift.stylistWorkShiftID,
         stylistID: selectedShift.stylistID,
         workShiftID: selectedShift.workShiftID,
-        status: "Inactive",
+        deleted: true,
       };
       setSelectedOptionData(dataToUpdate);
     } else {
@@ -104,7 +101,7 @@ function Content() {
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center mb-4">Update Stylist Workshift</h2>
+      <h2 className="text-center mb-4">Remove Stylist Workshift</h2>
       {showAlert && (
         <div
           className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
@@ -180,7 +177,7 @@ function Content() {
           className="btn btn-primary"
           onClick={handleUpdate}
         >
-          Update
+          Delete
         </button>
       </form>
       <div
@@ -193,13 +190,13 @@ function Content() {
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Confirm Update</h5>
+              <h5 className="modal-title">Confirm Delete</h5>
               <button type="button" className="close" onClick={cancelUpdate}>
                 <span>&times;</span>
               </button>
             </div>
             <div className="modal-body">
-              <p>Do you really want to update stylist workshift?</p>
+              <p>Do you really want to delete this stylist workshift?</p>
             </div>
             <div className="modal-footer">
               <button
