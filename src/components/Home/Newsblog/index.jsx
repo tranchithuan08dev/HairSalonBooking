@@ -28,7 +28,7 @@ function NewBlog() {
           {/* Row 1 */}
           <div className="row d-flex justify-content-center flex-wrap">
             {dataNews.map((item) => (
-              <Item key={item.id} data={item} slug="stylist" />
+              <Item key={item.id} data={item} slug="news" />
             ))}
           </div>
         </div>
