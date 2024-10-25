@@ -65,7 +65,7 @@ function Content() {
       fullName: data.fullName,
       address: data.address,
       phoneNumber: data.phoneNumber,
-      email: data.email
+      email: data.email,
     };
 
     if (avatarFile) {
@@ -193,7 +193,7 @@ function Content() {
                   <div className="row gx-3 mb-3">
                     <div className="col-md-6">
                       <label className="small mb-1" htmlFor="inputStaffID">
-                      StylistID
+                        StylistID
                       </label>
                       <input
                         className="form-control"
@@ -305,6 +305,32 @@ function Content() {
                     {message || error}
                   </div>
                 )}
+              </div>
+              <div
+                className="card"
+                style={{
+                  width: "450px",
+                  height: "200px",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <div
+                  className="card-body"
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <img
+                    src="https://thegioimenu.com/wp-content/uploads/2022/05/in-bang-khen-mau-1-2.jpg"
+                    alt="Certificate Image"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>

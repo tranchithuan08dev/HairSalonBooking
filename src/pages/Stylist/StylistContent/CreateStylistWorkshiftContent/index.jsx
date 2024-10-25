@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../../../assets/css/stylist/workshift.css";
-import { createStylistWorkshift, fetchAllWorkshift, getAll } from "../../../../store/stylistSlice/WorkShiftSlice";
+import { createStylistWorkshift, fetchAllWorkshift } from "../../../../store/stylistSlice/WorkShiftSlice";
 
 function Content() {
   const dispatch = useDispatch();
@@ -78,7 +78,10 @@ function Content() {
       workShiftID: bookedWorkShiftIDs
     }
     console.log(dataToCreate);
-    // dispatch(createStylistWorkshift(dataToCreate));
+    const result = await dispatch(createStylistWorkshift(dataToCreate));
+    if(result.payload){
+      await dispatch(fetchAllWorkshift(stylistID));
+    }
   };
 
   const cancelUpdate = () => {
@@ -107,7 +110,7 @@ function Content() {
   };
 
   if (loading) {
-    return <p>Đang tải dữ liệu...</p>;
+    return <p>Loading...</p>;
   }
 
   if (error) {
@@ -153,7 +156,7 @@ function Content() {
                         className={`slotCell-choose ${isBooked ? "booked" : ""} ${isDisabled ? "disabled" : ""}`}
                         style={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
                       >
-                        {isDisabled && <span className="disabled-overlay">Choosen</span>}
+                        {isDisabled && <span className="disabled-overlay"></span>}
                       </td>
                     );
                   })}

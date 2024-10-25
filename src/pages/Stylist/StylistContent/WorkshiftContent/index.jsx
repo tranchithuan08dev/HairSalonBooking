@@ -24,7 +24,16 @@ function Content() {
 
   const handleClick = (shift) => {
     if (shift) {
-      navigate(`bookingDetail?id=${shift.bookingID}`);
+      console.log("Shift data:", shift);
+      console.log("Booking ID:", shift.bookingID); 
+  
+      if (shift.bookingID && shift.bookingID.trim() !== "") {
+        navigate(`bookingDetail?id=${shift.bookingID}`);
+      } else {
+        alert("This slot is not booked yet");
+      }
+    } else {
+      console.error("Shift is undefined or null");
     }
   };
 
@@ -66,13 +75,14 @@ function Content() {
           formatTime(shift.startTime) === startTime &&
           !shift.deleted
       );
+
       return foundShift;
+
     }
-    return null;
   };
 
   if (loading) {
-    return <p>Đang tải dữ liệu...</p>;
+    return <p>Loading...</p>;
   }
 
   if (error) {
