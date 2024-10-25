@@ -85,7 +85,7 @@ const profileSlice = createSlice({
     })
     .addCase(fetchStylist.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.error.message; 
+      state.error = action.payload.message; 
     })
     .addCase(updateProfile.pending, (state) => {
       state.loading = true; 
@@ -95,18 +95,14 @@ const profileSlice = createSlice({
       state.loading = false;
       state.showAlert = true; 
       if (action.payload.ok) {
-        for (const key in action.payload.data) {
-          if (state.data[key] !== action.payload.data[key]) {
-            state.data[key] = action.payload.data[key];
-          }
-        }
+        state.message = "Updated successfully!";
       } else {
         state.error = action.payload.message;
       }
     })
     .addCase(updateProfile.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.error.message; 
+      state.error = action.payload.message;
     })
   },
 });
