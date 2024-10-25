@@ -36,7 +36,10 @@ function Content() {
       stylistWorkShiftID: data.data?.stylistWorkShiftID,
       status: "Completed"
     }
-    await dispatch(updateStatus(form));
+    const result = await dispatch(updateStatus(form));
+    if (result.payload) {
+      dispatch(fetchBookingDetail(id)); 
+  }
   };
 
   useEffect(() => {

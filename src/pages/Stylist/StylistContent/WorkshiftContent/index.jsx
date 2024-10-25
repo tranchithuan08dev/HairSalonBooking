@@ -59,13 +59,16 @@ function Content() {
 
   const getWorkshiftData = (day, slot) => {
     const startTime = slot.split(" - ")[0];
-    const foundShift = data.find(
-      (shift) =>
-        shift.shiftDay === day &&
-        formatTime(shift.startTime) === startTime &&
-        !shift.deleted
-    );
-    return foundShift;
+    if (Array.isArray(data)) {
+      const foundShift = data.find(
+        (shift) =>
+          shift.shiftDay === day &&
+          formatTime(shift.startTime) === startTime &&
+          !shift.deleted
+      );
+      return foundShift;
+    }
+    return null;
   };
 
   if (loading) {
