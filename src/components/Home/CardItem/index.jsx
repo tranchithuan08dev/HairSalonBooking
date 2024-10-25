@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Item({ data, slug }) {
   if (!data) return <></>;
   if (!slug) return <></>;
-  const { fullName, serviceName, id, title } = data;
+  const { fullName, serviceName, id, title, newsID } = data;
 
   return (
     <>
@@ -19,7 +19,7 @@ function Item({ data, slug }) {
           <div className="card-body">
             <h3 className="text-center">
               <Link
-                to={`/${slug}/${id}`}
+                to={`/${slug}/${id || newsID}`}
                 className="text-black"
                 href="./StylistDetail.html"
                 style={{ textDecoration: "none" }}
