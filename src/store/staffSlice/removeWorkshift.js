@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import updateWorkshiftService from "../../services/staffServices/updateStylistWorkshiftService";
+import removeWorkshiftServices from "../../services/staffServices/removeStylistWorkshiftService";
 
 const initialState = {
   data: {},
@@ -8,11 +8,11 @@ const initialState = {
   showAlert: false,
 };
 
-const name = "updateWorkshift";
+const name = "removeWorkshift";
 
 export const getAll = createAsyncThunk(`${name}/getAll`, async (id) => {
   try {
-    const response = await updateWorkshiftService.getAll(id);
+    const response = await removeWorkshiftServices.getAll(id);
     console.log(response.data.data);
     return {
       ok: true,
@@ -30,7 +30,7 @@ export const updateStatus = createAsyncThunk(
   `${name}/updateStatus`,
   async (data) => {
     try {
-      await updateWorkshiftService.updateStatus(data);
+      await removeWorkshiftServices.updateStatus(data);
       return {
         ok: true,
         success: "Updated successfully!",
@@ -44,7 +44,7 @@ export const updateStatus = createAsyncThunk(
   }
 );
 
-const updateWorkshiftSlice = createSlice({
+const removeWorkshiftSlice = createSlice({
   name,
   initialState,
   reducers: {
@@ -94,6 +94,6 @@ const updateWorkshiftSlice = createSlice({
 });
 
 export const { setData, setError, setMessage, setShowAlert } =
-  updateWorkshiftSlice.actions;
+removeWorkshiftSlice.actions;
 
-export default updateWorkshiftSlice.reducer;
+export default removeWorkshiftSlice.reducer;
