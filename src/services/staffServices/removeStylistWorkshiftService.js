@@ -1,6 +1,6 @@
 import API from "../api";
 
-const profileStaffService = {
+const workshiftService = {
     getAll: (id) => {
         return API.call().get(`api/v1/workshift/getWorkshift?id=${id}`);
     },
@@ -9,4 +9,4 @@ const profileStaffService = {
     }
 };
 
-export default profileStaffService;
+export default workshiftService;
