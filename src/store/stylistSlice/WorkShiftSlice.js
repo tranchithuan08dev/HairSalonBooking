@@ -13,9 +13,26 @@ const name = "workshift";
 export const getAll = createAsyncThunk(`${name}/getAll`, async (id) => {
   try {
     const response = await workshiftService.getAllByStylistID(id);
+    const haveBooking = await workshiftService.getAllHaveBooking(id);
+
+    const responseData = response.data.data;
+    const bookingData = haveBooking.data.data;
+
+    const mergedData = responseData.map((shift) => {
+      const matchingBooking = bookingData.find(
+        (booking) => booking.stylistWorkShiftID === shift.stylistWorkShiftID
+      );
+
+      return matchingBooking
+        ? { ...shift, bookingID: matchingBooking.bookingID }
+        : shift;
+    });
+
+    console.log(mergedData);
+
     return {
       ok: true,
-      data: response.data.data,
+      data: mergedData,
     };
   } catch (error) {
     return {
