@@ -18,6 +18,7 @@ function HomePage() {
         <Header />
         {/* Header END */}
         {/* Booking */}
+
         <Booking />
 
         {/* Endbooking */}
