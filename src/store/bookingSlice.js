@@ -6,13 +6,29 @@ const initialState = {
   createGuest: [],
   workshift: [],
   booking: [],
+  updateBooking: [],
 };
+
+export const fetchUpdateBooking = createAsyncThunk(
+  `${name}/fetchUpdateBooking`,
+  async (data) => {
+    try {
+      const res = await bookingService.updateBooking(data);
+      console.log("res", res);
+
+      return res.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+);
 
 export const fetchGuest = createAsyncThunk(
   `${name}/fetchGuest`,
   async (data) => {
     try {
       const res = await bookingService.createGuest(data);
+      console.log("res", res);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -38,7 +54,7 @@ export const fetchBooking = createAsyncThunk(
     try {
       const res = await bookingService.booking(data);
       console.log("Ressss", res);
-      return res;
+      return res.data;
     } catch (error) {
       console.log("errrr", error);
     }
@@ -58,6 +74,9 @@ const bookingSlice = createSlice({
     });
     builder.addCase(fetchBooking.fulfilled, (state, action) => {
       state.booking = action.payload;
+    });
+    builder.addCase(fetchUpdateBooking.fulfilled, (state, action) => {
+      state.updateBooking = action.payload;
     });
   },
 });
