@@ -7,15 +7,22 @@ const initialState = {
   // Stylist
   stylist: [],
   service: [],
+  news: [],
 };
+
+export const fetchHomeNews = createAsyncThunk(
+  `${name}/fetchHomeNews`,
+  async (inputParam = {}) => {
+    const res = await dashboardService.getAllNews(inputParam);
+    return res.data.data;
+  }
+);
 
 export const fetchHomeStylist = createAsyncThunk(
   `${name}/fetchHomeStylist`,
   async (inputParam = {}) => {
     const res = await dashboardService.getAllStylist(inputParam);
     const data = res.data.data.users.map(mappingStylist);
-    console.log("dtaattatat", data);
-
     return data;
   }
 );
@@ -34,6 +41,9 @@ const homeSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(fetchHomeNews.fulfilled, (state, action) => {
+      state.news = action.payload;
+    });
     builder.addCase(fetchHomeStylist.fulfilled, (state, action) => {
       state.stylist = action.payload;
     });

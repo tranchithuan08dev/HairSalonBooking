@@ -6,7 +6,6 @@ import {
   Input,
   Space,
   Table,
-  Upload,
   Image,
   InputNumber,
   Tag,

@@ -1,4 +1,4 @@
-import PrivateRoutes from "./components/Staff/PrivateRoutes";
+import PrivateRoutesStaff from "./components/Staff/PrivateRoutes";
 import LayoutStaff from "./components/Staff/StaffLayout";
 import HomeStaff from "./pages/Staff/Home";
 import BookingDetailStaff from "./pages/Staff/BookingDetail";
@@ -29,6 +29,8 @@ import ServiceDetailPage from "./pages/ServiceDetailPage";
 import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import RemoveStylistWorkshift from "./pages/Staff/RemoveStylistWorkshift";
+import News from "./pages/Dashboard/News";
+import NewsDetail from "./pages/NewsDetail";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,6 +45,7 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/service/:id" element={<ServiceDetailPage />} />
         <Route path="/stylist/:id" element={<StylistDetailPage />} />
+        <Route path="/news/:id" element={<NewsDetail />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route element={<DashBroad />}>
           <Route
@@ -53,6 +56,7 @@ function App() {
           <Route path="/dashboard/service" element={<Service />} />
           <Route path="/dashboard/stylist" element={<Stylist />} />
           <Route path="/dashboard/staff" element={<Staff />} />
+          <Route path="/dashboard/news" element={<News />} />
           <Route path="/dashboard/newService" element={<NewService />} />
           <Route path="/dashboard/user" element={<User />} />
           <Route path="/dashboard/newStylist" element={<NewStylist />} />
@@ -64,7 +68,7 @@ function App() {
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
 
-        <Route path="/staff/" element={<PrivateRoutes />}>
+        <Route path="/staff/" element={<PrivateRoutesStaff />}>
           <Route element={<LayoutStaff />}>
             <Route index element={<HomeStaff />} /> 
             <Route path="bookingDetail" element={<BookingDetailStaff />} />
