@@ -18,22 +18,16 @@ function FilterStatus() {
   return (
     <>
       <button
-        className="btn btn-sm ml-1 btn-outline-success active"
+        className="btn btn-sm ml-1 btn-outline-danger"
         onClick={() => handleFilterStatus("All")}
       >
         All
       </button>
       <button
-        className="btn btn-sm ml-1 btn-outline-info"
+        className="btn btn-sm ml-1 btn-outline-primary"
         onClick={() => handleFilterStatus("In-progress")}
       >
         In-progress
-      </button>
-      <button
-        className="btn btn-sm ml-1 btn-outline-success"
-        onClick={() => handleFilterStatus("Completed")}
-      >
-        Completed
       </button>
       <button
         className="btn btn-sm ml-1 btn-outline-secondary"
@@ -41,6 +35,19 @@ function FilterStatus() {
       >
         Cancelled
       </button>
+      <button
+        className="btn btn-sm ml-1 btn-outline-warning" 
+        onClick={() => handleFilterStatus("Done")}
+      >
+        Done
+      </button>
+      <button
+        className="btn btn-sm ml-1 btn-outline-success"
+        onClick={() => handleFilterStatus("Completed")}
+      >
+        Completed
+      </button>
+      
     </>
   );
 }

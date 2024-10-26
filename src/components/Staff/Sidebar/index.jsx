@@ -38,7 +38,7 @@ function Sidebar() {
             </li>
             <li>
               <NavLink to={`/staff/updateStylistWorkshift`} className={navLinkActive}>
-                Update Stylist Workshift
+                Remove Stylist Workshift
               </NavLink>
             </li>
           </ul>
