@@ -6,20 +6,21 @@ import {
   Input,
   Space,
   Table,
-  Upload,
   Image,
   Tag,
   Radio,
   DatePicker,
-  message, // <-- Import message from antd
+  message,
+  Spin, // <-- Import message from antd
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostStaff,
   fetchPostStaffDetailById,
+  fetchSalary,
   fetchUpdateStaff,
 } from "../../../store/dashbroadSlice";
 
@@ -37,13 +38,15 @@ const Staff = () => {
   const [selectedStylist, setSelectedStylist] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-
+  const [isSpin, setIsSpin] = useState(false);
   const [form] = Form.useForm();
 
   const dataStaff = useSelector((state) => state.DASHBOARD.postStaff);
   const dataStaffDetail = useSelector(
     (state) => state.DASHBOARD.postStaffDetailById
   );
+  const dataSalaryStaff = useSelector((state) => state.DASHBOARD.salary);
+  console.log("dataSalaryStaff", dataSalaryStaff);
 
   const dispatch = useDispatch();
 
@@ -52,6 +55,12 @@ const Staff = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (dataSalaryStaff) {
+      form.setFieldsValue({
+        basesalary: dataSalaryStaff.baseSalary,
+        totalsalary: dataSalaryStaff.totalSalary,
+      });
+    }
     if (dataStaffDetail) {
       form.setFieldsValue({
         fullName: dataStaffDetail.fullName,
@@ -64,11 +73,12 @@ const Staff = () => {
       });
       setAvatarUrl(dataStaffDetail.avatar || "");
     }
-  }, [dataStaffDetail, form]);
+  }, [dataStaffDetail, form, dataSalaryStaff]);
 
   const showLargeDrawer = (staffId) => {
     setSelectedStylist(staffId);
     dispatch(fetchPostStaffDetailById(staffId));
+    dispatch(fetchSalary(staffId));
     setOpen(true);
   };
 
@@ -79,21 +89,22 @@ const Staff = () => {
   };
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0]; // Get the selected file
+    const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
       const imageUrl = URL.createObjectURL(file);
       console.log("img", imageUrl);
 
-      setAvatarUrl(imageUrl); // Set the avatar preview
+      setAvatarUrl(imageUrl);
     }
   };
 
   const handleUploadClick = () => {
-    fileInputRef.current.click(); // Trigger file input dialog
+    fileInputRef.current.click();
   };
 
   const onFinish = (values) => {
+    setIsSpin(true);
     const updatedData = {
       staffID: selectedStylist,
       fullName: values.fullName,
@@ -110,10 +121,12 @@ const Staff = () => {
     dispatch(fetchUpdateStaff(updatedData))
       .then(() => {
         message.success("Staff updated successfully!");
+        setIsSpin(false);
         onClose();
       })
       .catch((error) => {
         message.error(`Failed to update staff: ${error.message}`);
+        setIsSpin(false);
       });
   };
 
@@ -170,7 +183,7 @@ const Staff = () => {
     <>
       <Table columns={columns} dataSource={data} />
       <Drawer
-        title="Detail Stylist"
+        title="Detail Staff"
         placement="right"
         width={720}
         onClose={onClose}
@@ -214,14 +227,38 @@ const Staff = () => {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item name="fullName" label="Name">
+          <Form.Item
+            name="fullName"
+            label="Staff Name"
+            rules={[{ required: true, message: "Please enter the staff name" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Gender" name="gender">
+          <Form.Item
+            label="Gender"
+            name="gender"
+            rules={[{ required: true, message: "Please select the gender" }]}
+          >
             <Radio.Group>
               <Radio value="Male">Male</Radio>
               <Radio value="Female">Female</Radio>
             </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            name="basesalary"
+            label="Base Salary"
+            rules={[
+              { required: true, message: "Please enter the base salary" },
+              {
+                pattern: /^\d+(\.\d{1,2})?$/,
+                message: "Please enter a valid amount",
+              },
+            ]}
+          >
+            <Input addonAfter="USD" />
+          </Form.Item>
+          <Form.Item name="totalsalary" label="Salary">
+            <Input addonAfter="USD" disabled />
           </Form.Item>
           <Form.Item
             label="Phone"
@@ -241,25 +278,55 @@ const Staff = () => {
             name="email"
             rules={[
               { type: "email", message: "The input is not a valid email!" },
+              { required: true, message: "Please enter your email!" },
             ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item name="yob" label="Date of birth">
+
+          <Form.Item
+            name="yob"
+            label="Date of birth"
+            rules={[
+              { required: true, message: "Please select your date of birth!" },
+            ]}
+          >
             <DatePicker format={dateFormat} />
           </Form.Item>
-          <Form.Item name="address" label="Address">
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[
+              { required: true, message: "Please enter your address!" },
+              {
+                min: 10,
+                message: "Address must be at least 10 characters long!",
+              },
+            ]}
+          >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item name="status" label="Status">
+          <Form.Item
+            name="status"
+            label="Status"
+            rules={[{ required: true, message: "Please select your status!" }]}
+          >
             <Radio.Group>
-              <Radio value={true}>Active</Radio>
-              <Radio value={false}>Inactive</Radio>
+              <Radio value={true}>Inactive</Radio>
+              <Radio value={false}>Active</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
             <Button type="primary" htmlType="submit">
-              Update Staff
+              {isSpin && (
+                <Spin
+                  indicator={
+                    <LoadingOutlined spin style={{ color: "white" }} />
+                  }
+                  size="small"
+                />
+              )}
+              Save Changes
             </Button>
           </Form.Item>
         </Form>
