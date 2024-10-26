@@ -2,8 +2,24 @@ import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchCancleBooking } from "../store/bookingSlice";
+import { message } from "antd";
 
 function BookingSuccessPage() {
+  const dispatch = useDispatch();
+  const booking = useSelector((state) => state.BOOKING.booking);
+
+  const cancelBooking = () => {
+    dispatch(fetchCancleBooking(booking?.newBooking?.bookingID))
+      .then(() => {
+        message.success("Booking has been successfully canceled.");
+      })
+      .catch((error) => {
+        message.error("Failed to cancel the booking. Please try again.");
+        console.error("Error canceling booking:", error);
+      });
+  };
   return (
     <>
       <Header />
@@ -34,7 +50,7 @@ function BookingSuccessPage() {
             Update Booking
           </Link>
 
-          <button className="btn btn-danger" onclick="cancelBooking()">
+          <button className="btn btn-danger" onClick={cancelBooking}>
             Cancel Booking
           </button>
         </div>
