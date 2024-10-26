@@ -22,7 +22,7 @@ const dashboardService = {
       },
     });
   },
-  //Create Stylist and Staff
+  //Create  Stylist and Staff and Update salary
   createStaff: (data) => {
     return API.call().post(`/api/v1/auth/register`, data, {
       headers: {
@@ -30,6 +30,9 @@ const dashboardService = {
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+  getSalary: (id) => {
+    return API.call().get(`/api/v1/salary/monthlySalary?id=${id}`);
   },
   // Profile
   getDetailManagerById: (id) => {
