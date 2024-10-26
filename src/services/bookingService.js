@@ -19,5 +19,8 @@ const bookingService = {
   bookingDetail: (id) => {
     return API.call().get(`/api/v1/booking/detail?bookingID=${id}`);
   },
+  updateBooking: (data) => {
+    return API.call().patch(`/api/v1/booking/update`, data);
+  },
 };
 export default bookingService;
