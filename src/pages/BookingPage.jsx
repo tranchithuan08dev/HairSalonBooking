@@ -10,8 +10,10 @@ import {
 } from "../store/dashbroadSlice";
 import { fetchBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 function BookingPage() {
+  const nagative = useNavigate();
   const dispatch = useDispatch();
   // Call Data
   const dataService = useSelector((state) => state.DASHBOARD.postService);
@@ -53,7 +55,7 @@ function BookingPage() {
     setPhone(auth?.record?.phoneNumber);
     setName(auth?.record?.email);
     setCustomerID(auth?.actorByRole?.customerID || null);
-    setGuestID(guest.guest.guestID);
+    setGuestID(guest.guest?.guestID);
   }, [auth]);
   console.log("customerID", customerID);
   // console.log("selectedServices", selectedServices);
@@ -70,6 +72,7 @@ function BookingPage() {
     console.log("Booking", booking);
 
     dispatch(fetchBooking(booking));
+    nagative("/bookingsuccess");
   };
   // console.log("StylistId", selectedStylist);
 
@@ -417,7 +420,7 @@ function BookingPage() {
                       : ""
                   }`}
                   onClick={() =>
-                    slot.status !== "active" &&
+                    slot.status !== "Inactive" &&
                     handleTimeClick(
                       formatTimeToHHmm(slot.startTime),
                       slot.stylistWorkShiftID
@@ -425,12 +428,12 @@ function BookingPage() {
                   } // Disable click if status is "active"
                   style={{
                     pointerEvents:
-                      slot.status === "active" ||
+                      slot.status === "Inactive" ||
                       formatTimeToHHmm(slot.startTime) <= currentHour
                         ? "none"
                         : "auto", // Disable if status is active or time is in the past
                     backgroundColor:
-                      slot.status === "active" ||
+                      slot.status === "Inactive" ||
                       formatTimeToHHmm(slot.startTime) <= currentHour
                         ? "#e0e0e0"
                         : selectedTime === formatTimeToHHmm(slot.startTime)
@@ -445,7 +448,7 @@ function BookingPage() {
                         ? "#4caf50"
                         : "#ced4da", // Border color
                     cursor:
-                      slot.status === "active" ||
+                      slot.status === "Inactive" ||
                       formatTimeToHHmm(slot.startTime) <= currentHour
                         ? "not-allowed"
                         : "pointer",
