@@ -11,7 +11,10 @@ const bookingDetailService = {
     return API.call().get(`api/v1/stylist/detail?id=${id}`);
   },
   updateStatus: (data) => {
-    return API.call().patch(`api/v1/booking/update`, data);
+    return API.call().patch(`api/v1/booking/change-status`, data);
+  },
+  createPayment: (data) => {
+    return API.call().post(`api/v1/payment/create`, data);
   },
 };
 

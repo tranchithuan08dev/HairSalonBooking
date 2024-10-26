@@ -30,14 +30,14 @@
     width: 235px;
 }
 
-.form-group{
+.form-groupTest{
     display:flex;
     justify-content: space-between;
     padding: 3px;
     margin: 10px;
 }
 
-.form-group > input,select {
+.form-groupTest > input,select {
     width: 240px;
     padding: 1px 2px;
 }
