@@ -12,14 +12,16 @@ import {
   Radio,
   DatePicker,
   message,
+  Spin,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostStylist,
   fetchPostStylistDetailById,
+  fetchSalary,
   fetchUpdateStylist,
 } from "../../../store/dashbroadSlice";
 
@@ -40,6 +42,7 @@ const Stylist = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedStylist, setSelectedStylist] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isSpin, setIsSpin] = useState(false);
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -48,10 +51,11 @@ const Stylist = () => {
   }, [dispatch]);
 
   const dataStylist = useSelector((state) => state.DASHBOARD.postStylist);
-
   const dataStylistById = useSelector(
     (state) => state.DASHBOARD.postStylistDetailById
   );
+  const dataSalaryStylist = useSelector((state) => state.DASHBOARD.salary);
+  console.log("data", dataSalaryStylist);
 
   if (dataStylist == null) {
     return <></>;
@@ -60,6 +64,8 @@ const Stylist = () => {
   useEffect(() => {
     if (dataStylistById) {
       form.setFieldsValue({
+        basesalary: dataSalaryStylist?.baseSalary,
+        totalsalary: dataSalaryStylist?.totalSalary,
         fullName: dataStylistById.fullName,
         gender: dataStylistById.gender,
         yob: dayjs(dataStylistById.yob),
@@ -77,6 +83,7 @@ const Stylist = () => {
   const showLargeDrawer = (stylist) => {
     setSelectedStylist(stylist);
     dispatch(fetchPostStylistDetailById(stylist));
+    dispatch(fetchSalary(stylist));
     setOpen(true);
   };
 
@@ -100,6 +107,7 @@ const Stylist = () => {
   };
 
   const onFinish = (values) => {
+    setIsSpin(true);
     const updatedData = {
       stylistID: selectedStylist,
       fullName: values.fullName,
@@ -117,10 +125,12 @@ const Stylist = () => {
     dispatch(fetchUpdateStylist(updatedData))
       .then(() => {
         message.success("Staff updated successfully!");
+        setIsSpin(false);
         onClose();
       })
       .catch((error) => {
         message.error(`Failed to update staff: ${error.message}`);
+        setIsSpin(false);
       });
   };
 
@@ -225,16 +235,56 @@ const Stylist = () => {
               </div>
             </Space>
           </Form.Item>
-          <Form.Item name="fullName" label="Stylist Name">
+          <Form.Item
+            name="fullName"
+            label="Stylist Name"
+            rules={[
+              { required: true, message: "Please enter the stylist name" },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Gender" name="gender">
+
+          <Form.Item
+            label="Gender"
+            name="gender"
+            rules={[{ required: true, message: "Please select the gender" }]}
+          >
             <Radio.Group>
               <Radio value="Male">Male</Radio>
               <Radio value="Female">Female</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item name="yob" label="Date of birth">
+          <Form.Item
+            name="basesalary"
+            label="Base Salary"
+            rules={[
+              { required: true, message: "Please enter the base salary" },
+              {
+                pattern: /^\d+(\.\d{1,2})?$/,
+                message: "Please enter a valid amount",
+              },
+            ]}
+          >
+            <Input addonAfter="USD" />
+          </Form.Item>
+          <Form.Item name="totalsalary" label="Salary">
+            <Input addonAfter="USD" disabled />
+          </Form.Item>
+          <Form.Item
+            name="yob"
+            label="Date of birth"
+            rules={[
+              { required: true, message: "Please select the date of birth" },
+              {
+                type: "object",
+                validator: (_, value) =>
+                  value
+                    ? Promise.resolve()
+                    : Promise.reject(new Error("Please select a valid date")),
+              },
+            ]}
+          >
             <DatePicker format={dateFormat} />
           </Form.Item>
           <Form.Item
@@ -258,6 +308,7 @@ const Stylist = () => {
             name="email"
             rules={[
               {
+                required: true,
                 message: "Please input your email!",
               },
               {
@@ -269,16 +320,38 @@ const Stylist = () => {
             <Input type="email" placeholder="Email" />
           </Form.Item>
 
-          <Form.Item name="address" label="Address">
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[{ required: true, message: "Please enter the address" }]}
+          >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item name="level" label="Level">
-            <InputNumber />
+
+          <Form.Item
+            name="level"
+            label="Level"
+            rules={[
+              { required: true, message: "Please enter the level" },
+              {
+                type: "number",
+                min: 1,
+                max: 5,
+                message: "Level must be between 1 and 5",
+              },
+            ]}
+          >
+            <InputNumber min={1} max={5} />
           </Form.Item>
-          <Form.Item name="status" label="Status">
+
+          <Form.Item
+            name="status"
+            label="Status"
+            rules={[{ required: true, message: "Please select the status" }]}
+          >
             <Radio.Group>
-              <Radio value={true}>True</Radio>
-              <Radio value={false}>False</Radio>
+              <Radio value={true}>Inactive</Radio>
+              <Radio value={false}>Active</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item
@@ -288,7 +361,15 @@ const Stylist = () => {
             }}
           >
             <Button type="primary" htmlType="submit">
-              Edit Service
+              {isSpin && (
+                <Spin
+                  indicator={
+                    <LoadingOutlined spin style={{ color: "white" }} />
+                  }
+                  size="small"
+                />
+              )}
+              Save Changes
             </Button>
           </Form.Item>
         </Form>
