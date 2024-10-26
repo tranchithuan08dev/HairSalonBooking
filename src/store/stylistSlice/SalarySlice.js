@@ -61,6 +61,7 @@ const salarySlice = createSlice({
         }
     })
     .addCase(fetchData.rejected, (state, action) => {
+        state.showAlert = true;
         state.error = action.payload.message;
     })
   },

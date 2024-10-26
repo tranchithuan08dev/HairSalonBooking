@@ -110,6 +110,7 @@ const stylistWorkshiftSlice = createSlice({
       })
       .addCase(getAll.rejected, (state, action) => {
         state.loading = false;
+        state.showAlert = true;
         state.error = action.payload.message; 
       })
       .addCase(createStylistWorkshift.pending, (state) => {
@@ -126,6 +127,7 @@ const stylistWorkshiftSlice = createSlice({
       })
       .addCase(createStylistWorkshift.rejected, (state, action) => {
         state.loading = false;
+        state.showAlert = true;
         state.error = action.payload.message; 
       })
       .addCase(fetchAllWorkshift.pending, (state) => {
@@ -143,6 +145,7 @@ const stylistWorkshiftSlice = createSlice({
       })
       .addCase(fetchAllWorkshift.rejected, (state, action) => {
         state.loading = false;
+        state.showAlert = true;
         state.error = action.payload.message; 
       });
   },

@@ -85,6 +85,7 @@ const profileSlice = createSlice({
     })
     .addCase(fetchStylist.rejected, (state, action) => {
       state.loading = false;
+      state.showAlert = true;
       state.error = action.payload.message; 
     })
     .addCase(updateProfile.pending, (state) => {
@@ -102,6 +103,7 @@ const profileSlice = createSlice({
     })
     .addCase(updateProfile.rejected, (state, action) => {
       state.loading = false;
+      state.showAlert = true;
       state.error = action.payload.message;
     })
   },
