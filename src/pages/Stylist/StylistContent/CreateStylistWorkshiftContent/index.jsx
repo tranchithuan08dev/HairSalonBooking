@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../../../assets/css/stylist/workshift.css";
-import { createStylistWorkshift, fetchAllWorkshift } from "../../../../store/stylistSlice/WorkShiftSlice";
+import {
+  createStylistWorkshift,
+  fetchAllWorkshift,
+} from "../../../../store/stylistSlice/WorkShiftSlice";
 
 function Content() {
   const dispatch = useDispatch();
@@ -75,11 +78,11 @@ function Content() {
     console.log("Booked Workshifts IDs:", bookedWorkShiftIDs);
     let dataToCreate = {
       stylistID: stylistID,
-      workShiftID: bookedWorkShiftIDs
-    }
+      workShiftID: bookedWorkShiftIDs,
+    };
     console.log(dataToCreate);
     const result = await dispatch(createStylistWorkshift(dataToCreate));
-    if(result.payload){
+    if (result.payload) {
       await dispatch(fetchAllWorkshift(stylistID));
     }
   };
@@ -106,15 +109,15 @@ function Content() {
   };
 
   const handleChoose = () => {
-    setShowModal(true);
+    if (bookedShifts.length > 0) {
+      setShowModal(true);
+    } else {
+      alert("Please choose at least 1 slot first!");
+    }
   };
 
   if (loading) {
     return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
   }
 
   return (
@@ -147,16 +150,24 @@ function Content() {
                     const isBooked = bookedShifts.some(
                       (s) => s.workShiftID === shift?.workShiftID
                     );
-                    const isDisabled = shift && duplicateWorkshiftIDs.includes(shift.workShiftID);
+                    const isDisabled =
+                      shift &&
+                      duplicateWorkshiftIDs.includes(shift.workShiftID);
 
                     return (
                       <td
                         key={colIndex}
                         onClick={() => !isDisabled && handleClick(shift)}
-                        className={`slotCell-choose ${isBooked ? "booked" : ""} ${isDisabled ? "disabled" : ""}`}
-                        style={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
+                        className={`slotCell-choose ${
+                          isBooked ? "booked" : ""
+                        } ${isDisabled ? "disabled" : ""}`}
+                        style={{
+                          cursor: isDisabled ? "not-allowed" : "pointer",
+                        }}
                       >
-                        {isDisabled && <span className="disabled-overlay"></span>}
+                        {isDisabled && (
+                          <span className="disabled-overlay"></span>
+                        )}
                       </td>
                     );
                   })}
@@ -165,9 +176,32 @@ function Content() {
             </tbody>
           </table>
         </div>
-        <button onClick={handleChoose} className="btn btn-primary">
-          Choose
-        </button>
+        <div className="container">
+  <div className="row">
+    <div className="col-md-6 d-flex align-items-start" style={{ marginTop: "20px" }}>
+      <button onClick={handleChoose} className="btn btn-primary">
+        Choose
+      </button>
+    </div>
+
+    <div className="slot-legend col-md-6" style={{ marginTop: "20px" }}>
+      <h4 style={{marginLeft: "30px"}}>Sign</h4>
+      <table className="slot-legend-table">
+        <tbody>
+          <tr>
+            <td className="haveSchedule-slot sign"></td>
+            <td className="contentSpan">Registered slot</td>
+          </tr>
+          <tr>
+            <td className="notInSchedule-slot sign"></td>
+            <td className="contentSpan">Out of Schedule</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
         <div
           className={`modal fade ${showModal ? "show" : ""}`}
           style={{ display: showModal ? "block" : "none" }}

@@ -98,10 +98,6 @@ function Content() {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error</div>;
-  }
-
   return (
     <>
       <div className="container mt-5 custom-mt5">
@@ -313,6 +309,9 @@ function Content() {
                       </span>
                     </div>
                     <div className="col-md-6">
+                    <label className="small mb-1" htmlFor="role">
+                        Level
+                      </label>
                       <input
                         className="form-control"
                         type="text"

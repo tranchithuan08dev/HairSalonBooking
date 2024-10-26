@@ -1,12 +1,18 @@
 import "../../../../assets/css/stylist/bookingDetail.css";
-import { useEffect } from "react";
-import { fetchBookingDetail, updateStatus, setShowAlert } from "../../../../store/stylistSlice/BookingDetailSlice";
+import { useEffect, useState } from "react";
+import {
+  fetchBookingDetail,
+  updateStatus,
+  setShowAlert,
+  createPayment
+} from "../../../../store/stylistSlice/BookingDetailSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 function Content() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.AUTH);
   const stylistID = currentUser?.actorByRole.stylistID;
@@ -24,22 +30,34 @@ function Content() {
     console.log(data);
   }, [dispatch, stylistID, updateStatus]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const serviceIDs = data.detail?.map(detail => detail.serviceID);
+  const handleUpdate = () => {
+    setShowModal(true);
+  };
+  const confirmUpdate = async () => {
+    setShowModal(false);
     const form = {
       bookingID: data.data?.bookingID,
-      stylistID: data.data?.stylistID,
-      serviceID: serviceIDs,
-      totalPrice: data.data?.totalPrice,
-      stylistWorkShiftID: data.data?.stylistWorkShiftID,
-      status: "Completed"
-    }
+      status: "Done",
+    };
     const result = await dispatch(updateStatus(form));
-    if (result.payload) {
-      dispatch(fetchBookingDetail(id)); 
-  }
+    if (result.payload.ok) {
+      const dataCreate = {
+        bookingID: data.data?.bookingID || "",
+        method: "Cash",
+        status: "unpaid",
+      };
+
+      const resultCreate = await dispatch(createPayment(dataCreate));
+      if(resultCreate){
+        dispatch(fetchBookingDetail(id));
+      }
+      setShowForm(false);
+    }
+  };
+
+  const cancelUpdate = () => {
+    console.log("Cancelled");
+    setShowModal(false);
   };
 
   useEffect(() => {
@@ -62,10 +80,6 @@ function Content() {
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
   return (
     <>
       {showAlert && (
@@ -85,7 +99,7 @@ function Content() {
             <div className="card-body row">
               <form className="col-md-6">
                 <div className="formBody">
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Booking ID:</strong>
                     <input
                       type="text"
@@ -94,7 +108,7 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Created At:</strong>
                     <input
                       type="text"
@@ -103,7 +117,7 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Appoinment At:</strong>
                     <input
                       type="text"
@@ -112,7 +126,7 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Services:</strong>
                     <textarea
                       name="servicesName"
@@ -127,7 +141,7 @@ function Content() {
                       className="form-control text"
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>FullName:</strong>
                     <input
                       type="text"
@@ -136,7 +150,7 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Phone Number:</strong>
                     <input
                       type="text"
@@ -145,7 +159,7 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Stylist Name:</strong>
                     <input
                       type="text"
@@ -154,7 +168,7 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Total Price:</strong>
                     <input
                       type="number"
@@ -163,19 +177,66 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-groupTest">
                     <strong>Status:</strong>
                     <input
                       type="text"
                       name="status"
-                      value={data.data?.status}
+                      value={data.data?.status || ""}
                       readOnly
                     />
                   </div>
                 </div>
-                <button type="submit" onClick={handleSubmit} className="buttonSubmit">
-                  Done
-                </button>
+                {(data.data?.status === "In-progress") && (
+                  <button
+                    type="button"
+                    onClick={handleUpdate}
+                    className="buttonSubmit"
+                  >
+                    Done
+                  </button>
+                )}
+                <div
+                  className={`modal fade ${showModal ? "show" : ""}`}
+                  style={{ display: showModal ? "block" : "none" }}
+                  tabIndex="-1"
+                  role="dialog"
+                  aria-hidden={!showModal}
+                >
+                  <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title">Confirm Update</h5>
+                        <button
+                          type="button"
+                          className="close"
+                          onClick={cancelUpdate}
+                        >
+                          <span>&times;</span>
+                        </button>
+                      </div>
+                      <div className="modal-body">
+                        <p>Do you really want to update this booking?</p>
+                      </div>
+                      <div className="modal-footer">
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={cancelUpdate}
+                        >
+                          Cancelled
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={confirmUpdate}
+                        >
+                          Confirm
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </form>
             </div>
           </div>

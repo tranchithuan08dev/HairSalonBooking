@@ -8,7 +8,9 @@ function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, error } = useSelector((state) => state.STYLIST.workshift);
+  const { data, loading, error } = useSelector(
+    (state) => state.STYLIST.workshift
+  );
   const stylistID = currentUser.actorByRole.stylistID;
 
   useEffect(() => {
@@ -25,8 +27,8 @@ function Content() {
   const handleClick = (shift) => {
     if (shift) {
       console.log("Shift data:", shift);
-      console.log("Booking ID:", shift.bookingID); 
-  
+      console.log("Booking ID:", shift.bookingID);
+
       if (shift.bookingID && shift.bookingID.trim() !== "") {
         navigate(`bookingDetail?id=${shift.bookingID}`);
       } else {
@@ -77,16 +79,11 @@ function Content() {
       );
 
       return foundShift;
-
     }
   };
 
   if (loading) {
     return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
   }
 
   return (
@@ -120,7 +117,13 @@ function Content() {
                       <td
                         onClick={() => handleClick(shift)}
                         key={colIndex}
-                        className={`slotCell ${shift ? "booked" : ""}`}
+                        className={`slotCell ${
+                          shift
+                            ? shift?.bookingID
+                              ? "booked"
+                              : "schedule-slot"
+                            : ""
+                        }`}
                       >
                         {shift ? (
                           <div className="detail">see detail →</div>
@@ -134,6 +137,23 @@ function Content() {
           </table>
         </div>
       </div>
+      <table class="slot-legend-table" style={{ marginLeft: "30px" }}>
+        <h4>Sign</h4>
+        <tbody>
+          <tr>
+            <td class="booked-slot sign"></td>
+            <td class="contentSpan">Slot have booking</td>
+          </tr>
+          <tr>
+            <td class="schedule-slot sign"></td>
+            <td class="contentSpan">Slot have not booked yet</td>
+          </tr>
+          <tr>
+            <td class="notInSchedule-slot sign"></td>
+            <td class="contentSpan">Out of Schedule</td>
+          </tr>
+        </tbody>
+      </table>
     </>
   );
 }
