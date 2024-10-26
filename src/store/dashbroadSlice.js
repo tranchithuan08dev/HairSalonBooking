@@ -13,6 +13,7 @@ const initialState = {
   //create and slary and update salary staff and stylist
   salary: null,
   createStaff: null,
+  updateSalary: null,
   //News
   postNews: [],
   postNewsDetailId: {},
@@ -59,6 +60,20 @@ export const fetchSalary = createAsyncThunk(
       console.log("salary", res);
 
       return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchUpdateSalary = createAsyncThunk(
+  `${name}/fetchUpdateSalary`,
+  async (data) => {
+    try {
+      const res = await dashboardService.updateSalary(data);
+      console.log("updadesalary", res);
+
+      return res.data;
     } catch (error) {
       console.log(error);
     }
@@ -253,8 +268,15 @@ const dashboardSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     //create and slary and update salary staff and stylist
+    builder.addCase(fetchCreate.fulfilled, (state, action) => {
+      state.createStaff = action.payload;
+    });
+
     builder.addCase(fetchSalary.fulfilled, (state, action) => {
       state.salary = action.payload;
+    });
+    builder.addCase(fetchUpdateSalary.fulfilled, (state, action) => {
+      state.updateSalary = action.payload;
     });
     //News
     builder.addCase(fetchPostNews.fulfilled, (state, action) => {
