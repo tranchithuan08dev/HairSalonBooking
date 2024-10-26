@@ -10,6 +10,8 @@ import authService from "../services/authService";
 
 const name = "posts";
 const initialState = {
+  //create and slary and update salary staff and stylist
+  salary: null,
   createStaff: null,
   //News
   postNews: [],
@@ -36,13 +38,27 @@ const initialState = {
   postStylistDetailById: [],
   updateStylist: null,
 };
-// Create Stylist
+//create and slary and update salary staff and stylist
 export const fetchCreate = createAsyncThunk(
   `${name}/fetchCreate`,
   async (data) => {
     try {
       const res = await dashboardService.createStaff(data);
       return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchSalary = createAsyncThunk(
+  `${name}/fetchSalary`,
+  async (id) => {
+    try {
+      const res = await dashboardService.getSalary(id);
+      console.log("salary", res);
+
+      return res.data.data;
     } catch (error) {
       console.log(error);
     }
@@ -236,9 +252,9 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    //Create
-    builder.addCase(fetchCreate.fulfilled, (state, action) => {
-      state.createStaff = action.payload;
+    //create and slary and update salary staff and stylist
+    builder.addCase(fetchSalary.fulfilled, (state, action) => {
+      state.salary = action.payload;
     });
     //News
     builder.addCase(fetchPostNews.fulfilled, (state, action) => {
