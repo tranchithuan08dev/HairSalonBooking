@@ -7,7 +7,22 @@ const initialState = {
   workshift: [],
   booking: [],
   updateBooking: [],
+  cancleBooking: [],
 };
+
+export const fetchCancleBooking = createAsyncThunk(
+  `${name}/fetchCancleBooking`,
+  async (id) => {
+    try {
+      const res = await bookingService.cancleBooking(id);
+      console.log("res", res);
+
+      return res.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+);
 
 export const fetchUpdateBooking = createAsyncThunk(
   `${name}/fetchUpdateBooking`,
