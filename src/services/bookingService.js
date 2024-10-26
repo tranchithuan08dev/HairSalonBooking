@@ -22,5 +22,8 @@ const bookingService = {
   updateBooking: (data) => {
     return API.call().patch(`/api/v1/booking/update`, data);
   },
+  cancleBooking: (id) => {
+    return API.call().delete(`/api/v1/booking/delete?bookingID=${id}`);
+  },
 };
 export default bookingService;
