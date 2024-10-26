@@ -2,13 +2,13 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../../../assets/css/staff/home.css";
 import React, { useEffect, useState } from "react";
 import FilterStatus from "../../../../components/Staff/FilterStatus";
-import { getBadgeClass } from "../../../../helpers/getBadgeClass";
 import Search from "../../../../components/Staff/Search";
 import DayPicker from "../../../../components/Staff/DayPicker";
 import { searchFilter } from "../../../../helpers/searchFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBookings } from "../../../../store/staffSlice/bookingSlice";
 import { Pagination } from "antd";
+import StatusDropdown from "../../../../components/Staff/Statusdropdown";
 
 function Content() {
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ function Content() {
 
     let updatedBookings = all.bookings;
 
-    console.log("All Bookings:", updatedBookings); // Kiểm tra dữ liệu đầu vào
+    console.log("All Bookings:", updatedBookings);
 
     if (status !== "All") {
       updatedBookings = updatedBookings.filter(
@@ -64,7 +64,7 @@ function Content() {
 
     if (key) {
       const { filtered } = searchFilter(updatedBookings, key);
-      console.log("Filtered Bookings:", filtered); // Kiểm tra kết quả lọc
+      console.log("Filtered Bookings:", filtered);
       updatedBookings = Array.isArray(filtered) ? filtered : updatedBookings;
     }
 
@@ -77,7 +77,7 @@ function Content() {
       });
     }
 
-    console.log("Updated Bookings after filtering:", updatedBookings); // Kiểm tra sau khi lọc
+    console.log("Updated Bookings after filtering:", updatedBookings);
 
     if (updatedBookings && updatedBookings.length > 0) {
       setTotal(updatedBookings.length);
@@ -89,7 +89,7 @@ function Content() {
       setFilteredBookings(paginatedBookings);
     } else {
       setTotal(0);
-      setFilteredBookings([]); // Đặt lại state nếu không có bookings nào
+      setFilteredBookings([]); 
     }
   }, [searchParams, all.bookings, currentPage]);
 
@@ -109,6 +109,11 @@ function Content() {
     const year = date.getFullYear();
 
     return `${hours}:${minutes}:${seconds} ${day}-${month}-${year}`;
+  }
+
+  const handleStatusChange = (bookingID, newStatus) => {
+    console.log(bookingID, newStatus);
+    // dispatch(updateBookingStatus({ bookingID, status: newStatus }));
   }
 
   function formatDate(dateTimeString) {
@@ -182,13 +187,18 @@ function Content() {
                       </div>
                       <div className="TotalPrice">
                         <h6>Total Price</h6>
-                        <span className="block-span-edit">{item.totalPrice}$</span>
+                        <span className="block-span-edit">
+                          {item.totalPrice}$
+                        </span>
                       </div>
                       <div className="Status">
                         <h6>Status</h6>
-                        <span className={`badge ${getBadgeClass(item.status)}`}>
-                          {item.status}
-                        </span>
+                          <StatusDropdown
+                            currentStatus={item.status}
+                            onStatusChange={(newStatus) =>
+                              handleStatusChange(item.bookingID, newStatus)
+                            }
+                          />
                       </div>
                     </div>
                     <div className="col-md-2 detailSee">
