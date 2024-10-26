@@ -22,6 +22,7 @@ import {
   fetchPostStylist,
   fetchPostStylistDetailById,
   fetchSalary,
+  fetchUpdateSalary,
   fetchUpdateStylist,
 } from "../../../store/dashbroadSlice";
 
@@ -62,10 +63,14 @@ const Stylist = () => {
   }
 
   useEffect(() => {
+    if (dataSalaryStylist) {
+      form.setFieldsValue({
+        basesalary: dataSalaryStylist.baseSalary,
+        totalsalary: dataSalaryStylist.totalSalary,
+      });
+    }
     if (dataStylistById) {
       form.setFieldsValue({
-        basesalary: dataSalaryStylist?.baseSalary,
-        totalsalary: dataSalaryStylist?.totalSalary,
         fullName: dataStylistById.fullName,
         gender: dataStylistById.gender,
         yob: dayjs(dataStylistById.yob),
@@ -77,7 +82,7 @@ const Stylist = () => {
       });
       setAvatarUrl(dataStylistById.avatar);
     }
-  }, [dataStylistById, form]);
+  }, [dataStylistById, form, dataSalaryStylist]);
   console.log(dataStylistById);
 
   const showLargeDrawer = (stylist) => {
@@ -108,6 +113,11 @@ const Stylist = () => {
 
   const onFinish = (values) => {
     setIsSpin(true);
+    const updatedSalary = {
+      salaryID: dataSalaryStylist.salaryID,
+      baseSalary: values.basesalary,
+    };
+
     const updatedData = {
       stylistID: selectedStylist,
       fullName: values.fullName,
@@ -121,7 +131,7 @@ const Stylist = () => {
       deleted: values.status,
       userID: dataStylistById?.userID || null,
     };
-
+    dispatch(fetchUpdateSalary(updatedSalary));
     dispatch(fetchUpdateStylist(updatedData))
       .then(() => {
         message.success("Staff updated successfully!");
