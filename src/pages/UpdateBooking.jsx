@@ -8,11 +8,7 @@ import {
   fetchPostStylist,
   fetchPostStylistDetailById,
 } from "../store/dashbroadSlice";
-import {
-  fetchBooking,
-  fetchUpdateBooking,
-  fetchWorkShift,
-} from "../store/bookingSlice";
+import { fetchUpdateBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 
