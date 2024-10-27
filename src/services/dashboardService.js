@@ -35,6 +35,10 @@ const dashboardService = {
     return API.call().get(`/api/v1/salary/monthlySalary?id=${id}`);
   },
 
+  getSalaryStaff: (id) => {
+    return API.call().get(`/api/v1/salary/generalMonthlySalary?id=${id}`);
+  },
+
   updateSalary: (data) => {
     return API.call().patch(`/api/v1/salary/update?id=${data.salaryID}`, data);
   },
