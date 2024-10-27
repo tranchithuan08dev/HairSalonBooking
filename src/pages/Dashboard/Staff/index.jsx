@@ -21,6 +21,7 @@ import {
   fetchPostStaff,
   fetchPostStaffDetailById,
   fetchSalary,
+  fetchSalaryStaff,
   fetchUpdateStaff,
 } from "../../../store/dashbroadSlice";
 
@@ -40,13 +41,16 @@ const Staff = () => {
   const fileInputRef = useRef(null);
   const [isSpin, setIsSpin] = useState(false);
   const [form] = Form.useForm();
-
+  const [userId, setUserId] = useState(null);
   const dataStaff = useSelector((state) => state.DASHBOARD.postStaff);
   const dataStaffDetail = useSelector(
     (state) => state.DASHBOARD.postStaffDetailById
   );
-  const dataSalaryStaff = useSelector((state) => state.DASHBOARD.salary);
+  console.log("detai", dataStaffDetail);
+
+  const dataSalaryStaff = useSelector((state) => state.DASHBOARD.salaryStaff);
   console.log("dataSalaryStaff", dataSalaryStaff);
+  console.log("id", dataStaffDetail.userID);
 
   const dispatch = useDispatch();
 
@@ -72,13 +76,19 @@ const Staff = () => {
         status: dataStaffDetail.deleted,
       });
       setAvatarUrl(dataStaffDetail.avatar || "");
+      setUserId(dataStaffDetail.userID);
     }
   }, [dataStaffDetail, form, dataSalaryStaff]);
+  console.log("UsserID", userId);
 
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchSalaryStaff(userId));
+    }
+  }, [userId, dispatch]);
   const showLargeDrawer = (staffId) => {
     setSelectedStylist(staffId);
     dispatch(fetchPostStaffDetailById(staffId));
-    dispatch(fetchSalary(staffId));
     setOpen(true);
   };
 
