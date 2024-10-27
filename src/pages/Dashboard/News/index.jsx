@@ -9,8 +9,9 @@ import {
   Radio,
   Input,
   message,
+  Spin,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -22,18 +23,19 @@ import TextArea from "antd/es/input/TextArea";
 
 function News() {
   const dispatch = useDispatch();
-  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [newId, setNewId] = useState(null);
   const fileInputRef = useRef(null);
   const [form] = Form.useForm();
+  const [isSpin, setIsSpin] = useState(false);
   const dataNews = useSelector((state) => state.DASHBOARD.postNews);
   const auth = useSelector((state) => state.AUTH.currentUser);
   const dataDetailNews = useSelector(
     (state) => state.DASHBOARD.postNewsDetailId
   );
-  // console.log("dataDetailNews", dataDetailNews[0].title);
-  console.log("auth", auth);
+  console.log("dataDetailNews", dataDetailNews);
+  // console.log("auth", auth);
   const [open, setOpen] = useState(false);
 
   if (!dataNews) return <></>;
@@ -65,7 +67,7 @@ function News() {
       });
     }
     setAvatarUrl(dataDetailNews[0]?.image);
-  });
+  }, [dataDetailNews, form]);
 
   const columns = [
     {
@@ -121,6 +123,7 @@ function News() {
   };
 
   const onFinish = (values) => {
+    setIsSpin(true);
     const updateNews = {
       managerID: auth?.actorByRole?.managerID,
       newsID: newId,
@@ -132,10 +135,12 @@ function News() {
     dispatch(fetchUpdateNews(updateNews))
       .then(() => {
         message.success("News updated successfully!");
+        setIsSpin(false);
         onClose();
       })
       .catch((error) => {
         message.error(`Failed to update News: ${error.message}`);
+        setIsSpin(false);
       });
   };
 
@@ -160,7 +165,6 @@ function News() {
         }
       >
         <Form
-          form={form}
           {...layout}
           name="new-service"
           onFinish={onFinish}
@@ -173,6 +177,7 @@ function News() {
                 src={avatarUrl || "https://via.placeholder.com/200"}
                 style={{
                   borderRadius: "50%",
+                  overflow: "hidden",
                   width: "200px",
                   height: "200px",
                 }}
@@ -219,6 +224,14 @@ function News() {
           </Form.Item>
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
             <Button type="primary" htmlType="submit">
+              {isSpin && (
+                <Spin
+                  indicator={
+                    <LoadingOutlined spin style={{ color: "white" }} />
+                  }
+                  size="small"
+                />
+              )}
               Save Change
             </Button>
           </Form.Item>
