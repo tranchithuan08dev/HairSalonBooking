@@ -11,6 +11,7 @@ import authService from "../services/authService";
 const name = "posts";
 const initialState = {
   //create and slary and update salary staff and stylist
+  salaryStaff: null,
   salary: null,
   createStaff: null,
   updateSalary: null,
@@ -57,6 +58,20 @@ export const fetchSalary = createAsyncThunk(
   async (id) => {
     try {
       const res = await dashboardService.getSalary(id);
+      console.log("salary", res);
+
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchSalaryStaff = createAsyncThunk(
+  `${name}/fetchSalaryStaff`,
+  async (id) => {
+    try {
+      const res = await dashboardService.getSalaryStaff(id);
       console.log("salary", res);
 
       return res.data.data;
@@ -270,6 +285,10 @@ const dashboardSlice = createSlice({
     //create and slary and update salary staff and stylist
     builder.addCase(fetchCreate.fulfilled, (state, action) => {
       state.createStaff = action.payload;
+    });
+
+    builder.addCase(fetchSalaryStaff.fulfilled, (state, action) => {
+      state.salaryStaff = action.payload;
     });
 
     builder.addCase(fetchSalary.fulfilled, (state, action) => {
