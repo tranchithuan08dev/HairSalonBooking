@@ -22,6 +22,7 @@ import {
   fetchPostStaffDetailById,
   fetchSalary,
   fetchSalaryStaff,
+  fetchUpdateSalary,
   fetchUpdateStaff,
 } from "../../../store/dashbroadSlice";
 
@@ -85,7 +86,7 @@ const Staff = () => {
     if (userId) {
       dispatch(fetchSalaryStaff(userId));
     }
-  }, [userId, dispatch]);
+  }, [userId, dispatch, form, , dataStaffDetail]);
   const showLargeDrawer = (staffId) => {
     setSelectedStylist(staffId);
     dispatch(fetchPostStaffDetailById(staffId));
@@ -115,6 +116,12 @@ const Staff = () => {
 
   const onFinish = (values) => {
     setIsSpin(true);
+    const updatedSalary = {
+      salaryID: dataSalaryStaff.salaryID,
+      baseSalary: values.basesalary,
+    };
+    console.log("updatedSalary", updatedSalary);
+
     const updatedData = {
       staffID: selectedStylist,
       fullName: values.fullName,
@@ -127,7 +134,7 @@ const Staff = () => {
       deleted: values.status,
       userID: dataStaffDetail?.userID || null,
     };
-
+    dispatch(fetchUpdateSalary(updatedSalary));
     dispatch(fetchUpdateStaff(updatedData))
       .then(() => {
         message.success("Staff updated successfully!");
