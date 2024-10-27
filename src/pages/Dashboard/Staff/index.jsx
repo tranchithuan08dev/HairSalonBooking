@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostStaff,
   fetchPostStaffDetailById,
-  fetchSalary,
   fetchSalaryStaff,
   fetchUpdateSalary,
   fetchUpdateStaff,
@@ -86,7 +85,7 @@ const Staff = () => {
     if (userId) {
       dispatch(fetchSalaryStaff(userId));
     }
-  }, [userId, dispatch, form, , dataStaffDetail]);
+  }, [userId, dispatch, form, dataStaffDetail]);
   const showLargeDrawer = (staffId) => {
     setSelectedStylist(staffId);
     dispatch(fetchPostStaffDetailById(staffId));
