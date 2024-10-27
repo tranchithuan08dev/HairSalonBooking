@@ -193,7 +193,9 @@ function BookingPage() {
     const value = event.target.value;
     console.log("value", value);
     if (value === "1") {
-      dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+      useEffect(() => {
+        dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+      }, [selectedStylist]);
     } else {
       dispatch(
         fetchWorkShift({ id: selectedStylist, shiftDate: tomorrowDayOfWeek })
