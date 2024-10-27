@@ -1,19 +1,21 @@
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchCancleBooking } from "../store/bookingSlice";
 import { message } from "antd";
 
 function BookingSuccessPage() {
   const dispatch = useDispatch();
   const booking = useSelector((state) => state.BOOKING.booking);
-
+  const nagative = useNavigate();
   const cancelBooking = () => {
+    alert("Do you want cancle booking???");
     dispatch(fetchCancleBooking(booking?.newBooking?.bookingID))
       .then(() => {
         message.success("Booking has been successfully canceled.");
+        nagative("/");
       })
       .catch((error) => {
         message.error("Failed to cancel the booking. Please try again.");
