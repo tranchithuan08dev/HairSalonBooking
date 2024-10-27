@@ -56,7 +56,6 @@ const Service = () => {
   useEffect(() => {
     if (dataServiceDetail) {
       form.setFieldsValue({
-        img: selectedFile,
         serviceName: dataServiceDetail.serviceName,
         price: dataServiceDetail.price,
         type: dataServiceDetail.type,
@@ -64,6 +63,7 @@ const Service = () => {
         description: dataServiceDetail.description,
         status: dataServiceDetail.deleted,
       });
+      setAvatarUrl(dataServiceDetail.img);
     }
   }, [dataServiceDetail, form]);
 
@@ -193,7 +193,7 @@ const Service = () => {
             <Space size={12}>
               <Image
                 width={200}
-                src={avatarUrl || "https://via.placeholder.com/200"}
+                src={avatarUrl}
                 style={{
                   borderRadius: "50%",
                   overflow: "hidden",
