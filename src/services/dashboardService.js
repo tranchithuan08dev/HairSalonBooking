@@ -154,6 +154,9 @@ const dashboardService = {
   getAllStylist: (inputParam = {}) => {
     return API.call().get(`/api/v1/stylist/getAll`, {
       params: inputParam,
+      headers: {
+        token: `Bearer ${token}`,
+      },
     });
   },
 
