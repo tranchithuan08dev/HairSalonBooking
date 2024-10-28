@@ -11,6 +11,7 @@ import {
 import { fetchUpdateBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 function UpdateBooking() {
   const nagative = useNavigate();
@@ -55,7 +56,7 @@ function UpdateBooking() {
   const [selectedTomorrow, setSelectedTomorrow] = useState("");
   const [todayDayOfWeek, setTodayDayOfWeek] = useState("");
   const [tomorrowDayOfWeek, setTomorrowDayOfWeek] = useState("");
-
+  const [selectDay, setSelectDay] = useState(null);
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber);
     setName(auth?.record?.email);
@@ -81,6 +82,7 @@ function UpdateBooking() {
     console.log("updateBooking", updateBooking);
 
     dispatch(fetchUpdateBooking(updateBooking));
+    nagative("/bookingsuccess");
   };
   // console.log("StylistId", selectedStylist);
 
@@ -201,13 +203,19 @@ function UpdateBooking() {
     const value = event.target.value;
     console.log("value", value);
     if (value === "1") {
-      dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+      setSelectDay(todayDayOfWeek);
+      // dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
     } else {
-      dispatch(
-        fetchWorkShift({ id: selectedStylist, shiftDate: tomorrowDayOfWeek })
-      );
+      setSelectDay(tomorrowDayOfWeek);
+      // dispatch(
+      //   fetchWorkShift({ id: selectedStylist, shiftDate: tomorrowDayOfWeek })
+      // );
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+  }, [selectedStylist, selectDay]);
 
   return (
     <>
