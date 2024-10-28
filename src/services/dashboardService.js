@@ -8,21 +8,22 @@ const dashboardService = {
     });
   },
 
-  getDetailNews: (inputParam) => {
-    return API.call().get(`/api/v1/news/getAll`, {
-      params: inputParam,
-    });
+  getDetailNews: (id) => {
+    return API.call().get(`/api/v1/news/getDetail?id=${id}`);
   },
 
   updateNews: (data) => {
-    return API.call().patch(`api/v1/news/update?id=${data.newsID}`, data, {
+    return API.call().patch(`/api/v1/news/update?id=${data.newsID}`, data, {
       headers: {
         token: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
   },
-  //Create Stylist and Staff
+  createNews: (data) => {
+    return API.call.post(`api/v1/news/create?id=${data.id}`, data);
+  },
+  //Create  Stylist and Staff and Update salary
   createStaff: (data) => {
     return API.call().post(`/api/v1/auth/register`, data, {
       headers: {
@@ -30,6 +31,17 @@ const dashboardService = {
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+  getSalary: (id) => {
+    return API.call().get(`/api/v1/salary/monthlySalary?id=${id}`);
+  },
+
+  getSalaryStaff: (id) => {
+    return API.call().get(`/api/v1/salary/generalMonthlySalary?id=${id}`);
+  },
+
+  updateSalary: (data) => {
+    return API.call().patch(`/api/v1/salary/update?id=${data.salaryID}`, data);
   },
   // Profile
   getDetailManagerById: (id) => {
@@ -143,6 +155,9 @@ const dashboardService = {
   getAllStylist: (inputParam = {}) => {
     return API.call().get(`/api/v1/stylist/getAll`, {
       params: inputParam,
+      headers: {
+        token: `Bearer ${token}`,
+      },
     });
   },
 

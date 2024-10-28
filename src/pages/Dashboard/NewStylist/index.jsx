@@ -113,13 +113,24 @@ function NewStylist() {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Gender" name="gender">
+        <Form.Item
+          label="Gender"
+          name="gender"
+          rules={[{ required: true, message: "Please select your gender" }]}
+        >
           <Radio.Group>
             <Radio value="Male">Male</Radio>
             <Radio value="Female">Female</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="yob" label="Date of birth">
+
+        <Form.Item
+          name="yob"
+          label="Date of birth"
+          rules={[
+            { required: true, message: "Please select your date of birth" },
+          ]}
+        >
           <DatePicker format={dateFormat} />
         </Form.Item>
         <Form.Item
@@ -142,9 +153,7 @@ function NewStylist() {
           label="Email"
           name="email"
           rules={[
-            {
-              message: "Please input your email!",
-            },
+            { required: true, message: "Please input your email!" },
             {
               type: "email",
               message: "The input is not a valid email!",
@@ -153,19 +162,47 @@ function NewStylist() {
         >
           <Input type="email" placeholder="Email" />
         </Form.Item>
-        <Form.Item name="certificate" label="Link Image Certificate">
+        <Form.Item
+          name="certificate"
+          label="Link Image Certificate"
+          rules={[
+            { required: true, message: "Please enter the certificate link" },
+            { type: "url", message: "Please enter a valid URL" },
+          ]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item name="address" label="Address">
+
+        <Form.Item
+          name="address"
+          label="Address"
+          rules={[
+            { required: true, message: "Please enter your address" },
+            { max: 250, message: "Address cannot exceed 250 characters" },
+          ]}
+        >
           <Input.TextArea />
         </Form.Item>
-        <Form.Item name="level" label="Level">
-          <InputNumber />
+
+        <Form.Item
+          name="level"
+          label="Level"
+          rules={[
+            { required: true, message: "Please enter the level" },
+            {
+              type: "number",
+              min: 1,
+              max: 5,
+              message: "Level must be between 1 and 5",
+            },
+          ]}
+        >
+          <InputNumber min={1} max={5} />
         </Form.Item>
 
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
-            Create Service
+            Create Stylist
           </Button>
         </Form.Item>
       </Form>

@@ -42,6 +42,7 @@ const User = () => {
   const dataCustomerDetail = useSelector(
     (state) => state.DASHBOARD.postCustomerById
   );
+  console.log("dataCustomerDetail", dataCustomerDetail);
 
   console.log(dataCustomerDetail);
 
@@ -50,15 +51,17 @@ const User = () => {
   }, [dispatch]);
 
   if (dataCustomer == null) return <></>;
-
+  if (dataCustomerDetail == null) return <></>;
   useEffect(() => {
     if (dataCustomerDetail) {
       form.setFieldsValue({
-        fullName: dataCustomerDetail.fullName,
-        point: dataCustomerDetail.loyaltyPoints,
-        status: dataCustomerDetail.deleted,
+        fullName: dataCustomerDetail?.customer?.fullName,
+        point: dataCustomerDetail?.customer?.loyaltyPoints,
+        status: dataCustomerDetail?.customer?.deleted,
+        phoneNumber: dataCustomerDetail?.user?.phoneNumber,
+        email: dataCustomerDetail?.user?.email,
       });
-      setAvatarUrl(dataCustomerDetail.avatar);
+      setAvatarUrl(dataCustomerDetail.user?.avatar);
     }
   }, [dataCustomerDetail, form]);
 
@@ -190,7 +193,12 @@ const User = () => {
           <Form.Item name="fullName" label="Stylist Name">
             <Input disabled />
           </Form.Item>
-
+          <Form.Item label="Phone" name="phoneNumber">
+            <Input type="text" disabled />
+          </Form.Item>
+          <Form.Item label="Email" name="email">
+            <Input type="email" disabled />
+          </Form.Item>
           <Form.Item name="point" label="Loyalty Points">
             <Input />
           </Form.Item>

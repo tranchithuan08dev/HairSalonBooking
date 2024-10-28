@@ -6,14 +6,14 @@ import {
   Input,
   Space,
   Table,
-  Upload,
   Image,
   InputNumber,
   Tag,
   Radio,
   message,
+  Spin,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPostService,
@@ -37,6 +37,7 @@ const Service = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const [selectServiceId, setSelectServiceId] = useState(null);
+  const [isSpin, setIsSpin] = useState(false);
   const [form] = Form.useForm();
 
   const dispatch = useDispatch();
@@ -50,18 +51,19 @@ const Service = () => {
 
   if (dataService == null) return <></>;
   if (dataServiceDetail == null) return <></>;
-  console.log(dataServiceDetail);
+  console.log("dataServiceDetail", dataServiceDetail);
 
   useEffect(() => {
     if (dataServiceDetail) {
       form.setFieldsValue({
-        img: selectedFile,
         serviceName: dataServiceDetail.serviceName,
         price: dataServiceDetail.price,
+        type: dataServiceDetail.type,
         duration: dataServiceDetail.duration,
         description: dataServiceDetail.description,
         status: dataServiceDetail.deleted,
       });
+      setAvatarUrl(dataServiceDetail.img);
     }
   }, [dataServiceDetail, form]);
 
@@ -79,38 +81,39 @@ const Service = () => {
   };
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0]; // Get the selected file
+    const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
       const imageUrl = URL.createObjectURL(file);
-      console.log("img", imageUrl);
-
-      setAvatarUrl(imageUrl); // Set the avatar preview
+      setAvatarUrl(imageUrl);
     }
   };
 
   const handleUploadClick = () => {
-    fileInputRef.current.click(); // Trigger file input dialog
+    fileInputRef.current.click();
   };
 
   const onFinish = (values) => {
+    setIsSpin(true);
     const updateService = {
       serviceID: selectServiceId,
       serviceName: values.serviceName,
-      type: "single",
+      type: values.type,
       price: values.price,
       description: values.description,
       duration: values.duration,
       deleted: values.status,
-      img: null,
+      img: selectedFile,
     };
 
     dispatch(fetchUpdateService(updateService))
       .then(() => {
+        setIsSpin(false);
         message.success("Service updated successfully!");
         onClose();
       })
       .catch((error) => {
+        setIsSpin(false);
         message.error(`Failed to update service: ${error.message}`);
       });
   };
@@ -132,12 +135,12 @@ const Service = () => {
       ),
     },
     {
-      title: "Duration",
+      title: "Duration(Mins)",
       dataIndex: "duration",
       key: "duration",
     },
     {
-      title: "Price",
+      title: "Price(USD)",
       dataIndex: "price",
       key: "price",
     },
@@ -190,7 +193,7 @@ const Service = () => {
             <Space size={12}>
               <Image
                 width={200}
-                src={avatarUrl || "https://via.placeholder.com/200"}
+                src={avatarUrl}
                 style={{
                   borderRadius: "50%",
                   overflow: "hidden",
@@ -207,25 +210,79 @@ const Service = () => {
                   onChange={handleImageUpload}
                 />
                 <Button icon={<UploadOutlined />} onClick={handleUploadClick}>
-                  Upload Avatar
+                  Upload Image
                 </Button>
               </div>
             </Space>
           </Form.Item>
-          <Form.Item name="serviceName" label="Service Name">
+          <Form.Item
+            name="serviceName"
+            label="Service Name"
+            rules={[
+              { required: true, message: "Please enter the service name" },
+              {
+                max: 100,
+                message: "Service name cannot exceed 100 characters",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-
-          <Form.Item name="price" label="Price">
-            <InputNumber addonAfter="VND" />
+          <Form.Item
+            name="price"
+            label="Price"
+            rules={[
+              { required: true, message: "Please enter the price" },
+              {
+                type: "number",
+                min: 1,
+                message: "Price must be greater than zero",
+              },
+            ]}
+          >
+            <InputNumber addonAfter="USD" />
           </Form.Item>
-          <Form.Item name="duration" label="Duration">
+          <Form.Item
+            name="type"
+            label="Type"
+            rules={[{ required: true, message: "Please select a type" }]}
+          >
+            <Radio.Group>
+              <Radio value={"single"}>Single</Radio>
+              <Radio value={"combo"}>Combo</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            name="duration"
+            label="Duration"
+            rules={[
+              { required: true, message: "Please enter the duration" },
+              {
+                type: "number",
+                min: 1,
+                message: "Duration must be a positive number",
+              },
+            ]}
+          >
             <InputNumber />
           </Form.Item>
-          <Form.Item name="description" label="Description">
+
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              { required: true, message: "Please enter a description" },
+              { max: 500, message: "Description cannot exceed 500 characters" },
+            ]}
+          >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item name="status" label="Status">
+
+          <Form.Item
+            name="status"
+            label="Status"
+            rules={[{ required: true, message: "Please select a status" }]}
+          >
             <Radio.Group>
               <Radio value={false}>Active</Radio>
               <Radio value={true}>Inactive</Radio>
@@ -238,7 +295,15 @@ const Service = () => {
             }}
           >
             <Button type="primary" htmlType="submit">
-              Edit service
+              {isSpin && (
+                <Spin
+                  indicator={
+                    <LoadingOutlined spin style={{ color: "white" }} />
+                  }
+                  size="small"
+                />
+              )}
+              Save Changes
             </Button>
           </Form.Item>
         </Form>

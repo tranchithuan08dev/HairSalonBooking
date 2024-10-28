@@ -9,8 +9,9 @@ import {
   Radio,
   Input,
   message,
+  Spin,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -22,22 +23,23 @@ import TextArea from "antd/es/input/TextArea";
 
 function News() {
   const dispatch = useDispatch();
-  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [newId, setNewId] = useState(null);
   const fileInputRef = useRef(null);
   const [form] = Form.useForm();
+  const [isSpin, setIsSpin] = useState(false);
   const dataNews = useSelector((state) => state.DASHBOARD.postNews);
   const auth = useSelector((state) => state.AUTH.currentUser);
   const dataDetailNews = useSelector(
     (state) => state.DASHBOARD.postNewsDetailId
   );
-  // console.log("dataDetailNews", dataDetailNews[0].title);
-  console.log("auth", auth);
+  console.log("dataDetailNews", dataDetailNews);
+  // console.log("auth", auth);
   const [open, setOpen] = useState(false);
 
   if (!dataNews) return <></>;
-
+  if (!dataDetailNews) return <></>;
   useEffect(() => {
     dispatch(fetchPostNews());
   }, [dispatch]);
@@ -58,14 +60,14 @@ function News() {
   useEffect(() => {
     if (dataDetailNews) {
       form.setFieldsValue({
-        title: dataDetailNews[0]?.title,
-        type: dataDetailNews[0]?.type,
-        content: dataDetailNews[0]?.content,
-        status: dataDetailNews[0]?.deleted,
+        titleNews: dataDetailNews.title, // Adjusted from title to titleNews
+        type: dataDetailNews.type,
+        content: dataDetailNews.content,
+        status: dataDetailNews.deleted,
       });
+      setAvatarUrl(dataDetailNews.image);
     }
-    setAvatarUrl(dataDetailNews[0]?.image);
-  });
+  }, [dataDetailNews, form]);
 
   const columns = [
     {
@@ -111,7 +113,7 @@ function News() {
   }));
 
   const showDrawer = (id) => {
-    dispatch(fetchPostNewsByID({ id: id }));
+    dispatch(fetchPostNewsByID(id));
     setOpen(true);
     setNewId(id);
   };
@@ -121,21 +123,28 @@ function News() {
   };
 
   const onFinish = (values) => {
+    console.log("values", values);
+
+    setIsSpin(true);
     const updateNews = {
       managerID: auth?.actorByRole?.managerID,
       newsID: newId,
       type: values.type,
-      title: values.title,
+      title: values.titleNews,
       content: values.content,
       image: selectedFile,
     };
+    console.log("update", updateNews);
+
     dispatch(fetchUpdateNews(updateNews))
       .then(() => {
         message.success("News updated successfully!");
+        setIsSpin(false);
         onClose();
       })
       .catch((error) => {
         message.error(`Failed to update News: ${error.message}`);
+        setIsSpin(false);
       });
   };
 
@@ -173,6 +182,7 @@ function News() {
                 src={avatarUrl || "https://via.placeholder.com/200"}
                 style={{
                   borderRadius: "50%",
+                  overflow: "hidden",
                   width: "200px",
                   height: "200px",
                 }}
@@ -192,7 +202,7 @@ function News() {
             </Space>
           </Form.Item>
           <Form.Item
-            name="title"
+            name="titleNews"
             label="News Name"
             rules={[{ required: true, message: "Please input the News name!" }]}
           >
@@ -219,6 +229,14 @@ function News() {
           </Form.Item>
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
             <Button type="primary" htmlType="submit">
+              {isSpin && (
+                <Spin
+                  indicator={
+                    <LoadingOutlined spin style={{ color: "white" }} />
+                  }
+                  size="small"
+                />
+              )}
               Save Change
             </Button>
           </Form.Item>

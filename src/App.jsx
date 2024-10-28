@@ -31,6 +31,7 @@ import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import News from "./pages/Dashboard/News";
 import NewsDetail from "./pages/NewsDetail";
+import CreateNews from "./pages/Dashboard/CreateNews";
 
 function App() {
   const dispatch = useDispatch();
@@ -61,6 +62,7 @@ function App() {
           <Route path="/dashboard/user" element={<User />} />
           <Route path="/dashboard/newStylist" element={<NewStylist />} />
           <Route path="/dashboard/newStaff" element={<NewStaff />} />
+          <Route path="/dashboard/createNews" element={<CreateNews />} />
           <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
