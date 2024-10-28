@@ -19,7 +19,7 @@ function Content() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const bookingID = queryParams.get("bookingID");
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [price, setPrice] = useState(0);
@@ -43,14 +43,13 @@ function Content() {
 
   useEffect(() => {
     fetchData();
-    console.log(detail);
   }, [dispatch, bookingID]);
 
   useEffect(() => {
     if (detail.data) {
+      setStatus(detail.data?.status || "");
       setOriginalPrice(detail.data?.originalPrice || 0);
       setPrice(detail.data?.discountPrice || 0);
-      setStatus(detail.data?.status || "");
     }
     const isPaid = detail.payment?.status === "paid";
     setIsPaid(isPaid);
@@ -130,6 +129,7 @@ function Content() {
       updatePayment({ id: detail.payment?.paymentID, data: dataUpdate })
     );
     if (result.payload.ok) {
+      fetchData();
       setShowForm(false);
     }
   };
@@ -263,7 +263,7 @@ function Content() {
 
                 <div className="form-group">
                   <strong>Status:</strong>
-                  <input name="status" value={status} aria-readonly/>
+                  <input name="status" value={status} readOnly/>
                 </div>
                 {detail.payment?.status && (
                   <div className="form-group">
@@ -271,7 +271,7 @@ function Content() {
                     <input
                       type="text"
                       name="paymentStatus"
-                      value={detail.payment?.status}
+                      value={detail.payment?.status || ""}
                       readOnly
                     />
                   </div>
@@ -303,7 +303,7 @@ function Content() {
                   >
                     Update
                   </button>
-                  {status === "unpaid" && (
+                  {!isPaid && (
                     <button
                       type="button"
                       onClick={handleClickCreate}
@@ -332,7 +332,7 @@ function Content() {
                   <label htmlFor="payment-method">Select Payment Method:</label>
                   <select
                     id="payment-method"
-                    value={paymentMethod}
+                    value={paymentMethod || ""}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                   >
                     <option value="Cash">Cash</option>

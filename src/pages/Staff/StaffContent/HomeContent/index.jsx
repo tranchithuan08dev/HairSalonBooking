@@ -19,7 +19,7 @@ function Content() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const { data, all, loading, showAlert, error, message } = useSelector((state) => state.STAFF.booking);
+  const { data, loading, showAlert, error, message } = useSelector((state) => state.STAFF.booking);
   const [total, setTotal] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +34,7 @@ function Content() {
       console.log("currentPage", currentPage);
 
       await dispatch(
-        fetchBookings({ page: currentPage, perPage: itemsPerPage })
+        fetchBookings()
       );
     };
     fetch();
@@ -53,7 +53,7 @@ function Content() {
 
   useEffect(() => {
     if (data.bookings) {
-      let updatedBookings = [...all.bookings]; // Dùng dữ liệu từ data
+      let updatedBookings = [...data.bookings];
   
       const key = decodeURIComponent(searchParams.get("key") || "");
       const status = searchParams.get("status") || "All";
@@ -83,14 +83,11 @@ function Content() {
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
       const paginatedBookings = updatedBookings.slice(startIndex, endIndex);
+
       setFilteredBookings(paginatedBookings);
     }
   }, [searchParams, data, currentPage]);
   
-
-  useEffect(() => {
-    setFilteredBookings(data.bookings || []);
-  }, [data]);
 
   function formatDateTime(dateTimeString) {
     const date = new Date(dateTimeString);
@@ -115,7 +112,7 @@ function Content() {
     console.log(dataUpdate);
     const result = await dispatch(updateStatus(dataUpdate));
     if (result.payload.ok) {
-      await dispatch(fetchBookings({ page: currentPage, perPage: itemsPerPage }));
+      await dispatch(fetchBookings());
     }
   };
 
@@ -158,7 +155,7 @@ function Content() {
               <FilterStatus />
             </div>
             <div className="col-md-6">
-              <Search bookings={all.bookings} />
+              <Search bookings={data.bookings} />
             </div>
           </div>
         </div>
