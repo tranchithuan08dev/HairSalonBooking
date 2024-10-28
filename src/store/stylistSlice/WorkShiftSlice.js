@@ -12,35 +12,56 @@ const name = "workshift";
 
 export const getAll = createAsyncThunk(`${name}/getAll`, async (id) => {
   try {
-    const response = await workshiftService.getAllByStylistID(id);
-    const haveBooking = await workshiftService.getAllHaveBooking(id);
-
+    console.log("Fetching workshift details...");
+    const response = await workshiftService.getAllDetailByID(id);
     const responseData = response.data.data;
-    const bookingData = haveBooking.data.data;
+    console.log("Response Data:", responseData);
+
+    console.log("Fetching bookings...");
+    const bookingResponse = await workshiftService.getAllBooking();
+    const bookings = bookingResponse.data.bookings;
+    console.log("Bookings:", bookings);
 
     const mergedData = responseData.map((shift) => {
-      const matchingBooking = bookingData.find(
+      const matchingBooking = bookings.find(
         (booking) => booking.stylistWorkShiftID === shift.stylistWorkShiftID
       );
-
       return matchingBooking
         ? { ...shift, bookingID: matchingBooking.bookingID }
         : shift;
     });
 
-    console.log(mergedData);
+    console.log("Merged Data:", mergedData);
+
+    console.log("Fetching schedule...");
+    const scheduleWorkshift = await workshiftService.getAllByStylistID(id);
+    const schedule = scheduleWorkshift.data.data;
+
+    const finalData = schedule.map((sched) => {
+      const matchingShift = mergedData.find(
+        (shift) => shift.stylistWorkShiftID === sched.stylistWorkShiftID
+      );
+    
+      return matchingShift
+        ? { ...sched, ...matchingShift } 
+        : sched; 
+    });
+
+    console.log("Final Merged Data:", finalData);
 
     return {
       ok: true,
-      data: mergedData,
+      data: finalData,
     };
   } catch (error) {
+    console.error("Error occurred:", error);
     return {
       ok: false,
       message: "Workshift is empty",
     };
   }
 });
+
 
 export const fetchAllWorkshift = createAsyncThunk(`${name}/fetchAllWorkshift`, async (id) => {
   try {
