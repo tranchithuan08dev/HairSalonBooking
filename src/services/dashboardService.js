@@ -8,19 +8,20 @@ const dashboardService = {
     });
   },
 
-  getDetailNews: (inputParam) => {
-    return API.call().get(`/api/v1/news/getAll`, {
-      params: inputParam,
-    });
+  getDetailNews: (id) => {
+    return API.call().get(`/api/v1/news/getDetail?id=${id}`);
   },
 
   updateNews: (data) => {
-    return API.call().patch(`api/v1/news/update?id=${data.newsID}`, data, {
+    return API.call().patch(`/api/v1/news/update?id=${data.newsID}`, data, {
       headers: {
         token: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+  createNews: (data) => {
+    return API.call.post(`api/v1/news/create?id=${data.id}`, data);
   },
   //Create  Stylist and Staff and Update salary
   createStaff: (data) => {
