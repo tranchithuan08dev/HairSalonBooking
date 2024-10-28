@@ -50,7 +50,7 @@ function BookingPage() {
   const [selectedTomorrow, setSelectedTomorrow] = useState("");
   const [todayDayOfWeek, setTodayDayOfWeek] = useState("");
   const [tomorrowDayOfWeek, setTomorrowDayOfWeek] = useState("");
-
+  const [selectDay, setSelectDay] = useState(null);
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber);
     setName(auth?.record?.email);
@@ -66,7 +66,7 @@ function BookingPage() {
       customerID: customerID,
       stylistID: selectedStylist,
       serviceID: serviceIDs,
-      totalPrice: totalPrice,
+      originalPrice: totalPrice,
       stylistWorkShiftID: selectStylistWorkShift,
     };
     console.log("Booking", booking);
@@ -193,15 +193,18 @@ function BookingPage() {
     const value = event.target.value;
     console.log("value", value);
     if (value === "1") {
-      useEffect(() => {
-        dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
-      }, [selectedStylist]);
+      setSelectDay(todayDayOfWeek);
+      // dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
     } else {
-      dispatch(
-        fetchWorkShift({ id: selectedStylist, shiftDate: tomorrowDayOfWeek })
-      );
+      setSelectDay(tomorrowDayOfWeek);
+      // dispatch(
+      //   fetchWorkShift({ id: selectedStylist, shiftDate: tomorrowDayOfWeek })
+      // );
     }
   };
+  useEffect(() => {
+    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+  }, [selectedStylist, selectDay]);
 
   return (
     <>
@@ -413,52 +416,58 @@ function BookingPage() {
               Select service time slot:
             </label>
             <div className="row mt-3">
-              {dataWorkShift.map((slot) => (
-                <div
-                  key={slot.id}
-                  className={`col-2 time-slot btn btn-light ${
-                    selectedTime === formatTimeToHHmm(slot.startTime)
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    slot.status !== "Inactive" &&
-                    handleTimeClick(
-                      formatTimeToHHmm(slot.startTime),
-                      slot.stylistWorkShiftID
-                    )
-                  } // Disable click if status is "active"
-                  style={{
-                    pointerEvents:
-                      slot.status === "Inactive" ||
-                      formatTimeToHHmm(slot.startTime) <= currentHour
-                        ? "none"
-                        : "auto", // Disable if status is active or time is in the past
-                    backgroundColor:
-                      slot.status === "Inactive" ||
-                      formatTimeToHHmm(slot.startTime) <= currentHour
-                        ? "#e0e0e0"
-                        : selectedTime === formatTimeToHHmm(slot.startTime)
-                        ? "#4caf50"
-                        : "#fff", // Adjust background color
-                    color:
+              {dataWorkShift && dataWorkShift.length > 0 ? (
+                dataWorkShift.map((slot) => (
+                  <div
+                    key={slot.id}
+                    className={`col-2 time-slot btn btn-light ${
                       selectedTime === formatTimeToHHmm(slot.startTime)
-                        ? "white"
-                        : "black", // Text color
-                    borderColor:
-                      selectedTime === formatTimeToHHmm(slot.startTime)
-                        ? "#4caf50"
-                        : "#ced4da", // Border color
-                    cursor:
-                      slot.status === "Inactive" ||
-                      formatTimeToHHmm(slot.startTime) <= currentHour
-                        ? "not-allowed"
-                        : "pointer",
-                  }}
-                >
-                  {formatTimeToHHmm(slot.startTime)}:00
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      slot.status !== "Inactive" &&
+                      handleTimeClick(
+                        formatTimeToHHmm(slot.startTime),
+                        slot.stylistWorkShiftID
+                      )
+                    }
+                    style={{
+                      pointerEvents:
+                        slot.status === "Inactive" ||
+                        formatTimeToHHmm(slot.startTime) <= currentHour
+                          ? "none"
+                          : "auto",
+                      backgroundColor:
+                        slot.status === "Inactive" ||
+                        formatTimeToHHmm(slot.startTime) <= currentHour
+                          ? "#e0e0e0"
+                          : selectedTime === formatTimeToHHmm(slot.startTime)
+                          ? "#4caf50"
+                          : "#fff",
+                      color:
+                        selectedTime === formatTimeToHHmm(slot.startTime)
+                          ? "white"
+                          : "black",
+                      borderColor:
+                        selectedTime === formatTimeToHHmm(slot.startTime)
+                          ? "#4caf50"
+                          : "#ced4da",
+                      cursor:
+                        slot.status === "Inactive" ||
+                        formatTimeToHHmm(slot.startTime) <= currentHour
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                  >
+                    {formatTimeToHHmm(slot.startTime)}:00
+                  </div>
+                ))
+              ) : (
+                <div className="col-12 text-center text-white">
+                  Sorry, stylist not available at this time.
                 </div>
-              ))}
+              )}
             </div>
             {/* TIME END */}
             {/* NOTE */}
