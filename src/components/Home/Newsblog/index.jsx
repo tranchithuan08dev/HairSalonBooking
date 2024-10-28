@@ -9,8 +9,6 @@ function NewBlog() {
   const dispatch = useDispatch();
   const total = useSelector((state) => state.DASHBOARD.postNews);
   const dataNews = useSelector((state) => state.HOME.news);
-  console.log("dataNes", dataNews);
-
   useEffect(() => {
     dispatch(fetchPostNews());
     dispatch(fetchHomeNews({ perpage: itemsPerPage }));
