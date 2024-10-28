@@ -51,14 +51,13 @@
   
   .custom-mt {
     width: 1178px;
-    margin-top: 3px!important;
+    margin-top: 25px!important;
   }
   
   .card-body-custom{
     height: 97px!important;
     padding-bottom: 0px!important;
     margin-bottom: 0px!important;
-  
   }
   
   
@@ -78,4 +77,8 @@
     .custom-g0 {
       width: 1194px;
       margin-bottom: 10px;
+    }
+
+    .btn-custome {
+      margin-right: 0px;
     }

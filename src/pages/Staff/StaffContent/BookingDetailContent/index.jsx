@@ -5,7 +5,6 @@ import {
   updatePayment,
   fetchBookingDetail,
   generateQR,
-  setDetail,
   setShowAlert,
   updateBooking,
   fetchServices,
@@ -37,11 +36,12 @@ function Content() {
   const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
 
+  const fetchData = async () => {
+    await dispatch(fetchBookingDetail(bookingID));
+    await dispatch(fetchServices());
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchBookingDetail(bookingID));
-      await dispatch(fetchServices());
-    };
     fetchData();
   }, [dispatch, bookingID]);
 
@@ -71,7 +71,7 @@ function Content() {
 
     if (newStatus === detail.data.status) {
       setStatus(newStatus);
-      return; 
+      return;
     }
     switch (e.target.value) {
       case "In-progress":
@@ -320,11 +320,13 @@ function Content() {
                   </div>
                 )}
               </div>
-              {detail.data?.status === "In-progress" ? (
+              {isPaid || detail.data.status === "Cancelled" ? (
+                <></>
+              ) : detail.data?.status === "In-progress" ? (
                 <button
                   type="submit"
                   onClick={handleSubmit}
-                  className="buttonSubmit"
+                  className="buttonSubmit button-cus"
                 >
                   Update
                 </button>
@@ -333,31 +335,29 @@ function Content() {
                   <button
                     type="button"
                     onClick={handleGenerate}
-                    className="generateQR"
+                    className="generateQR button-cus"
                   >
                     Generate QR
                   </button>
                   <button
                     type="submit"
                     onClick={handleSubmit}
-                    className="buttonSubmit"
+                    className="buttonSubmit button-cus"
                   >
                     Update
                   </button>
-                  {!detail.payment?.status ||
-                  detail.payment?.status === "unpaid" ? (
+                  {detail.payment?.status === "unpaid" && (
                     <button
                       type="button"
                       onClick={handleClickCreate}
-                      className="buttonCreatePayment"
+                      className="buttonCreatePayment button-cus"
                     >
                       Pay
                     </button>
-                  ) : (
-                    <></>
                   )}
                 </>
               )}
+
               {showAlert && (
                 <div
                   className={`alert ${

@@ -55,7 +55,6 @@ const ListServices = (props) => {
 
 
   const getDisplayServices = () => {
-    if (selectedServices.length === 0) return "No services selected";
     if (selectedServices.length > 5) {
       return [...selectedServices.slice(0, 5), "..."].join(", ");
     }
