@@ -14,7 +14,7 @@ function NewsDetail() {
   console.log("dataDetailNews", dataDetailNews);
 
   useEffect(() => {
-    dispatch(fetchPostNewsByID({ id: id }));
+    dispatch(fetchPostNewsByID(id));
   }, [dispatch]);
   return (
     <>
@@ -25,9 +25,9 @@ function NewsDetail() {
             src="https://images.unsplash.com/photo-1593702295094-aea22597af65?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGJhcmJlcnxlbnwwfHwwfHx8MA%3D%3D"
             alt="Image Description"
           />
-          <div className="image-title">{dataDetailNews[0]?.title}</div>
-          <div className="image-type">Type: {dataDetailNews[0]?.type}</div>
-          <div className="image-content">{dataDetailNews[0]?.content}</div>
+          <div className="image-title">{dataDetailNews?.title}</div>
+          <div className="image-type">Type: {dataDetailNews?.type}</div>
+          <div className="image-content">{dataDetailNews?.content}</div>
         </div>
       </div>
 
