@@ -3,7 +3,7 @@ import StylistWorkshiftContent from "../StylistContent/CreateStylistWorkshiftCon
 function CreateStylistWorkshift(){
     return (
         <>
-            <div className="stylistWorkshift-content" style={{paddingTop: '80px'}}>
+            <div className="stylistWorkshift-content" style={{paddingTop: '20px'}}>
                 <StylistWorkshiftContent/>
             </div>
         </>

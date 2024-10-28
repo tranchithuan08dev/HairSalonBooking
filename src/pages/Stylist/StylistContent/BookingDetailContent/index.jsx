@@ -27,14 +27,13 @@ function Content() {
     };
     fetch();
     changeDate();
-    console.log(data);
+    console.log(data, data);
   }, [dispatch, stylistID, updateStatus]);
 
   const handleUpdate = () => {
     setShowModal(true);
   };
   const confirmUpdate = async () => {
-    setShowModal(false);
     const form = {
       bookingID: data.data?.bookingID,
       status: "Done",
@@ -43,15 +42,14 @@ function Content() {
     if (result.payload.ok) {
       const dataCreate = {
         bookingID: data.data?.bookingID || "",
-        method: "Cash",
-        status: "unpaid",
       };
+      console.log(dataCreate);
 
       const resultCreate = await dispatch(createPayment(dataCreate));
       if(resultCreate){
         dispatch(fetchBookingDetail(id));
       }
-      setShowForm(false);
+      setShowModal(false);
     }
   };
 
@@ -172,8 +170,8 @@ function Content() {
                     <strong>Total Price:</strong>
                     <input
                       type="number"
-                      name="totalPrice"
-                      value={data.data?.totalPrice || ""}
+                      name="originalPrice"
+                      value={data.data?.originalPrice || ""}
                       readOnly
                     />
                   </div>

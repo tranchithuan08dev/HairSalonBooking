@@ -108,6 +108,29 @@ function Content() {
     }
   };
 
+  const getCurrentDay = () => {
+    const today = new Date();
+    return today.getDay();
+  };
+
+  const disableSlots = (currentDay) => {
+    const days = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+
+    const disableCount = currentDay === 0 ? 6 : currentDay - 1; 
+    return days.slice(0, disableCount);
+  };
+
+  const currentDay = getCurrentDay();
+  const disabledDays = disableSlots(currentDay);
+
   const handleChoose = () => {
     if (bookedShifts.length > 0) {
       setShowModal(true);
@@ -153,6 +176,8 @@ function Content() {
                     const isDisabled =
                       shift &&
                       duplicateWorkshiftIDs.includes(shift.workShiftID);
+                    const isDisabledSlotChoose = disabledDays.includes(day);
+
 
                     return (
                       <td
@@ -160,7 +185,7 @@ function Content() {
                         onClick={() => !isDisabled && handleClick(shift)}
                         className={`slotCell-choose ${
                           isBooked ? "booked" : ""
-                        } ${isDisabled ? "disabled" : ""}`}
+                        } ${isDisabled ? "disabled" : `${isDisabledSlotChoose ? "disabled-slot" : ""}`}`}
                         style={{
                           cursor: isDisabled ? "not-allowed" : "pointer",
                         }}
@@ -187,12 +212,16 @@ function Content() {
     <div className="slot-legend col-md-6" style={{ marginTop: "20px" }}>
       <h4 style={{marginLeft: "30px"}}>Sign</h4>
       <table className="slot-legend-table">
-        <tbody>
-          <tr>
-            <td className="haveSchedule-slot sign"></td>
+        <tbody className="table-sign-body">
+          <tr className="sign-1">
+            <td className="booked-slot sign"></td>
+            <td className="contentSpan">Choosing slot</td>
+            <td className="disabled sign"></td>
             <td className="contentSpan">Registered slot</td>
           </tr>
           <tr>
+            <td className="disabled-slot sign"></td>
+            <td className="contentSpan">Slot is disabled</td>
             <td className="notInSchedule-slot sign"></td>
             <td className="contentSpan">Out of Schedule</td>
           </tr>

@@ -22,16 +22,18 @@ function Content() {
   const [date, setDate] = useState(dayjs());
   const [avatarFile, setAvatarFile] = useState();
 
+  const fetch = async () => {
+    const resultAction = await dispatch(fetchStylist(stylistID)).unwrap();
+    if (resultAction.ok && resultAction.data) {
+      if (resultAction.data.yob) {
+        setDate(dayjs(resultAction.data.yob));
+      }
+    }
+  };
+  
+
 
   useEffect(() => {
-    const fetch = async () => {
-      const resultAction = await dispatch(fetchStylist(stylistID)).unwrap();
-      if (resultAction.ok && resultAction.data) {
-        if (resultAction.data.yob) {
-          setDate(dayjs(resultAction.data.yob));
-        }
-      }
-    };
     fetch();
   }, [dispatch]);
 
@@ -59,7 +61,7 @@ function Content() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     const dataToUpdate = {
@@ -82,7 +84,8 @@ function Content() {
     }
     const formDataObj = Object.fromEntries(formData.entries());
     console.log(formDataObj);
-    dispatch(updateProfile({ id: stylistID, data: formData }));
+    const result = await dispatch(updateProfile({ id: stylistID, data: formData }));
+    if(result) fetch();
   };
 
   useEffect(() => {
