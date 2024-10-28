@@ -10,15 +10,15 @@ const LoginPage = () => {
   const onFinish = (values) => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
-        const role = (res.payload.data.currenInfor.record.role).toLowerCase();
+        const role = res.payload.data.currenInfor.record.role.toLowerCase();
         console.log(res.payload.data.currenInfor);
         switch (role) {
-          case "staff":
+          case "stylist":
             navigate(`/${role}`);
             break;
-             case "manager":
-              navigate("/dashboard");
-              break;
+          case "manager":
+            navigate("/dashboard");
+            break;
           default:
             navigate("/");
             break;
