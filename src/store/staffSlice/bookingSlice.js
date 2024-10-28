@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import bookingService from "../../services/staffServices/bookingDetailStaffService";
 
 const initialState = {
-  all: {},
   data: {},
   detail: {},
   loading: true,
@@ -16,14 +15,12 @@ const name = "booking";
 
 export const fetchBookings = createAsyncThunk(
   `${name}/fetchAll`,
-  async ({ page, perPage }) => {
+  async () => {
     try {
-      const response = await bookingService.getAll(page,perPage);
-      const responseAll = await bookingService.getAllWithoutParameter();
+      const response = await bookingService.getAll();
       return {
         ok: true,
         data: response.data,
-        all: responseAll.data,
       };
     } catch (error) {
       return {
@@ -222,7 +219,6 @@ const bookingSlice = createSlice({
         state.loading = false;
         if (action.payload.ok) {
           state.data = { ...state.data, ...action.payload.data };
-          state.all = { ...state.all, ...action.payload.all };
         }
       })
       .addCase(fetchBookings.rejected, (state) => {
