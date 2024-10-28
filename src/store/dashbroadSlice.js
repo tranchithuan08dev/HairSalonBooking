@@ -19,6 +19,7 @@ const initialState = {
   postNews: [],
   postNewsDetailId: {},
   updateNews: null,
+  createNews: null,
   //Manager
   postManagerById: {},
   updateManager: null,
@@ -128,6 +129,19 @@ export const fetchUpdateNews = createAsyncThunk(
       const res = await dashboardService.updateNews(data);
       console.log("res", res);
       return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchCreateNews = createAsyncThunk(
+  `${name}/fetchCreateNews`,
+  async (data) => {
+    try {
+      const res = await dashboardService.createNews(data);
+      console.log("res", res);
+      return res.data;
     } catch (error) {
       console.log(error);
     }
@@ -303,6 +317,12 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(fetchPostNewsByID.fulfilled, (state, action) => {
       state.postNewsDetailId = action.payload;
+    });
+    builder.addCase(fetchUpdateNews.fulfilled, (state, action) => {
+      state.updateNews = action.payload;
+    });
+    builder.addCase(fetchCreateNews.fulfilled, (state, action) => {
+      state.createNews = action.payload;
     });
     //Manager
     builder.addCase(fetchPostManagerById.fulfilled, (state, action) => {
