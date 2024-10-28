@@ -2,19 +2,12 @@ import API from "../api";
 const token = localStorage.getItem("ACCESS_TOKKEN");
 
 const bookingService = {
-    getAll: (page, perpage) => {
-        return API.call().get(`api/v1/booking/getAll?page=${page}&perpage=${perpage}`, {
-            headers: {
-                token: `Bearer ${token}`,
-            }
-        });
-    },
-    getAllWithoutParameter: () => {
+    getAll: () => {
         return API.call().get(`api/v1/booking/getAll`, {
             headers: {
                 token: `Bearer ${token}`,
             }
-        }); 
+        });
     },
     getDetail: (id) => {
         return API.call().get(`api/v1/booking/detail?bookingID=${id}`,{
