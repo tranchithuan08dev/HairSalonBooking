@@ -10,11 +10,16 @@ import authService from "../services/authService";
 
 const name = "posts";
 const initialState = {
+  //create and slary and update salary staff and stylist
+  salaryStaff: null,
+  salary: null,
   createStaff: null,
+  updateSalary: null,
   //News
   postNews: [],
   postNewsDetailId: {},
   updateNews: null,
+  createNews: null,
   //Manager
   postManagerById: {},
   updateManager: null,
@@ -36,12 +41,54 @@ const initialState = {
   postStylistDetailById: [],
   updateStylist: null,
 };
-// Create Stylist
+//create and slary and update salary staff and stylist
 export const fetchCreate = createAsyncThunk(
   `${name}/fetchCreate`,
   async (data) => {
     try {
       const res = await dashboardService.createStaff(data);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchSalary = createAsyncThunk(
+  `${name}/fetchSalary`,
+  async (id) => {
+    try {
+      const res = await dashboardService.getSalary(id);
+      console.log("salary", res);
+
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchSalaryStaff = createAsyncThunk(
+  `${name}/fetchSalaryStaff`,
+  async (id) => {
+    try {
+      const res = await dashboardService.getSalaryStaff(id);
+      console.log("salary", res);
+
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchUpdateSalary = createAsyncThunk(
+  `${name}/fetchUpdateSalary`,
+  async (data) => {
+    try {
+      const res = await dashboardService.updateSalary(data);
+      console.log("updadesalary", res);
+
       return res.data;
     } catch (error) {
       console.log(error);
@@ -82,6 +129,19 @@ export const fetchUpdateNews = createAsyncThunk(
       const res = await dashboardService.updateNews(data);
       console.log("res", res);
       return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const fetchCreateNews = createAsyncThunk(
+  `${name}/fetchCreateNews`,
+  async (data) => {
+    try {
+      const res = await dashboardService.createNews(data);
+      console.log("res", res);
+      return res.data;
     } catch (error) {
       console.log(error);
     }
@@ -236,9 +296,20 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    //Create
+    //create and slary and update salary staff and stylist
     builder.addCase(fetchCreate.fulfilled, (state, action) => {
       state.createStaff = action.payload;
+    });
+
+    builder.addCase(fetchSalaryStaff.fulfilled, (state, action) => {
+      state.salaryStaff = action.payload;
+    });
+
+    builder.addCase(fetchSalary.fulfilled, (state, action) => {
+      state.salary = action.payload;
+    });
+    builder.addCase(fetchUpdateSalary.fulfilled, (state, action) => {
+      state.updateSalary = action.payload;
     });
     //News
     builder.addCase(fetchPostNews.fulfilled, (state, action) => {
@@ -246,6 +317,12 @@ const dashboardSlice = createSlice({
     });
     builder.addCase(fetchPostNewsByID.fulfilled, (state, action) => {
       state.postNewsDetailId = action.payload;
+    });
+    builder.addCase(fetchUpdateNews.fulfilled, (state, action) => {
+      state.updateNews = action.payload;
+    });
+    builder.addCase(fetchCreateNews.fulfilled, (state, action) => {
+      state.createNews = action.payload;
     });
     //Manager
     builder.addCase(fetchPostManagerById.fulfilled, (state, action) => {
