@@ -8,9 +8,7 @@ function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading } = useSelector(
-    (state) => state.STYLIST.workshift
-  );
+  const { data, loading } = useSelector((state) => state.STYLIST.workshift);
   const stylistID = currentUser.actorByRole.stylistID;
 
   useEffect(() => {
@@ -69,7 +67,7 @@ function Content() {
   };
 
   const getWorkshiftData = (day, slot) => {
-    const startTime = slot.split(" - ")[0];
+    const startTime = slot.split(" - ")[0]; 
     if (Array.isArray(data)) {
       const foundShift = data.find(
         (shift) =>
@@ -77,10 +75,34 @@ function Content() {
           formatTime(shift.startTime) === startTime &&
           !shift.deleted
       );
-
       return foundShift;
     }
   };
+
+  const getCurrentDay = () => {
+    const today = new Date();
+    return today.getDay();
+  };
+
+  const disableSlots = (currentDay) => {
+    const days = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+
+    const disableCount = currentDay === 0 ? 6 : currentDay - 1; 
+    return days.slice(0, disableCount);
+  };
+
+  const currentDay = getCurrentDay();
+  const disabledDays = disableSlots(currentDay);
+//   const mockCurrentDay = 3; // 2 đại diện cho thứ Ba
+// const disabledDays = disableSlots(mockCurrentDay);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -113,11 +135,15 @@ function Content() {
                   <td className="slotTime">{slot}</td>
                   {daysOfWeek.map((day, colIndex) => {
                     const shift = getWorkshiftData(day, slot);
+                    const isDisabled = disabledDays.includes(day);
+
                     return (
                       <td
-                        onClick={() => handleClick(shift)}
+                        onClick={() => !isDisabled && handleClick(shift)}
                         key={colIndex}
                         className={`slotCell ${
+                          isDisabled ? "disabled-slot" : ""
+                        } ${
                           shift
                             ? shift?.bookingID
                               ? "booked"
@@ -137,20 +163,20 @@ function Content() {
           </table>
         </div>
       </div>
+      <h4 style={{ marginLeft: "30px" }}>Sign</h4>
       <table className="slot-legend-table" style={{ marginLeft: "30px" }}>
-        <h4>Sign</h4>
-        <tbody>
-          <tr>
+        <tbody className="table-sign-body">
+          <tr className="sign-1">
             <td className="booked-slot sign"></td>
-            <td className="contentSpan">Slot have booking</td>
-          </tr>
-          <tr>
+            <td className="contentSpan">Slot has a booking</td>
             <td className="schedule-slot sign"></td>
-            <td className="contentSpan">Slot have not booked yet</td>
+            <td className="contentSpan">Slot not booked yet</td>
           </tr>
           <tr>
             <td className="notInSchedule-slot sign"></td>
-            <td className="contentSpan">Out of Schedule</td>
+            <td className="contentSpan">Out of schedule</td>
+            <td className="disabled-slot sign"></td>
+            <td className="contentSpan">Slot is disabled</td>
           </tr>
         </tbody>
       </table>

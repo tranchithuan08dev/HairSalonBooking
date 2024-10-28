@@ -167,3 +167,41 @@
 .haveSchedule-slot {
   background-color: #d0d1d1;
 }
+
+.customTable .disabled-slot {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg, 
+    #8b7f7160 0, 
+    #bcb5ac8e 1px, 
+    #ffffff8e 0, 
+    #d0d0ca8e 50%
+  );
+  pointer-events: none;
+  cursor: not-allowed; 
+}
+
+.disabled-slot{
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg, 
+    #8b7f7160 0, 
+    #bcb5ac8e 1px, 
+    #ffffff8e 0, 
+    #d0d0ca8e 50%
+  );
+  pointer-events: none;
+  cursor: not-allowed; 
+}
+
+.table-sign-body {
+  display: flex;
+}
+
+.sign-1{
+  margin-right: 120px;
+}
