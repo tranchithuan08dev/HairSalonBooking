@@ -26,6 +26,7 @@ import News from "./pages/Dashboard/News";
 import NewsDetail from "./pages/NewsDetail";
 import PrivateRoutesStaff from "./components/Staff/PrivateRoutes";
 import LayoutStaff from "./components/Staff/StaffLayout";
+import HomeStaff from "./pages/Staff/Home";
 import BookingDetailStaff from "./pages/Staff/BookingDetail";
 import ProfileStaff from "./pages/Staff/Profile";
 import SalaryStaff from "./pages/Staff/Salary";
