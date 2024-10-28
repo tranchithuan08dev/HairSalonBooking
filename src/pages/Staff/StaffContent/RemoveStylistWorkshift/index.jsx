@@ -22,7 +22,7 @@ function Content() {
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
         const groupedWorkShifts = data.reduce((acc, item) => {
-            if (item.deleted === false) {
+            if (item.workShiftDeleted === false && item.stylistDeleted === false) {
                 const timeRange = `${item.startTime} - ${item.endTime}`;
                 if (acc[item.shiftDay]) {
                     acc[item.shiftDay].push(timeRange);
@@ -54,9 +54,10 @@ function Content() {
   };
 
   const confirmUpdate = async () => {
+    console.log(selectedTimes);
     const dataToUpdate = {
       stylistID: stylistID,
-      workShiftID: selectedTimes.map(item => `"${item}"`),
+      workShiftID: selectedTimes
     }
     console.log(dataToUpdate);
     const result = await dispatch(deleteWorkshift(dataToUpdate));
