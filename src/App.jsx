@@ -1,9 +1,3 @@
-import PrivateRoutesStaff from "./components/Staff/PrivateRoutes";
-import LayoutStaff from "./components/Staff/StaffLayout";
-import HomeStaff from "./pages/Staff/Home";
-import BookingDetailStaff from "./pages/Staff/BookingDetail";
-import ProfileStaff from "./pages/Staff/Profile";
-import SalaryStaff from "./pages/Staff/Salary";
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BookingPage from "./pages/BookingPage";
@@ -28,7 +22,6 @@ import ContactPage from "./pages/ContactPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
 import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
-import RemoveStylistWorkshift from "./pages/Staff/RemoveStylistWorkshift";
 import News from "./pages/Dashboard/News";
 import NewsDetail from "./pages/NewsDetail";
 
@@ -67,16 +60,6 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
-
-        <Route path="/staff/" element={<PrivateRoutesStaff />}>
-          <Route element={<LayoutStaff />}>
-            <Route index element={<HomeStaff />} /> 
-            <Route path="bookingDetail" element={<BookingDetailStaff />} />
-            <Route path="profile" element={<ProfileStaff />} />
-            <Route path="salary" element={<SalaryStaff />} />
-            <Route path="updateStylistWorkshift" element={<RemoveStylistWorkshift />} />
-          </Route>
-        </Route>
       </Routes>
     </>
   );
