@@ -8,7 +8,7 @@ function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, error } = useSelector(
+  const { data, loading } = useSelector(
     (state) => state.STYLIST.workshift
   );
   const stylistID = currentUser.actorByRole.stylistID;
@@ -137,20 +137,20 @@ function Content() {
           </table>
         </div>
       </div>
-      <table class="slot-legend-table" style={{ marginLeft: "30px" }}>
+      <table className="slot-legend-table" style={{ marginLeft: "30px" }}>
         <h4>Sign</h4>
         <tbody>
           <tr>
-            <td class="booked-slot sign"></td>
-            <td class="contentSpan">Slot have booking</td>
+            <td className="booked-slot sign"></td>
+            <td className="contentSpan">Slot have booking</td>
           </tr>
           <tr>
-            <td class="schedule-slot sign"></td>
-            <td class="contentSpan">Slot have not booked yet</td>
+            <td className="schedule-slot sign"></td>
+            <td className="contentSpan">Slot have not booked yet</td>
           </tr>
           <tr>
-            <td class="notInSchedule-slot sign"></td>
-            <td class="contentSpan">Out of Schedule</td>
+            <td className="notInSchedule-slot sign"></td>
+            <td className="contentSpan">Out of Schedule</td>
           </tr>
         </tbody>
       </table>

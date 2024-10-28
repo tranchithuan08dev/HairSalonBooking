@@ -22,13 +22,13 @@ function Content() {
   const [date, setDate] = useState(dayjs());
   const [avatarFile, setAvatarFile] = useState();
 
+
   useEffect(() => {
     const fetch = async () => {
       const resultAction = await dispatch(fetchStylist(stylistID)).unwrap();
       if (resultAction.ok && resultAction.data) {
         if (resultAction.data.yob) {
           setDate(dayjs(resultAction.data.yob));
-          setHireDate(dayjs(resultAction.data.hireDate));
         }
       }
     };

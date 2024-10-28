@@ -5,7 +5,7 @@ import { fetchData } from "../../../../store/stylistSlice/SalarySlice";
 
 function Content() {
   const dispatch = useDispatch();
-  const {data, loading, error} = useSelector((state) => state.STYLIST.salary);
+  const {data, loading} = useSelector((state) => state.STYLIST.salary);
 
   const { currentUser } = useSelector((state) => state.AUTH);
   const stylistID = currentUser?.actorByRole.stylistID;
@@ -64,7 +64,7 @@ function Content() {
                 <div className="d-flex align-items-center">
                   <div>
                     <p className="mb-0 text-secondary">Total Revenue</p>
-                    <h2 className="my-1 text-danger">{data.salary.totalSalary || ""}$</h2>
+                    <h2 className="my-1 text-danger">{data.salary?.totalSalary || ""}$</h2>
                   </div>
                   <div className="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
                     <i className="fa fa-dollar"></i>
@@ -92,7 +92,7 @@ function Content() {
                     className="my-1 text-warning"
                     style={{ fontSize: "2rem" }}
                   >
-                    {changeDate(data.salary.receivedDate) || ""}
+                    {changeDate(data.salary?.receivedDate) || ""}
                   </h2>
                 </div>
               </div>
