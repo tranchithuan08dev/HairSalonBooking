@@ -128,10 +128,10 @@ function Content() {
                 className="btn btn-outline-secondary"
                 type="button"
                 onClick={handleLoadData}
-                disabled
-              >
-                Load Data
-              </button>
+              disabled={!stylistID}
+            >
+              Load Data
+            </button>
             ) : (
               <button
                 className="btn btn-outline-secondary"
@@ -160,9 +160,6 @@ function Content() {
                   <option
                     key={idx}
                     value={time}
-                    data-stylist-work-shift-id={data[idx]?.stylistWorkShiftID}
-                    data-stylist-id={stylistID}
-                    data-work-shift-id={data[idx]?.workShiftID}
                   >
                     {time}
                   </option>

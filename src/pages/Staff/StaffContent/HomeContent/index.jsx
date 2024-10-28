@@ -81,11 +81,9 @@ function Content() {
 
     if (updatedBookings && updatedBookings.length > 0) {
       setTotal(updatedBookings.length);
-
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
       const paginatedBookings = updatedBookings.slice(startIndex, endIndex);
-
       setFilteredBookings(paginatedBookings);
     } else {
       setTotal(0);

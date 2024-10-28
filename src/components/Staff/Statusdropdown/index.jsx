@@ -6,9 +6,22 @@ const StatusDropdown = ({ currentStatus, onStatusChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   
-  const options = ["Cancelled", "Done", "Completed", "In-progress"];
+  const options = ["Cancelled", "Completed", "In-progress"];
 
-  const handleOptionClick = (status) => {
+  const filteredOptions = () => {
+    if (currentStatus === "Done") {
+      return options.filter(option => option !== "Cancelled" && option !== "In-progress");
+    } else if (currentStatus === "In-progress") {
+      return options.filter(option => option !== "Completed" && option !== "In-progress");
+    } else if (currentStatus === "Cancelled" || currentStatus === "Completed") {
+      return [];
+    } else {
+      return options.filter(option => option === currentStatus);
+    }
+  };
+
+  const handleOptionClick = (status, event) => {
+    event.stopPropagation();
     onStatusChange(status);
     setIsOpen(false);
   };
@@ -39,13 +52,13 @@ const StatusDropdown = ({ currentStatus, onStatusChange }) => {
       >
         {currentStatus}
       </span>
-      {isOpen && (
+      {isOpen && filteredOptions().length > 0 && (
         <div className="dropdown-options">
-          {options.map((status, index) => (
+          {filteredOptions().map((status, index) => (
             <div
               key={index}
               className="dropdown-option"
-              onClick={() => handleOptionClick(status)}
+              onClick={(event) => handleOptionClick(status, event)}
             >
               {status}
             </div>

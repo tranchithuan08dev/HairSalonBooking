@@ -50,8 +50,6 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const serviceIDs = detail.detail?.map((detail) => detail.serviceID);
-
     const form = {
       bookingID: detail.data?.bookingID,
       stylistID: detail.data?.stylistID,

@@ -6,11 +6,8 @@ function Sidebar() {
     return e.isActive ? "sidebar__menu__li__link sidebar__menu__li__link--active" : "sidebar__menu__li__link";
   };
   const handleLogout =() =>{
-    console.log("before");
-    let item = localStorage.removeItem("ACCESS_TOKKEN");
-    console.log(item);
-    console.log("after");
-
+    localStorage.removeItem("ACCESS_TOKKEN");
+    window.location.reload();
   }
   return (
     <>
@@ -37,7 +34,7 @@ function Sidebar() {
               </NavLink>
             </li>
             <li>
-              <NavLink to={`/staff/updateStylistWorkshift`} className={navLinkActive}>
+              <NavLink to={`/staff/removeStylistWorkshift`} className={navLinkActive}>
                 Remove Stylist Workshift
               </NavLink>
             </li>
