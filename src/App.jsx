@@ -74,7 +74,7 @@ function App() {
             <Route path="bookingDetail" element={<BookingDetailStaff />} />
             <Route path="profile" element={<ProfileStaff />} />
             <Route path="salary" element={<SalaryStaff />} />
-            <Route path="updateStylistWorkshift" element={<RemoveStylistWorkshift />} />
+            <Route path="removeStylistWorkshift" element={<RemoveStylistWorkshift />} />
           </Route>
         </Route>
       </Routes>
