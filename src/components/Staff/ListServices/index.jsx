@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 
 const ListServices = (props) => {
-  const { detail, services, addService, isPaid } = props;
+  const { detail, services, addService, isPaid, setListServices} = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedServices, setSelectedServices] = useState(
-    detail.servicesName || []
-  );
+  const [selectedServices, setSelectedServices] = useState(detail.servicesName || []);
 
   const singleServices = services.filter(
     (s) => s.type === "single" && !s.deleted
@@ -15,12 +13,21 @@ const ListServices = (props) => {
   );
 
   const handleServicesOpen = () => setIsModalOpen(true);
-  const handleModalClose = (isSave) => {
-    if(!isSave){
-      setSelectedServices(detail.servicesName || "");
+
+  const handleModalClose = (isSave = false) => {
+    if (!isSave) {
+      setSelectedServices(detail.servicesName || []);
+    } else {
+      const selectedIDs = services
+        .filter((service) => selectedServices.includes(service.serviceName))
+        .map((service) => service.serviceID); 
+  
+      setListServices(selectedIDs); 
+      console.log("Updated service IDs:", selectedIDs); 
     }
-    setIsModalOpen(false);
+    setIsModalOpen(false); 
   };
+  
 
   const handleServiceChange = (service) => {
     setSelectedServices((prev) => {
@@ -55,10 +62,12 @@ const ListServices = (props) => {
 
 
   const getDisplayServices = () => {
-    if (selectedServices.length > 5) {
-      return [...selectedServices.slice(0, 5), "..."].join(", ");
+    if(Array.isArray(selectedServices)){
+      if (selectedServices.length > 5) {
+        return [...selectedServices.slice(0, 5), "..."].join(", ");
+      }
+      return selectedServices.join(", ");
     }
-    return selectedServices.join(", ");
   };
   return (
     <div className="form-group textDiv">

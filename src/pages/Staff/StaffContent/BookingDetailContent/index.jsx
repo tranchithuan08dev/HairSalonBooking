@@ -43,6 +43,7 @@ function Content() {
 
   useEffect(() => {
     fetchData();
+    console.log(detail);
   }, [dispatch, bookingID]);
 
   useEffect(() => {
@@ -66,45 +67,6 @@ function Content() {
     console.log("Original Price:", totalPrice);
   };
 
-  const handleChange = (e) => {
-    let newStatus = e.target.value;
-
-    if (newStatus === detail.data.status) {
-      setStatus(newStatus);
-      return;
-    }
-    switch (e.target.value) {
-      case "In-progress":
-        alert(
-          `Cannnot update to 'In-progress' status from ${detail.data.status}`
-        );
-        break;
-      case "Done":
-        alert(`Cannnot update to 'Done' status from ${detail.data.status}`);
-        break;
-      case "Cancelled":
-        if (detail.data.status !== "In-progress") {
-          alert(
-            `Cannnot update to 'Cancelled' status from ${detail.data.status}`
-          );
-        } else {
-          setStatus(newStatus);
-        }
-        break;
-      case "Completed":
-        if (detail.data.status !== "Done") {
-          alert(
-            `Cannnot update to 'Completed' status from ${detail.data.status}`
-          );
-        } else {
-          setStatus(newStatus);
-        }
-        break;
-      default:
-        break;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = {
@@ -117,7 +79,6 @@ function Content() {
       status: status,
     };
     console.log(form);
-    console.log(detail);
     const resultUpdate = await dispatch(updateBooking(form));
     if (resultUpdate.payload.ok) {
       const formData = new FormData();
@@ -128,7 +89,8 @@ function Content() {
       for (const key in dataToUpdate) {
         formData.append(key, dataToUpdate[key]);
       }
-      await dispatch(updateCustomer(form));
+      await dispatch(updateCustomer(userID, form));
+      fetchData();
     }
   };
 
@@ -226,6 +188,7 @@ function Content() {
                   services={services}
                   addService={addService}
                   isPaid={isPaid}
+                  setListServices={setListServices}
                 />
                 <div className="form-group">
                   <strong>FullName:</strong>
@@ -300,14 +263,8 @@ function Content() {
 
                 <div className="form-group">
                   <strong>Status:</strong>
-                  <select name="status" value={status} onChange={handleChange}>
-                    <option value="In-progress">In-progress</option>
-                    <option value="Cancelled">Cancelled</option>
-                    <option value="Done">Done</option>
-                    <option value="Completed">Completed</option>
-                  </select>
+                  <input name="status" value={status} aria-readonly/>
                 </div>
-
                 {detail.payment?.status && (
                   <div className="form-group">
                     <strong>Payment Status:</strong>
@@ -320,9 +277,9 @@ function Content() {
                   </div>
                 )}
               </div>
-              {isPaid || detail.data.status === "Cancelled" ? (
+              {isPaid || status === "Cancelled" ? (
                 <></>
-              ) : detail.data?.status === "In-progress" ? (
+              ) : status === "In-progress" ? (
                 <button
                   type="submit"
                   onClick={handleSubmit}
@@ -346,7 +303,7 @@ function Content() {
                   >
                     Update
                   </button>
-                  {detail.payment?.status === "unpaid" && (
+                  {status === "unpaid" && (
                     <button
                       type="button"
                       onClick={handleClickCreate}

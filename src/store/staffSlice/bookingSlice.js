@@ -100,6 +100,7 @@ export const updateBooking = createAsyncThunk(
   `${name}/updateBooking`,
   async (data) => {
     try {
+      console.log("send", data);
       const response = await bookingService.updateBooking(data);
       console.log("Data update: ", response);
       return {
@@ -175,7 +176,7 @@ export const updateCustomer = createAsyncThunk(
   `${name}/updateCustomer`,
   async (data) => {
     try {
-      const response = await bookingService.updateCustomer(data);
+      const response = await bookingService.updateCustomer(id, data);
       console.log("Data update: ", response.data);
       return {
         ok: true

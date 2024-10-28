@@ -24,6 +24,7 @@ const bookingService = {
         });
     },
     updateBooking: (data) => {
+        console.log(data);
         return API.call().patch(`api/v1/booking/update`, data, {
             headers: {
                 token: `Bearer ${token}`,

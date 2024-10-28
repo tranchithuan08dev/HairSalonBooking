@@ -22,7 +22,7 @@ function Content() {
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
         const groupedWorkShifts = data.reduce((acc, item) => {
-            if (item.workShiftDeleted === false && item.stylistDeleted === false) {
+            if (item.StylistWorkShiftDeleted === false && item.WorkShiftDeleted === false) {
                 const timeRange = `${item.startTime} - ${item.endTime}`;
                 if (acc[item.shiftDay]) {
                     acc[item.shiftDay].push(timeRange);
