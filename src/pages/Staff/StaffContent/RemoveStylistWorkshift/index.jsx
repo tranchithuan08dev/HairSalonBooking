@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAll,
-  updateStatus,
+  deleteWorkshift,
   setShowAlert,
 } from "../../../../store/staffSlice/removeWorkshift";
+import "../../../../assets/css/staff/removeWorkshift.css";
 
 function Content() {
   const dispatch = useDispatch();
@@ -15,39 +16,54 @@ function Content() {
   const [stylistID, setStylistID] = useState("");
   const [workShifts, setWorkShifts] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedOptionData, setSelectedOptionData] = useState(null);
+  const [selectedOptionData, setSelectedOptionData] = useState([]);
+  const [selectedTimes, setSelectedTimes] = useState([]);
+
+  useEffect(() => {
+    if (Array.isArray(data) && data.length > 0) {
+        const groupedWorkShifts = data.reduce((acc, item) => {
+            if (item.deleted === false) {
+                const timeRange = `${item.startTime} - ${item.endTime}`;
+                if (acc[item.shiftDay]) {
+                    acc[item.shiftDay].push(timeRange);
+                } else {
+                    acc[item.shiftDay] = [timeRange];
+                }
+            }
+            return acc; // Đảm bảo luôn trả về acc
+        }, {});
+
+        const arrayWorkshift = Object.entries(groupedWorkShifts).map(
+            ([day, times]) => ({ day, times })
+        );
+
+        setWorkShifts(arrayWorkshift);
+    }
+}, [data]);
+
+  useEffect(() => {
+    setWorkShifts([]);
+  }, [!stylistID])
 
   const handleLoadData = async () => {
     await dispatch(getAll(stylistID));
-
-    if (Array.isArray(data) && data.length > 0) {
-      const groupedWorkShifts = data.reduce((acc, item) => {
-          const timeRange = `${item.startTime} - ${item.endTime}`;
-          if (acc[item.shiftDay]) {
-            acc[item.shiftDay].push(timeRange);
-          } else {
-            acc[item.shiftDay] = [timeRange];
-          }
-        return acc;
-      }, {});
-
-      const arrayWorkshift = Object.entries(groupedWorkShifts).map(
-        ([day, times]) => ({ day, times })
-      );
-
-      setWorkShifts(arrayWorkshift);
-    } else {
-      console.log("error");
-    }
   };
 
   const handleUpdate = () => {
     setShowModal(true);
   };
+
   const confirmUpdate = async () => {
+    const dataToUpdate = {
+      stylistID: stylistID,
+      workShiftID: selectedTimes.map(item => `"${item}"`),
+    }
+    console.log(dataToUpdate);
+    const result = await dispatch(deleteWorkshift(dataToUpdate));
+    if(result.payload.ok){
+      await dispatch(getAll(stylistID));
+    }
     setShowModal(false);
-    console.log(selectedOptionData);
-    await dispatch(updateStatus(selectedOptionData));
   };
 
   const cancelUpdate = () => {
@@ -55,39 +71,36 @@ function Content() {
     setShowModal(false);
   };
 
-  const handleOptionChange = (event) => {
-    const selectedOption = event.target.value; 
+  const handleOptionToggle = (stylistWorkShiftID) => {
+    const newSelectedTimes = [...selectedTimes];
+    const foundIndex = newSelectedTimes.indexOf(stylistWorkShiftID);
 
-    const selectedShift = workShifts
-      .flatMap((shift) => {
-        return shift.times.map((time) => {
-          const index = shift.times.indexOf(time);
-          if (time === selectedOption) {
-            return {
-              time,
-              day: shift.day,
-              stylistWorkShiftID: data[index]?.stylistWorkShiftID,
-              stylistID: stylistID,
-              workShiftID: data[index]?.workShiftID,
-            };
-          }
-          return null; 
-        });
-      })
-      .find((item) => item !== null); 
+    console.log("selected", newSelectedTimes);
 
-    console.log(selectedShift); 
-    if (selectedShift) {
-      const dataToUpdate = {
-        stylistWorkShiftID: selectedShift.stylistWorkShiftID,
-        stylistID: selectedShift.stylistID,
-        workShiftID: selectedShift.workShiftID,
-        deleted: true,
-      };
-      setSelectedOptionData(dataToUpdate);
+    if (foundIndex > -1) {
+      newSelectedTimes.splice(foundIndex, 1);
     } else {
-      console.log("No matching shift found for:", selectedOption);
+      newSelectedTimes.push(stylistWorkShiftID);
     }
+
+    setSelectedTimes(newSelectedTimes);
+    const selectedShifts = newSelectedTimes
+      .map((selectedID) => {
+        const foundShift = data.find(
+          (item) => item.stylistWorkShiftID === selectedID
+        );
+        return foundShift
+          ? {
+              time: foundShift.startTime + " - " + foundShift.endTime,
+              day: foundShift.shiftDay,
+              stylistWorkShiftID: foundShift.stylistWorkShiftID,
+              stylistID: stylistID,
+              workShiftID: foundShift.workShiftID,
+            }
+          : null;
+      })
+      .filter((item) => item !== null);
+    setSelectedOptionData(selectedShifts);
   };
 
   useEffect(() => {
@@ -123,24 +136,14 @@ function Content() {
               value={stylistID}
               onChange={(e) => setStylistID(e.target.value)}
             />
-            {!stylistID ? (
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={handleLoadData}
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={handleLoadData}
               disabled={!stylistID}
             >
               Load Data
             </button>
-            ) : (
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={handleLoadData}
-              >
-                Load Data
-              </button>
-            )}
           </div>
         </div>
 
@@ -148,25 +151,41 @@ function Content() {
           <label htmlFor="workShifts" className="form-label">
             Work Shifts
           </label>
-          <select
-            id="workShifts"
-            className="form-select"
-            size="5"
-            onChange={handleOptionChange}
+          <div
+            className="workshift-list"
+            style={{ height: "350px", overflowY: "auto" }}
           >
             {workShifts.map((shift, index) => (
-              <optgroup key={index} label={shift.day}>
-                {shift.times.map((time, idx) => (
-                  <option
-                    key={idx}
-                    value={time}
-                  >
-                    {time}
-                  </option>
-                ))}
-              </optgroup>
+              <div key={index} className="shift-day">
+                <strong>{shift.day}</strong> <br />
+                {shift.times.map((time, idx) => {
+                  const foundShift = data.find(
+                    (item) =>
+                      item.startTime === time.split(" - ")[0] &&
+                      item.shiftDay === shift.day
+                  );
+                  const workShiftID = foundShift
+                    ? foundShift.workShiftID
+                    : null;
+                  const isSelected = selectedTimes.includes(workShiftID);
+                  return (
+                    <span
+                      key={idx}
+                      className={`workshift-option ${
+                        isSelected ? "selected" : ""
+                      }`}
+                      onClick={() =>
+                        workShiftID &&
+                        handleOptionToggle(workShiftID)
+                      }
+                    >
+                      {time}
+                    </span>
+                  );
+                })}
+              </div>
             ))}
-          </select>
+          </div>
         </div>
 
         <button

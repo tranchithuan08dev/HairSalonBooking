@@ -2,6 +2,7 @@ import "../../../../assets/css/staff/salary.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../../../store/staffSlice/salarySlice";
+import dayjs from "dayjs";
 
 function Content() {
   const dispatch = useDispatch();
@@ -12,7 +13,9 @@ function Content() {
 
   useEffect(() => {
     const fetch = async () => {
-      await dispatch(fetchData(userID));
+      const date = new Date(); 
+      const formattedDate = dayjs(date).format('YYYY-MM-DD');
+      await dispatch(fetchData({id: userID, date: formattedDate}));
     }
     fetch();
   }, [dispatch, userID])
@@ -28,9 +31,8 @@ function Content() {
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  if (error) {
-    return <div>{error}</div>;
+  if(error){
+    return <div>Error...</div>;
   }
 
   return (

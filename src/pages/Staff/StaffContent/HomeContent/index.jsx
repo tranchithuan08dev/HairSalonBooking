@@ -1,12 +1,16 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../../../assets/css/staff/home.css";
-import React, { useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import FilterStatus from "../../../../components/Staff/FilterStatus";
 import Search from "../../../../components/Staff/Search";
 import DayPicker from "../../../../components/Staff/DayPicker";
 import { searchFilter } from "../../../../helpers/searchFilter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBookings } from "../../../../store/staffSlice/bookingSlice";
+import {
+  fetchBookings,
+  updateStatus,
+  setShowAlert,
+} from "../../../../store/staffSlice/bookingSlice";
 import { Pagination } from "antd";
 import StatusDropdown from "../../../../components/Staff/Statusdropdown";
 
@@ -15,7 +19,7 @@ function Content() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const { data, all, loading } = useSelector((state) => state.STAFF.booking);
+  const { data, all, loading, showAlert, error, message } = useSelector((state) => state.STAFF.booking);
   const [total, setTotal] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,48 +52,41 @@ function Content() {
   };
 
   useEffect(() => {
-    const key = decodeURIComponent(searchParams.get("key") || "");
-    const status = searchParams.get("status") || "All";
-    const appointmentAt = searchParams.get("appointmentAt");
-
-    let updatedBookings = all.bookings;
-
-    console.log("All Bookings:", updatedBookings);
-
-    if (status !== "All") {
-      updatedBookings = updatedBookings.filter(
-        (item) => item.status === status
-      );
-    }
-
-    if (key) {
-      const { filtered } = searchFilter(updatedBookings, key);
-      console.log("Filtered Bookings:", filtered);
-      updatedBookings = Array.isArray(filtered) ? filtered : updatedBookings;
-    }
-
-    if (appointmentAt) {
-      updatedBookings = updatedBookings.filter((item) => {
-        const itemDate = new Date(item.appointmentAt).toLocaleDateString(
-          "en-GB"
-        );
-        return itemDate === appointmentAt;
-      });
-    }
-
-    console.log("Updated Bookings after filtering:", updatedBookings);
-
-    if (updatedBookings && updatedBookings.length > 0) {
+    if (data.bookings) {
+      let updatedBookings = [...all.bookings]; // Dùng dữ liệu từ data
+  
+      const key = decodeURIComponent(searchParams.get("key") || "");
+      const status = searchParams.get("status") || "All";
+      const appointmentAt = searchParams.get("appointmentAt");
+  
+      // Lọc theo trạng thái
+      if (status !== "All") {
+        updatedBookings = updatedBookings.filter((item) => item.status === status);
+      }
+  
+      // Lọc theo từ khóa tìm kiếm
+      if (key) {
+        const { filtered } = searchFilter(updatedBookings, key);
+        updatedBookings = Array.isArray(filtered) ? filtered : updatedBookings;
+      }
+  
+      // Lọc theo ngày hẹn
+      if (appointmentAt) {
+        updatedBookings = updatedBookings.filter((item) => {
+          const itemDate = new Date(item.appointmentAt).toLocaleDateString("en-GB");
+          return itemDate === appointmentAt;
+        });
+      }
+  
+      // Cập nhật state cho total và filteredBookings
       setTotal(updatedBookings.length);
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
       const paginatedBookings = updatedBookings.slice(startIndex, endIndex);
       setFilteredBookings(paginatedBookings);
-    } else {
-      setTotal(0);
-      setFilteredBookings([]); 
     }
-  }, [searchParams, all.bookings, currentPage]);
+  }, [searchParams, data, currentPage]);
+  
 
   useEffect(() => {
     setFilteredBookings(data.bookings || []);
@@ -109,10 +106,18 @@ function Content() {
     return `${hours}:${minutes}:${seconds} ${day}-${month}-${year}`;
   }
 
-  const handleStatusChange = (bookingID, newStatus) => {
+  const handleStatusChange = async (bookingID, newStatus) => {
     console.log(bookingID, newStatus);
-    // dispatch(updateBookingStatus({ bookingID, status: newStatus }));
-  }
+    const dataUpdate = {
+      bookingID: bookingID,
+      status: newStatus,
+    };
+    console.log(dataUpdate);
+    const result = await dispatch(updateStatus(dataUpdate));
+    if (result.payload.ok) {
+      await dispatch(fetchBookings({ page: currentPage, perPage: itemsPerPage }));
+    }
+  };
 
   function formatDate(dateTimeString) {
     const date = new Date(dateTimeString);
@@ -122,12 +127,29 @@ function Content() {
     return `${day}-${month}-${year}`;
   }
 
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        dispatch(setShowAlert(false));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <>Loading...</>;
   }
 
   return (
     <>
+      {showAlert && (
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error || ""}
+        </div>
+      )}
       <div className="container">
         <div className="card mb-3 card-custom">
           <div className="card-header">Filter & Search</div>
@@ -186,17 +208,17 @@ function Content() {
                       <div className="TotalPrice">
                         <h6>Total Price</h6>
                         <span className="block-span-edit">
-                          {item.totalPrice}$
+                          {item.discountPrice}$
                         </span>
                       </div>
                       <div className="Status">
                         <h6>Status</h6>
-                          <StatusDropdown
-                            currentStatus={item.status}
-                            onStatusChange={(newStatus) =>
-                              handleStatusChange(item.bookingID, newStatus)
-                            }
-                          />
+                        <StatusDropdown
+                          currentStatus={item.status}
+                          onStatusChange={(newStatus) =>
+                            handleStatusChange(item.bookingID, newStatus)
+                          }
+                        />
                       </div>
                     </div>
                     <div className="col-md-2 detailSee">

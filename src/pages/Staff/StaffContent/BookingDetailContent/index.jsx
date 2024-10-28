@@ -2,14 +2,18 @@ import { useLocation } from "react-router-dom";
 import "../../../../assets/css/staff/bookingDetail.css";
 import { useEffect, useState } from "react";
 import {
-  createPayment,
+  updatePayment,
   fetchBookingDetail,
   generateQR,
   setDetail,
   setShowAlert,
   updateBooking,
+  fetchServices,
+  updateCustomer,
 } from "../../../../store/staffSlice/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
+import CheckboxLoyaltyPoints from "../../../../components/Staff/CheckboxLoyaltyPoint";
+import ListServices from "../../../../components/Staff/ListServices";
 
 function Content() {
   const dispatch = useDispatch();
@@ -19,33 +23,86 @@ function Content() {
   const [status, setStatus] = useState();
   const [showForm, setShowForm] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [price, setPrice] = useState(0);
+  const [originalPrice, setOriginalPrice] = useState(0);
+  const [getListServices, setListServices] = useState([]);
+  const [checked, setChecked] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
   const [qr, setQr] = useState(null);
-  const { detail, loading, message, error, showAlert } = useSelector(
+
+  const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
   );
+
+  const { currentUser } = useSelector((state) => state.AUTH);
+  const userID = currentUser?.record.userID;
+
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchBookingDetail(bookingID));
+      await dispatch(fetchServices());
     };
     fetchData();
   }, [dispatch, bookingID]);
 
   useEffect(() => {
-    setStatus(detail.data?.status || "");
+    if (detail.data) {
+      setOriginalPrice(detail.data?.originalPrice || 0);
+      setPrice(detail.data?.discountPrice || 0);
+      setStatus(detail.data?.status || "");
+    }
+    const isPaid = detail.payment?.status === "paid";
+    setIsPaid(isPaid);
   }, [detail]);
 
+  const addService = (newService) => {
+    const serviceIDs = newService.slice(0, -1);
+    setListServices(serviceIDs);
+
+    const totalPrice = newService[newService.length - 1];
+    setOriginalPrice(totalPrice);
+
+    console.log("Updated List Services:", getListServices);
+    console.log("Original Price:", totalPrice);
+  };
+
   const handleChange = (e) => {
-    const { value } = e.target;
-    setStatus(value);
-    dispatch(
-      setDetail({
-        ...detail,
-        data: {
-          ...detail.data,
-          status: value,
-        },
-      })
-    );
+    let newStatus = e.target.value;
+
+    if (newStatus === detail.data.status) {
+      setStatus(newStatus);
+      return; 
+    }
+    switch (e.target.value) {
+      case "In-progress":
+        alert(
+          `Cannnot update to 'In-progress' status from ${detail.data.status}`
+        );
+        break;
+      case "Done":
+        alert(`Cannnot update to 'Done' status from ${detail.data.status}`);
+        break;
+      case "Cancelled":
+        if (detail.data.status !== "In-progress") {
+          alert(
+            `Cannnot update to 'Cancelled' status from ${detail.data.status}`
+          );
+        } else {
+          setStatus(newStatus);
+        }
+        break;
+      case "Completed":
+        if (detail.data.status !== "Done") {
+          alert(
+            `Cannnot update to 'Completed' status from ${detail.data.status}`
+          );
+        } else {
+          setStatus(newStatus);
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -53,18 +110,32 @@ function Content() {
     const form = {
       bookingID: detail.data?.bookingID,
       stylistID: detail.data?.stylistID,
-      serviceID: serviceIDs,
-      totalPrice: detail.data?.totalPrice,
+      serviceID: getListServices,
+      originalPrice: originalPrice || 0,
+      discountPrice: price || 0,
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
-      status: detail.data?.status,
+      status: status,
     };
-    await dispatch(updateBooking(form));
+    console.log(form);
+    console.log(detail);
+    const resultUpdate = await dispatch(updateBooking(form));
+    if (resultUpdate.payload.ok) {
+      const formData = new FormData();
+      const dataToUpdate = {
+        userID: userID,
+        loyaltyPoints: 0,
+      };
+      for (const key in dataToUpdate) {
+        formData.append(key, dataToUpdate[key]);
+      }
+      await dispatch(updateCustomer(form));
+    }
   };
 
   const handleGenerate = async () => {
     console.log("pushed");
     const value = {
-      Amount: detail.data?.totalPrice || "0",
+      Amount: price || 0,
       Description: "Paid for hairsalon services",
     };
 
@@ -86,19 +157,19 @@ function Content() {
     setShowForm(true);
   };
 
-  const handlePaymentSubmit = (e) => {
+  const handlePaymentSubmit = async (e) => {
     e.preventDefault();
-    const dataCreate = {
-      bookingID: detail.data?.bookingID || "",
-      method: "Cash",
+    const dataUpdate = {
+      method: paymentMethod,
       status: "paid",
     };
 
-    const create = async () => {
-      await dispatch(createPayment(dataCreate));
-    };
-    create();
-    setShowForm(false);
+    const result = await dispatch(
+      updatePayment({ id: detail.payment?.paymentID, data: dataUpdate })
+    );
+    if (result.payload.ok) {
+      setShowForm(false);
+    }
   };
   useEffect(() => {
     if (showAlert) {
@@ -150,21 +221,12 @@ function Content() {
                     readOnly
                   />
                 </div>
-                <div className="form-group">
-                  <strong>Services:</strong>
-                  <textarea
-                    name="servicesName"
-                    defaultValue={
-                      Array.isArray(detail.servicesName) &&
-                      detail.servicesName.length > 0
-                        ? detail.servicesName.join(", ")
-                        : "No services available"
-                    }
-                    readOnly
-                    rows={4}
-                    className="form-control text"
-                  />
-                </div>
+                <ListServices
+                  detail={detail}
+                  services={services}
+                  addService={addService}
+                  isPaid={isPaid}
+                />
                 <div className="form-group">
                   <strong>FullName:</strong>
                   <input
@@ -192,23 +254,60 @@ function Content() {
                     readOnly
                   />
                 </div>
-                <div className="form-group">
-                  <strong>Total Price:</strong>
-                  <input
-                    type="number"
-                    name="totalPrice"
-                    value={detail.data?.totalPrice || ""}
-                    readOnly
-                  />
-                </div>
+                {detail.data?.customerID && (
+                  <div className="form-group">
+                    <strong>Customer point:</strong>
+                    <input
+                      type="text"
+                      name="customerID"
+                      value={detail.data?.loyaltyPoints || "0"}
+                      readOnly
+                    />
+                  </div>
+                )}
+                {checked ? (
+                  <>
+                    <div className="form-group">
+                      <strong>Original price:</strong>
+                      <input
+                        type="number"
+                        name="originalPrice"
+                        value={originalPrice || 0}
+                        readOnly
+                      />
+                    </div>
+                    <div className="form-group">
+                      <strong>Discount price:</strong>
+                      <input
+                        type="number"
+                        name="discountPrice"
+                        value={price || 0}
+                        readOnly
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="form-group">
+                    <strong>Total price:</strong>
+                    <input
+                      type="number"
+                      name="originalPrice"
+                      value={originalPrice || 0}
+                      readOnly
+                    />
+                  </div>
+                )}
+
                 <div className="form-group">
                   <strong>Status:</strong>
                   <select name="status" value={status} onChange={handleChange}>
-                    <option value="Cancelled">Cancelled</option>
                     <option value="In-progress">In-progress</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Done">Done</option>
                     <option value="Completed">Completed</option>
                   </select>
                 </div>
+
                 {detail.payment?.status && (
                   <div className="form-group">
                     <strong>Payment Status:</strong>
@@ -221,16 +320,43 @@ function Content() {
                   </div>
                 )}
               </div>
-              {!detail.payment?.status || detail.payment?.status === "" ? (
+              {detail.data?.status === "In-progress" ? (
                 <button
-                  type="button"
-                  onClick={handleGenerate}
-                  className="generateQR"
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="buttonSubmit"
                 >
-                  Generate QR
+                  Update
                 </button>
               ) : (
-                <></>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleGenerate}
+                    className="generateQR"
+                  >
+                    Generate QR
+                  </button>
+                  <button
+                    type="submit"
+                    onClick={handleSubmit}
+                    className="buttonSubmit"
+                  >
+                    Update
+                  </button>
+                  {!detail.payment?.status ||
+                  detail.payment?.status === "unpaid" ? (
+                    <button
+                      type="button"
+                      onClick={handleClickCreate}
+                      className="buttonCreatePayment"
+                    >
+                      Pay
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                </>
               )}
               {showAlert && (
                 <div
@@ -241,24 +367,6 @@ function Content() {
                 >
                   {message || error}
                 </div>
-              )}
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                className="buttonSubmit"
-              >
-                Update
-              </button>
-              {!detail.payment?.status || detail.payment?.status === "" ? (
-                <button
-                  type="button"
-                  onClick={handleClickCreate}
-                  className="buttonCreatePayment"
-                >
-                  Pay
-                </button>
-              ) : (
-                <></>
               )}
             </form>
             {showForm && (
@@ -286,9 +394,8 @@ function Content() {
                 </form>
               </div>
             )}
-
-            {qr && (
-              <div className="col-md-6 QR">
+            <div className="col-md-6 QR">
+              {qr && (
                 <div className="Image justify-content align-items">
                   <div className="imageContainer">
                     <img
@@ -298,8 +405,15 @@ function Content() {
                     />
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+              <CheckboxLoyaltyPoints
+                loyaltyPoints={detail.data?.loyaltyPoints || 0}
+                originalPrice={originalPrice}
+                setDiscountPrice={setPrice}
+                setChecked={setChecked}
+                isPaid={isPaid}
+              />
+            </div>
           </div>
         </div>
       </div>
