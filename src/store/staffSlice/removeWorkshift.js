@@ -26,19 +26,19 @@ export const getAll = createAsyncThunk(`${name}/getAll`, async (id) => {
   }
 });
 
-export const updateStatus = createAsyncThunk(
-  `${name}/updateStatus`,
+export const deleteWorkshift = createAsyncThunk(
+  `${name}/deleteWorkshift`,
   async (data) => {
     try {
-      await removeWorkshiftServices.updateStatus(data);
+      await removeWorkshiftServices.deleteWorkshift(data);
       return {
         ok: true,
-        success: "Updated successfully!",
+        success: "Deleted successfully!",
       };
     } catch (error) {
       return {
         ok: false,
-        message: "Cannot update!",
+        message: "Cannot delete!",
       };
     }
   }
@@ -64,9 +64,11 @@ const removeWorkshiftSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAll.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
       .addCase(getAll.fulfilled, (state, action) => {
+        state.loading = true;
         if (action.payload.ok) {
           state.data = action.payload.data;
         } else {
@@ -76,10 +78,10 @@ const removeWorkshiftSlice = createSlice({
       .addCase(getAll.rejected, (state, action) => {
         state.error = action.error.message;
       })
-      .addCase(updateStatus.pending, (state) => {
+      .addCase(deleteWorkshift.pending, (state) => {
         state.error = null;
       })
-      .addCase(updateStatus.fulfilled, (state, action) => {
+      .addCase(deleteWorkshift.fulfilled, (state, action) => {
         state.showAlert = true;
         if (action.payload.ok) {
           state.message = action.payload.success;
@@ -87,7 +89,7 @@ const removeWorkshiftSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(updateStatus.rejected, (state, action) => {
+      .addCase(deleteWorkshift.rejected, (state, action) => {
         state.error = action.error.message;
       });
   },

@@ -4,21 +4,21 @@ import bookingService from "../../services/staffServices/bookingDetailStaffServi
 const initialState = {
   all: {},
   data: {},
-  paymentID: "",
   detail: {},
   loading: true,
   error: null,
-  message: "",
+  message: null,
   showAlert: false,
+  services: [],
 };
 
 const name = "booking";
 
 export const fetchBookings = createAsyncThunk(
-  `${name}/fetch`,
+  `${name}/fetchAll`,
   async ({ page, perPage }) => {
     try {
-      const response = await bookingService.getAll(page, perPage);
+      const response = await bookingService.getAll(page,perPage);
       const responseAll = await bookingService.getAllWithoutParameter();
       return {
         ok: true,
@@ -42,8 +42,13 @@ export const fetchBookingDetail = createAsyncThunk(
       let stylistName = "";
       const response = await bookingService.getDetail(bookingID);
       const payment = await bookingService.getAllPayment();
-      let detail = response.data.details; 
       let data = response.data.booking[0];
+      let customerPoint;
+      if(data.customerID != null){
+        const customer = await bookingService.getCustomer(data.customerID);
+        customerPoint = customer.data.data.customer.loyaltyPoints;
+      }
+      let detail = response.data.details; 
       for (let index = 0; index < detail.length; index++) {
         const service = await bookingService.getServiceDetail(detail[index].serviceID);
         let name = service.data.service.serviceName;
@@ -54,13 +59,14 @@ export const fetchBookingDetail = createAsyncThunk(
       stylistName = name;
       let paymentList = payment.data.paymentList;
       const foundPayment = paymentList.find(paymentItem => paymentItem.bookingID === bookingID);
+      data.loyaltyPoints = customerPoint;
       return {
         ok: true,
         data: data,
         detail: detail,
         servicesName: servicesNameArray,
         stylistName: stylistName,
-        payment: foundPayment
+        payment: foundPayment,
       };
     } catch (error) {
       return {
@@ -71,8 +77,27 @@ export const fetchBookingDetail = createAsyncThunk(
   }
 );
 
+export const fetchServices = createAsyncThunk(
+  `${name}/fetchServices`,
+  async () => {
+    try {
+      const response = await bookingService.getAllServices();
+      console.log(response.data.services);
+      return {
+        ok: true,
+        data: response.data.services,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Error fetching list services data!",
+      };
+    }
+  }
+);
+
 export const updateBooking = createAsyncThunk(
-  `${name}/update`,
+  `${name}/updateBooking`,
   async (data) => {
     try {
       const response = await bookingService.updateBooking(data);
@@ -108,15 +133,15 @@ export const generateQR = createAsyncThunk(
   }
 );
 
-export const createPayment = createAsyncThunk(
-  `${name}/createPayment`,
-  async (data) => {
+export const updatePayment = createAsyncThunk(
+  `${name}/updatePayment`,
+  async ({id, data}) => {
     try{
-      const response = await bookingService.createPayment(data);
+      const response = await bookingService.updatePayment(id, data);
       console.log(response.data);
       return {
         ok: true,
-        message: "Created payment successfully!"
+        message: "Update payment successfully!"
       };
     }catch(error){
       return {
@@ -126,6 +151,43 @@ export const createPayment = createAsyncThunk(
     }
   }
 )
+
+export const updateStatus = createAsyncThunk(
+  `${name}/updateStatus`,
+  async (data) => {
+    try {
+      const response = await bookingService.updateStatus(data);
+      console.log("Data update: ", response);
+      return {
+        ok: true,
+        success: "Updated status successfullly!"
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Cannot update status!",
+      };
+    }
+  }
+);
+
+export const updateCustomer = createAsyncThunk(
+  `${name}/updateCustomer`,
+  async (data) => {
+    try {
+      const response = await bookingService.updateCustomer(data);
+      console.log("Data update: ", response.data);
+      return {
+        ok: true
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Cannot update cusomer!",
+      };
+    }
+  }
+);
 
 const bookingSlice = createSlice({
   name,
@@ -159,13 +221,11 @@ const bookingSlice = createSlice({
         state.loading = false;
         if (action.payload.ok) {
           state.data = { ...state.data, ...action.payload.data };
-          state.all = { ...state.data, ...action.payload.all };
-        } else {
-          state.error = action.payload.message;
+          state.all = { ...state.all, ...action.payload.all };
         }
       })
-      .addCase(fetchBookings.rejected, (state, action) => {
-        state.error = action.payload.message;
+      .addCase(fetchBookings.rejected, (state) => {
+        state.loading = false;
       })
       .addCase(fetchBookingDetail.pending, (state) => {
         state.loading = true;
@@ -182,10 +242,10 @@ const bookingSlice = createSlice({
       .addCase(fetchBookingDetail.rejected, (state, action) => {
         state.error = action.payload.message;
       })
-      .addCase(createPayment.pending, (state) => {
+      .addCase(updatePayment.pending, (state) => {
         state.loading = true;
       })
-      .addCase(createPayment.fulfilled, (state, action) => {
+      .addCase(updatePayment.fulfilled, (state, action) => {
         state.loading = false;
         state.showAlert = true;
         if (action.payload.ok) {
@@ -194,7 +254,7 @@ const bookingSlice = createSlice({
           state.error = action.payload.error;
         }
       })
-      .addCase(createPayment.rejected, (state, action) => {
+      .addCase(updatePayment.rejected, (state, action) => {
         state.error = action.payload.message;
       })
       .addCase(updateBooking.pending, (state) => {
@@ -229,6 +289,37 @@ const bookingSlice = createSlice({
         }
       })
       .addCase(generateQR.rejected, (state, action) => {
+        state.error = action.payload.message;
+      })
+      .addCase(updateStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.showAlert = true;
+        if (action.payload.ok) {
+          state.message = action.payload.success;
+        } else {
+          state.error = action.payload.message;
+        }
+      })
+      .addCase(updateStatus.rejected, (state, action) => {
+        state.showAlert = true;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchServices.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.ok) {
+          state.services = action.payload.data;
+        }
+      })
+      .addCase(updateCustomer.fulfilled, (state, action) => {
+        if (action.payload.ok) {
+          state.message = action.payload.success;
+        }
+      })
+      .addCase(updateCustomer.rejected, (state, action) => {
         state.error = action.payload.message;
       })
   },
