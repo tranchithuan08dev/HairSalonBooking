@@ -60,16 +60,6 @@ function Instagram() {
             alt="Image 10"
             className="custom-img"
           />
-          <img
-            src="../assets/image/avatar.jpg"
-            alt="Image 11"
-            className="custom-img"
-          />
-          <img
-            src="../assets/image/avatar.jpg"
-            alt="Image 12"
-            className="custom-img"
-          />
         </div>
       </div>
     </>
