@@ -5,6 +5,7 @@ import {
   FileDoneOutlined,
   FormOutlined,
   PhoneOutlined,
+  PlusSquareOutlined,
   ScissorOutlined,
   ShoppingCartOutlined,
   ShoppingOutlined,
@@ -167,6 +168,18 @@ const DashBroad = () => {
                   style={{ textDecoration: "none" }}
                 >
                   New Staff
+                </Link>
+              ),
+            },
+            showDropDown && {
+              key: "12",
+              icon: <PlusSquareOutlined />,
+              label: (
+                <Link
+                  to={`/dashboard/createNews`}
+                  style={{ textDecoration: "none" }}
+                >
+                  Create News
                 </Link>
               ),
             },
