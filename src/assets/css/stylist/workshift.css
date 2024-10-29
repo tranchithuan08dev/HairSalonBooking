@@ -1,0 +1,207 @@
+.customContainer {
+  width: 100%;
+}
+
+.customTable {
+  table-layout: fixed;
+  width: 100%;
+  height: 80%;
+  border: 1px;
+}
+
+
+.customTable .dayWeek-date , .customTable .slotTime, .customTable .dayWeek-date-not {
+  text-align: center;
+}
+
+.header-cus{
+  text-align: center;
+}
+
+.customTable .dayWeek-date{
+  background-color: cadetblue;
+}
+
+
+.slotCell {
+  position: relative; 
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.customTable .booked {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg, 
+    #444cf7 0, 
+    #444cf7 1px, 
+    #e5e5f7 0, 
+    #e5e5f7 50%
+  );
+}
+
+.customTable .booked:hover {
+  position: relative; 
+  cursor: pointer;
+}
+
+.detail {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  background-color: rgb(47, 87, 162);
+  width: 100px;
+  color: #e5e5f7;
+  padding: 2px;
+  border-radius: 4px;
+  z-index: 1000; 
+}
+
+.customTable .booked:hover .detail {
+  display: block; 
+}
+
+.slotCell-choose:hover{
+  background-color: #7f85f0;
+}
+
+.disabled {
+  background-color: #d0d1d1;
+  border: 1px solid #000000; 
+  position: relative; 
+}
+
+.disabled-overlay {
+  background-color: #d0d1d1;
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: white; 
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  font-weight: bold; 
+}
+
+.sign {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  margin-left: 30px;
+  width: 129.25px;
+  height: 42px;
+  padding: 8px;
+  border: 1px solid;
+}
+
+.booked-slot {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #444cf7 0,
+    #444cf7 1px,
+    #e5e5f7 0,
+    #e5e5f7 50%
+  );
+}
+
+.schedule-slot {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #f19126 0,
+    #f19126 1px,
+    #f9f5ce 0,
+    #f9f5ce 50%
+  );
+}
+
+.customTable .schedule-slot {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg, 
+    #f19126 0, 
+    #f19126 1px, 
+    #f9f5ce 0, 
+    #f9f5ce 50%
+  );
+}
+
+.contentSpan {
+  display: flex;
+  position: relative;
+  left: 175px;
+  top: -32px;
+  font-size: 14px;
+}
+.slot-legend-table .sign {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
+  margin-left: 30px;
+  width: 129.25px;
+  height: 42px;
+  padding: 8px;
+  border: 1px solid;
+}
+
+.slot-legend-table > tr {
+  height: 15px;
+}
+
+.haveSchedule-slot {
+  background-color: #d0d1d1;
+}
+
+.customTable .disabled-slot {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg, 
+    #8b7f7160 0, 
+    #bcb5ac8e 1px, 
+    #ffffff8e 0, 
+    #d0d0ca8e 50%
+  );
+  pointer-events: none;
+  cursor: not-allowed; 
+}
+
+.disabled-slot{
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-size: 10px 10px;
+  background-image: repeating-linear-gradient(
+    45deg, 
+    #8b7f7160 0, 
+    #bcb5ac8e 1px, 
+    #ffffff8e 0, 
+    #d0d0ca8e 50%
+  );
+  pointer-events: none;
+  cursor: not-allowed; 
+}
+
+.table-sign-body {
+  display: flex;
+}
+
+.sign-1{
+  margin-right: 120px;
+}
