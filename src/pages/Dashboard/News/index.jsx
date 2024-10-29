@@ -11,6 +11,8 @@ import {
   message,
   Spin,
 } from "antd";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +21,6 @@ import {
   fetchPostNewsByID,
   fetchUpdateNews,
 } from "../../../store/dashbroadSlice";
-import TextArea from "antd/es/input/TextArea";
 
 function News() {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ function News() {
   const [isSpin, setIsSpin] = useState(false);
   const dataNews = useSelector((state) => state.DASHBOARD.postNews);
   const auth = useSelector((state) => state.AUTH.currentUser);
+  const [content, setContent] = useState("");
   const dataDetailNews = useSelector(
     (state) => state.DASHBOARD.postNewsDetailId
   );
@@ -60,12 +62,12 @@ function News() {
   useEffect(() => {
     if (dataDetailNews) {
       form.setFieldsValue({
-        titleNews: dataDetailNews.title, // Adjusted from title to titleNews
+        titleNews: dataDetailNews.title,
         type: dataDetailNews.type,
-        content: dataDetailNews.content,
         status: dataDetailNews.deleted,
       });
-      setAvatarUrl(dataDetailNews.image);
+      setContent(dataDetailNews.content);
+      setAvatarUrl(dataDetailNews.img);
     }
   }, [dataDetailNews, form]);
 
@@ -119,20 +121,19 @@ function News() {
   };
 
   const onClose = () => {
+    dispatch(fetchPostNews());
     setOpen(false);
   };
 
   const onFinish = (values) => {
-    console.log("values", values);
-
     setIsSpin(true);
     const updateNews = {
       managerID: auth?.actorByRole?.managerID,
       newsID: newId,
       type: values.type,
       title: values.titleNews,
-      content: values.content,
-      image: selectedFile,
+      content: content,
+      img: selectedFile,
     };
     console.log("update", updateNews);
 
@@ -218,8 +219,11 @@ function News() {
               <Radio value="combo">Combo</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item name="content" label="Content">
-            <TextArea rows={4} />
+          <Form.Item
+            label="Content"
+            rules={{ required: true, message: "Please enter content." }}
+          >
+            <ReactQuill theme="snow" value={content} onChange={setContent} />
           </Form.Item>
           <Form.Item name="status" label="Status">
             <Radio.Group>

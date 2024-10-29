@@ -2,14 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import dashbroadSlice from "./dashbroadSlice";
 import homeSlice from "./homeSlice";
 import authReducer from "./authSlice";
-import staffReducer from "./staffSlice/index";
-
+import bookingSlice from "./bookingSlice";
+import stylistReducer from "./stylistSlice";
 const store = configureStore({
   reducer: {
     DASHBOARD: dashbroadSlice,
     AUTH: authReducer,
-    STAFF: staffReducer,
+    STYLIST: stylistReducer,
     HOME: homeSlice,
+    BOOKING: bookingSlice,
   },
 });
 
