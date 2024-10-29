@@ -1,8 +1,10 @@
-import { Form, Button, Space, Image, Radio, Spin, Input } from "antd";
+import { Form, Button, Space, Image, Radio, Spin, Input, message } from "antd";
 import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import React, { useState, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCreateNews } from "../../../store/dashbroadSlice";
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -11,21 +13,42 @@ function CreateNews() {
   const [isSpin, setIsSpin] = useState(false);
   const [form] = Form.useForm();
   const [avatarUrl, setAvatarUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-  const [value, setValue] = useState("");
-
+  const [content, setContent] = useState("");
+  const auth = useSelector((state) => state.AUTH.currentUser);
+  const dispatch = useDispatch();
   const onFinish = (values) => {
-    console.log("Form Submitted:", { ...values, content: value });
+    setIsSpin(true);
+    const createNews = {
+      img: avatarUrl,
+      managerID: auth?.actorByRole?.managerID,
+      title: values.title,
+      type: values.type,
+      content: content,
+    };
+    console.log("create", createNews);
+
+    dispatch(fetchCreateNews(createNews))
+      .then(() => {
+        message.success("News created successfully!");
+        setIsSpin(false);
+      })
+      .catch((error) => {
+        console.error("Error creating news:", error);
+        message.error("Failed to create news. Please try again.");
+        setIsSpin(false);
+      });
+    form.resetFields();
+    setAvatarUrl(null);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarUrl(imageUrl);
     }
   };
 
@@ -79,12 +102,12 @@ function CreateNews() {
         rules={[{ required: true, message: "Please select the type!" }]}
       >
         <Radio.Group>
-          <Radio value="single">Single</Radio>
+          <Radio value="Store News">Store News</Radio>
           <Radio value="combo">Combo</Radio>
         </Radio.Group>
       </Form.Item>
       <Form.Item label="Content">
-        <ReactQuill theme="snow" value={value} onChange={setValue} />
+        <ReactQuill theme="snow" value={content} onChange={setContent} />
       </Form.Item>
       <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
         <Button type="primary" htmlType="submit">

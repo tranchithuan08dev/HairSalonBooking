@@ -21,7 +21,12 @@ const dashboardService = {
     });
   },
   createNews: (data) => {
-    return API.call.post(`api/v1/news/create?id=${data.id}`, data);
+    return API.call().post(`api/v1/news/create?id=${data.managerID}`, data, {
+      headers: {
+        token: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   //Create  Stylist and Staff and Update salary
   createStaff: (data) => {
