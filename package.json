@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
+    "@canvasjs/react-charts": "^1.0.2",
     "@reduxjs/toolkit": "^2.2.7",
     "antd": "^5.21.2",
     "axios": "^1.7.7",
