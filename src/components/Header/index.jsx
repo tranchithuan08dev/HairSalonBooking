@@ -67,8 +67,8 @@ function Header() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/settings">
-                        Settings
+                      <Link className="dropdown-item" to="/bookingHistory">
+                        History
                       </Link>
                     </li>
                     <li>
