@@ -54,10 +54,7 @@ function App() {
         <Route path="/bookingsuccess" element={<BookingSuccessPage />} />
         <Route path="/updateBooking" element={<UpdateBooking />} />
         <Route path="/bookingHistory" element={<BookingHistory />} />
-        <Route path="/dashboard/newStylist" element={<NewStylist />} />
-        <Route path="/dashboard/newStaff" element={<NewStaff />} />
-        <Route path="/dashboard/createNews" element={<CreateNews />} />
-        <Route path="/dashboard/news" element={<News />} />
+
         <Route element={<DashBroad />}>
           <Route
             path="/dashboard"
@@ -72,6 +69,10 @@ function App() {
           <Route path="/dashboard/newStylist" element={<NewStylist />} />
           <Route path="/dashboard/newStaff" element={<NewStaff />} />
           <Route path="/dashboard/profile" element={<Profile />} />
+          <Route path="/dashboard/newStaff" element={<NewStaff />} />
+          <Route path="/dashboard/createNews" element={<CreateNews />} />
+          <Route path="/dashboard/newStylist" element={<NewStylist />} />
+          <Route path="/dashboard/news" element={<News />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
