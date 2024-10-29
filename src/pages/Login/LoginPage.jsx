@@ -19,6 +19,8 @@ const LoginPage = () => {
           case "manager":
             navigate("/dashboard");
             break;
+          case "staff":
+            navigate(`/${role}`);
           default:
             navigate("/");
             break;
