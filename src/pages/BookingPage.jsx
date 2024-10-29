@@ -11,6 +11,7 @@ import {
 import { fetchBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 function BookingPage() {
   const nagative = useNavigate();
@@ -58,9 +59,38 @@ function BookingPage() {
     setGuestID(guest.guest?.guestID);
   }, [auth]);
   console.log("customerID", customerID);
+
+  // check validate
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!selectedStylist) {
+      message.error("Please select a stylist.");
+      isValid = false;
+    }
+
+    if (selectedServices.length === 0) {
+      message.error("At least one service must be selected.");
+      isValid = false;
+    }
+
+    if (!selectedTime) {
+      message.error("Please select a time slot.");
+      isValid = false;
+    }
+
+    if (!selectStylistWorkShift) {
+      message.error("Please select a stylist's work shift.");
+      isValid = false;
+    }
+
+    return isValid; // Returns true if the form is valid
+  };
+
   // console.log("selectedServices", selectedServices);
   const HandleBooking = (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     const booking = {
       guestID: guestID,
       customerID: customerID,
