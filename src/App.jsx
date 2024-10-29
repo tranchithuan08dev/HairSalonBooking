@@ -22,6 +22,9 @@ import ContactPage from "./pages/ContactPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
 import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
+import BookingSuccessPage from "./pages/BookingSuccessPage";
+import UpdateBooking from "./pages/UpdateBooking";
+import BookingHistory from "./pages/BookingHistory";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,6 +40,9 @@ function App() {
         <Route path="/service/:id" element={<ServiceDetailPage />} />
         <Route path="/stylist/:id" element={<StylistDetailPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/bookingsuccess" element={<BookingSuccessPage />} />
+        <Route path="/updateBooking" element={<UpdateBooking />} />
+        <Route path="/bookingHistory" element={<BookingHistory />} />
         <Route element={<DashBroad />}>
           <Route
             path="/dashboard"

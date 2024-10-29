@@ -8,12 +8,12 @@ import {
   fetchPostStylist,
   fetchPostStylistDetailById,
 } from "../store/dashbroadSlice";
-import { fetchBooking, fetchWorkShift } from "../store/bookingSlice";
+import { fetchUpdateBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 
-function BookingPage() {
+function UpdateBooking() {
   const nagative = useNavigate();
   const dispatch = useDispatch();
   // Call Data
@@ -25,7 +25,11 @@ function BookingPage() {
   const dataWorkShift = useSelector((state) => state.BOOKING.workshift);
   const auth = useSelector((state) => state.AUTH.currentUser);
   const guest = useSelector((state) => state.BOOKING.createGuest);
+  const booking = useSelector((state) => state.BOOKING.booking);
+  console.log("BookingID", booking);
+
   const token = localStorage.getItem("ACCESS_TOKKEN");
+
   // console.log("dataService", dataService);
   // console.log("dataStylist", dataStylist);
   // console.log("dataStylistById", dataStylistById);
@@ -34,6 +38,7 @@ function BookingPage() {
   console.log("Guest", guest);
 
   // USE State AND GET ALL DATA
+  const [bookingID, setbookingID] = useState(null);
   const [phone, setPhone] = useState(null);
   const [name, setName] = useState(null);
   const [customerID, setCustomerID] = useState(null);
@@ -56,11 +61,15 @@ function BookingPage() {
     setPhone(auth?.record?.phoneNumber);
     setName(auth?.record?.email);
     setCustomerID(auth?.actorByRole?.customerID || null);
-    setGuestID(guest.guest?.guestID);
+    setGuestID(guest.guest?.guestIDv || null);
+    setbookingID(booking?.newBooking?.bookingID);
   }, [auth]);
-  console.log("customerID", customerID);
+  console.log("BookingID", bookingID);
 
-  // check validate
+  console.log("customerID", customerID);
+  // console.log("selectedServices", selectedServices);
+
+  // CHECK VALIDATE
   const validateForm = () => {
     let isValid = true;
 
@@ -84,24 +93,23 @@ function BookingPage() {
       isValid = false;
     }
 
-    return isValid; // Returns true if the form is valid
+    return isValid;
   };
-
-  // console.log("selectedServices", selectedServices);
   const HandleBooking = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    const booking = {
+    const updateBooking = {
+      bookingID: bookingID,
       guestID: guestID,
       customerID: customerID,
       stylistID: selectedStylist,
       serviceID: serviceIDs,
-      originalPrice: totalPrice,
+      totalPrice: totalPrice,
       stylistWorkShiftID: selectStylistWorkShift,
     };
-    console.log("Booking", booking);
+    console.log("updateBooking", updateBooking);
 
-    dispatch(fetchBooking(booking));
+    dispatch(fetchUpdateBooking(updateBooking));
     nagative("/bookingsuccess");
   };
   // console.log("StylistId", selectedStylist);
@@ -232,6 +240,7 @@ function BookingPage() {
       // );
     }
   };
+
   useEffect(() => {
     dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
   }, [selectedStylist, selectDay]);
@@ -446,58 +455,52 @@ function BookingPage() {
               Select service time slot:
             </label>
             <div className="row mt-3">
-              {dataWorkShift && dataWorkShift.length > 0 ? (
-                dataWorkShift.map((slot) => (
-                  <div
-                    key={slot.id}
-                    className={`col-2 time-slot btn btn-light ${
+              {dataWorkShift.map((slot) => (
+                <div
+                  key={slot.id}
+                  className={`col-2 time-slot btn btn-light ${
+                    selectedTime === formatTimeToHHmm(slot.startTime)
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    slot.status !== "Inactive" &&
+                    handleTimeClick(
+                      formatTimeToHHmm(slot.startTime),
+                      slot.stylistWorkShiftID
+                    )
+                  } // Disable click if status is "active"
+                  style={{
+                    pointerEvents:
+                      slot.status === "Inactive" ||
+                      formatTimeToHHmm(slot.startTime) <= currentHour
+                        ? "none"
+                        : "auto", // Disable if status is active or time is in the past
+                    backgroundColor:
+                      slot.status === "Inactive" ||
+                      formatTimeToHHmm(slot.startTime) <= currentHour
+                        ? "#e0e0e0"
+                        : selectedTime === formatTimeToHHmm(slot.startTime)
+                        ? "#4caf50"
+                        : "#fff", // Adjust background color
+                    color:
                       selectedTime === formatTimeToHHmm(slot.startTime)
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      slot.status !== "Inactive" &&
-                      handleTimeClick(
-                        formatTimeToHHmm(slot.startTime),
-                        slot.stylistWorkShiftID
-                      )
-                    }
-                    style={{
-                      pointerEvents:
-                        slot.status === "Inactive" ||
-                        formatTimeToHHmm(slot.startTime) <= currentHour
-                          ? "none"
-                          : "auto",
-                      backgroundColor:
-                        slot.status === "Inactive" ||
-                        formatTimeToHHmm(slot.startTime) <= currentHour
-                          ? "#e0e0e0"
-                          : selectedTime === formatTimeToHHmm(slot.startTime)
-                          ? "#4caf50"
-                          : "#fff",
-                      color:
-                        selectedTime === formatTimeToHHmm(slot.startTime)
-                          ? "white"
-                          : "black",
-                      borderColor:
-                        selectedTime === formatTimeToHHmm(slot.startTime)
-                          ? "#4caf50"
-                          : "#ced4da",
-                      cursor:
-                        slot.status === "Inactive" ||
-                        formatTimeToHHmm(slot.startTime) <= currentHour
-                          ? "not-allowed"
-                          : "pointer",
-                    }}
-                  >
-                    {formatTimeToHHmm(slot.startTime)}:00
-                  </div>
-                ))
-              ) : (
-                <div className="col-12 text-center text-white">
-                  Sorry, stylist not available at this time.
+                        ? "white"
+                        : "black", // Text color
+                    borderColor:
+                      selectedTime === formatTimeToHHmm(slot.startTime)
+                        ? "#4caf50"
+                        : "#ced4da", // Border color
+                    cursor:
+                      slot.status === "Inactive" ||
+                      formatTimeToHHmm(slot.startTime) <= currentHour
+                        ? "not-allowed"
+                        : "pointer",
+                  }}
+                >
+                  {formatTimeToHHmm(slot.startTime)}:00
                 </div>
-              )}
+              ))}
             </div>
             {/* TIME END */}
             {/* NOTE */}
@@ -530,4 +533,4 @@ function BookingPage() {
   );
 }
 
-export default BookingPage;
+export default UpdateBooking;
