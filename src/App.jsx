@@ -1,32 +1,67 @@
-import { Route, Routes } from "react-router-dom";
-import PrivateRoutes from "./components/Staff/PrivateRoutes";
-import Layout from "./components/Staff/StaffLayout";
-import Home from "./pages/Staff/Home";
-import BookingDetail from "./pages/Staff/BookingDetail";
-import Profile from "./pages/Staff/Profile";
-import Salary from "./pages/Staff/Salary";
-// import HomePage from "./pages/HomePage";
-import CreateBooking from "./pages/Staff/CreateBooking";
-// import BookingPage from "./pages/BookingPage";
+import { Navigate, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import BookingPage from "./pages/BookingPage";
+import Home from "./pages/Dashboard/Home";
+import DashBroad from "./pages/Dashboard";
+import Service from "./pages/Dashboard/Service";
+import Stylist from "./pages/Dashboard/Stylist";
+import Staff from "./pages/Dashboard/Staff";
+import User from "./pages/Dashboard/User";
+import Profile from "./pages/Dashboard/Profile";
+import LoginPage from "./pages/Login/LoginPage";
+import { useDispatch } from "react-redux";
+import { fetchMe } from "./store/authSlice";
+import { useEffect } from "react";
+import RegisterPage from "./pages/RegisterPage";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import ResetPassword from "./pages/Login/ResetPassword";
+import NewService from "./pages/Dashboard/NewService";
+import NewStylist from "./pages/Dashboard/NewStylist";
+import NewStaff from "./pages/Dashboard/NewStaff";
+import ContactPage from "./pages/ContactPage";
+import ServiceDetailPage from "./pages/ServiceDetailPage";
+import StylistDetailPage from "./pages/StylistDetailPage";
+import ProfilePage from "./pages/ProfilePage";
+import News from "./pages/Dashboard/News";
+import NewsDetail from "./pages/NewsDetail";
+import CreateNews from "./pages/Dashboard/CreateNews";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, []);
   return (
     <>
       <Routes>
-        {/* client */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/booking" element={<BookingPage />}/>
-
-        {/* staff */}
-        <Route path="/staff/" element={<PrivateRoutes />}>
-          <Route element={<Layout />}>
-            <Route path="home/" element={<Home />} />
-            <Route path="home/bookingDetail/:id" element={<BookingDetail />} />
-            <Route path="createBooking" element={<CreateBooking />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="salary" element={<Salary />} />
-          </Route>
+        <Route path="/booking" element={<BookingPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/service/:id" element={<ServiceDetailPage />} />
+        <Route path="/stylist/:id" element={<StylistDetailPage />} />
+        <Route path="/news/:id" element={<NewsDetail />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route element={<DashBroad />}>
+          <Route
+            path="/dashboard"
+            element={<Navigate to="/dashboard/home" />}
+          />
+          <Route path="/dashboard/home" element={<Home />} />
+          <Route path="/dashboard/service" element={<Service />} />
+          <Route path="/dashboard/stylist" element={<Stylist />} />
+          <Route path="/dashboard/staff" element={<Staff />} />
+          <Route path="/dashboard/news" element={<News />} />
+          <Route path="/dashboard/newService" element={<NewService />} />
+          <Route path="/dashboard/user" element={<User />} />
+          <Route path="/dashboard/newStylist" element={<NewStylist />} />
+          <Route path="/dashboard/newStaff" element={<NewStaff />} />
+          <Route path="/dashboard/createNews" element={<CreateNews />} />
+          <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
       </Routes>
     </>
   );

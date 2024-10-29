@@ -1,10 +1,15 @@
 import React from "react";
 import "./card.css";
-function Item() {
+import { Link } from "react-router-dom";
+function Item({ data, slug }) {
+  if (!data) return <></>;
+  if (!slug) return <></>;
+  const { fullName, serviceName, id, title, newsID } = data;
+
   return (
     <>
       <div className="col-md-4 d-flex justify-content-center mb-4">
-        <div className="card">
+        <div className="card card-booking">
           <img
             src="../assets/image/logo_booking.jpg"
             className="card-img-top"
@@ -13,13 +18,14 @@ function Item() {
           />
           <div className="card-body">
             <h3 className="text-center">
-              <a
+              <Link
+                to={`/${slug}/${id || newsID}`}
                 className="text-black"
                 href="./StylistDetail.html"
                 style={{ textDecoration: "none" }}
               >
-                Trần Chí Thuận
-              </a>
+                {fullName || serviceName || title}
+              </Link>
             </h3>
           </div>
         </div>

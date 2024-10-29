@@ -14,12 +14,14 @@
   width: 200px; /* Set width to 200px */
   height: 200px; /* Set height to 200px */
   object-fit: cover; /* Ensure images cover the box without distortion */
-  transition: transform 0.3s ease; /* Smooth scaling */
+  transition: transform 0.3s ease, filter 0.3s ease; /* Smooth scaling */
   margin-right: -10px;
   display: block;
+  filter: grayscale(100%);
 }
 
 .custom-img:hover {
   transform: scale(1.05); /* Scale image on hover */
+  filter: grayscale(0%);
   cursor: pointer; /* Pointer cursor on hover */
 }
