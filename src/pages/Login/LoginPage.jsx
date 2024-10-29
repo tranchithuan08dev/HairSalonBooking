@@ -10,10 +10,20 @@ const LoginPage = () => {
   const onFinish = (values) => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
-        if (res.payload.data.currenInfor.record.role === "Manager") {
-          navigate("/dashboard");
-        } else {
-          navigate("/");
+        const role = res.payload.data.currenInfor.record.role.toLowerCase();
+        console.log(res.payload.data.currenInfor);
+        switch (role) {
+          case "stylist":
+            navigate(`/${role}`);
+            break;
+          case "manager":
+            navigate("/dashboard");
+            break;
+          case "staff":
+            navigate(`/${role}`);
+          default:
+            navigate("/");
+            break;
         }
       } else {
         message.open({
