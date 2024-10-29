@@ -15,13 +15,6 @@ import { useEffect } from "react";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPassword from "./pages/Login/ForgotPassword";
 import ResetPassword from "./pages/Login/ResetPassword";
-import PrivateRoutesStylist from "./components/Stylist/PrivateRoutes";
-import StylistLayout from "./components/Stylist/StylistLayout";
-import StylistWorkShift from "./pages/Stylist/Workshift";
-import StylistProfile from "./pages/Stylist/Profile";
-import StylistSalary from "./pages/Stylist/Salary";
-import StylistBookingDetail from "./pages/Stylist/BookingDetail";
-import StylistCreateStylistWorkshift from "./pages/Stylist/CreateStylistWorkshift";
 import NewService from "./pages/Dashboard/NewService";
 import NewStylist from "./pages/Dashboard/NewStylist";
 import NewStaff from "./pages/Dashboard/NewStaff";
@@ -87,22 +80,13 @@ function App() {
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/staff/" element={<PrivateRoutesStaff />}>
           <Route element={<LayoutStaff />}>
-            <Route index element={<HomeStaff />} /> 
+            <Route index element={<HomeStaff />} />
             <Route path="bookingDetail" element={<BookingDetailStaff />} />
             <Route path="profile" element={<ProfileStaff />} />
             <Route path="salary" element={<SalaryStaff />} />
-            <Route path="removeStylistWorkshift" element={<RemoveStylistWorkshift />} />
-            </Route>
-            </Route>
-        <Route path="/stylist/" element={<PrivateRoutesStylist />}>
-          <Route element={<StylistLayout />}>
-            <Route index element={<StylistWorkShift />} />
-            <Route path="profile" element={<StylistProfile />} />
-            <Route path="salary" element={<StylistSalary />} />
-            <Route path="bookingDetail" element={<StylistBookingDetail />} />
             <Route
-              path="createStylistWorkshift"
-              element={<StylistCreateStylistWorkshift />}
+              path="removeStylistWorkshift"
+              element={<RemoveStylistWorkshift />}
             />
           </Route>
         </Route>
