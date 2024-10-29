@@ -4,6 +4,8 @@ import homeSlice from "./homeSlice";
 import authReducer from "./authSlice";
 import bookingSlice from "./bookingSlice";
 import stylistReducer from "./stylistSlice";
+import staffReducer from "./staffSlice/index";
+
 const store = configureStore({
   reducer: {
     DASHBOARD: dashbroadSlice,
@@ -11,6 +13,7 @@ const store = configureStore({
     STYLIST: stylistReducer,
     HOME: homeSlice,
     BOOKING: bookingSlice,
+    STAFF: staffReducer,
   },
 });
 
