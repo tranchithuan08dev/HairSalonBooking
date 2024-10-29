@@ -22,9 +22,9 @@ function Header() {
               </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="#">
+            <Link to="/feedback" className="nav-link text-white">
                 Feedback
-              </a>
+              </Link>
             </li>
           </ul>
           {/* Center*/}

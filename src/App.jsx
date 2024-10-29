@@ -42,6 +42,8 @@ import BookingDetailStaff from "./pages/Staff/BookingDetail";
 import ProfileStaff from "./pages/Staff/Profile";
 import SalaryStaff from "./pages/Staff/Salary";
 import RemoveStylistWorkshift from "./pages/Staff/RemoveStylistWorkshift";
+import FeedbackPage from "./pages/FeedbackPage";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -61,6 +63,8 @@ function App() {
         <Route path="/bookingsuccess" element={<BookingSuccessPage />} />
         <Route path="/updateBooking" element={<UpdateBooking />} />
         <Route path="/bookingHistory" element={<BookingHistory />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
 
         <Route element={<DashBroad />}>
           <Route
