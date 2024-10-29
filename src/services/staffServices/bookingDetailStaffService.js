@@ -3,11 +3,7 @@ const token = localStorage.getItem("ACCESS_TOKKEN");
 
 const bookingService = {
     getAll: () => {
-        return API.call().get(`api/v1/booking/getAll`, {
-            headers: {
-                token: `Bearer ${token}`,
-            }
-        });
+        return API.call().get(`api/v1/booking/getAll`);
     },
     getDetail: (id) => {
         return API.call().get(`api/v1/booking/detail?bookingID=${id}`,{
