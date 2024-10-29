@@ -65,6 +65,7 @@ function NewStylist() {
         message.error(`Failed to create Stylist ${error}`);
       });
     form.resetFields();
+    setAvatarUrl(null);
   };
 
   return (
