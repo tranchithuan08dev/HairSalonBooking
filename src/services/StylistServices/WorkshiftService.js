@@ -20,11 +20,7 @@ const workshiftService = {
         return API.call().get(`api/v1/workshift/getWorkshiftDetail?id=${id}`);
     },
     getAllBooking: (id) => {
-        return API.call().get(`api/v1/booking/getAll`, {
-            headers: {
-                token: `Bearer ${token}`,
-            }
-        });
+        return API.call().get(`api/v1/booking/getAll`);
     }
 }
 
