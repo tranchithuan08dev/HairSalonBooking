@@ -6,11 +6,7 @@ const salaryStaffService = {
         return API.call().get(`api/v1/salary/monthlySalary?id=${id}&date=${date}`);
     },
     countBookings: () => {
-        return API.call().get(`api/v1/booking/getAll`, {
-            headers: {
-                token: `Bearer ${token}`,
-            }
-        });
+        return API.call().get(`api/v1/booking/getAll`);
     }
 }
 
