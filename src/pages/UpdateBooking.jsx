@@ -68,8 +68,36 @@ function UpdateBooking() {
 
   console.log("customerID", customerID);
   // console.log("selectedServices", selectedServices);
+
+  // CHECK VALIDATE
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!selectedStylist) {
+      message.error("Please select a stylist.");
+      isValid = false;
+    }
+
+    if (selectedServices.length === 0) {
+      message.error("At least one service must be selected.");
+      isValid = false;
+    }
+
+    if (!selectedTime) {
+      message.error("Please select a time slot.");
+      isValid = false;
+    }
+
+    if (!selectStylistWorkShift) {
+      message.error("Please select a stylist's work shift.");
+      isValid = false;
+    }
+
+    return isValid;
+  };
   const HandleBooking = (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     const updateBooking = {
       bookingID: bookingID,
       guestID: guestID,
