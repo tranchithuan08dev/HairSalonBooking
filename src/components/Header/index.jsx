@@ -17,8 +17,8 @@ function Header() {
           {/* Left Side */}
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
-              <Link to="/contact" className="nav-link text-white">
-                Contact
+              <Link to="/aboutUs" className="nav-link text-white">
+                About Us
               </Link>
             </li>
             <li className="nav-item">

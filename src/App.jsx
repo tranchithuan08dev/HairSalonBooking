@@ -25,19 +25,16 @@ import StylistCreateStylistWorkshift from "./pages/Stylist/CreateStylistWorkshif
 import NewService from "./pages/Dashboard/NewService";
 import NewStylist from "./pages/Dashboard/NewStylist";
 import NewStaff from "./pages/Dashboard/NewStaff";
-import ContactPage from "./pages/ContactPage";
+import ContactPage from "./pages/AboutUsPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
 import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
-<<<<<<< HEAD
 import News from "./pages/Dashboard/News";
 import NewsDetail from "./pages/NewsDetail";
 import CreateNews from "./pages/Dashboard/CreateNews";
-=======
 import BookingSuccessPage from "./pages/BookingSuccessPage";
 import UpdateBooking from "./pages/UpdateBooking";
 import BookingHistory from "./pages/BookingHistory";
->>>>>>> Booking
 
 function App() {
   const dispatch = useDispatch();
@@ -49,7 +46,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/booking" element={<BookingPage />} />
-        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/contact" element={<AboutUsPage />} />
         <Route path="/service/:id" element={<ServiceDetailPage />} />
         <Route path="/stylist/:id" element={<StylistDetailPage />} />
         <Route path="/news/:id" element={<NewsDetail />} />
@@ -85,7 +82,10 @@ function App() {
             <Route path="profile" element={<StylistProfile />} />
             <Route path="salary" element={<StylistSalary />} />
             <Route path="bookingDetail" element={<StylistBookingDetail />} />
-            <Route path="createStylistWorkshift" element={<StylistCreateStylistWorkshift />} />
+            <Route
+              path="createStylistWorkshift"
+              element={<StylistCreateStylistWorkshift />}
+            />
           </Route>
         </Route>
       </Routes>
