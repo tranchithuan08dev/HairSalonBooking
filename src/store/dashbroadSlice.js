@@ -10,6 +10,7 @@ import authService from "../services/authService";
 
 const name = "posts";
 const initialState = {
+  getAllBooking: [],
   //create and slary and update salary staff and stylist
   salaryStaff: null,
   salary: null,
@@ -41,6 +42,20 @@ const initialState = {
   postStylistDetailById: [],
   updateStylist: null,
 };
+
+export const fetchGetAllBooking = createAsyncThunk(
+  `${name}/fetchGetAllBooking`,
+  async () => {
+    try {
+      const res = await dashboardService.getAllBooking();
+      console.log("getAlll", res);
+
+      return res.data.bookings;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 //create and slary and update salary staff and stylist
 export const fetchCreate = createAsyncThunk(
   `${name}/fetchCreate`,
@@ -296,6 +311,10 @@ const dashboardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(fetchGetAllBooking.fulfilled, (state, action) => {
+      state.getAllBooking = action.payload;
+    });
+
     //create and slary and update salary staff and stylist
     builder.addCase(fetchCreate.fulfilled, (state, action) => {
       state.createStaff = action.payload;

@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGetAllBooking } from "../../../store/dashbroadSlice";
+import ChartComponent from "./Canvans";
 
 function Home() {
+  const dataBooking = useSelector((state) => state.DASHBOARD.getAllBooking);
+  console.log("data", dataBooking);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchGetAllBooking());
+  }, []);
   return (
     <>
       <h2
@@ -18,22 +27,7 @@ function Home() {
         new color, or a rejuvenating hair treatment, our easy-to-use platform
         ensures you can schedule your favorite services in just a few clicks.
       </p>
-      <div style={{ width: "800px" }}>
-        <p
-          style={{
-            fontSize: "16px",
-            lineHeight: "1.6",
-            color: "#555",
-            marginTop: "12px",
-          }}
-        >
-          Our team of skilled stylists is committed to providing personalized
-          care tailored to your unique style. Explore our diverse range of
-          services, view available stylists, and secure your spot at a time that
-          fits your busy schedule. Experience the convenience of online booking
-          and step into a salon experience designed just for you.
-        </p>
-      </div>
+      <ChartComponent bookingData={dataBooking} />
     </>
   );
 }
