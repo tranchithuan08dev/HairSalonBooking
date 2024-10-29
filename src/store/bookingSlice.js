@@ -6,9 +6,24 @@ const initialState = {
   createGuest: [],
   workshift: [],
   booking: [],
+  historyBooking: [],
   updateBooking: [],
   cancleBooking: [],
 };
+
+export const fetchHistoryBooking = createAsyncThunk(
+  `${name}/fetchHistoryBooking`,
+  async (id) => {
+    try {
+      const res = await bookingService.historyBooking(id);
+      console.log("res history", res);
+
+      return res.data.data;
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+);
 
 export const fetchCancleBooking = createAsyncThunk(
   `${name}/fetchCancleBooking`,
@@ -92,6 +107,9 @@ const bookingSlice = createSlice({
     });
     builder.addCase(fetchUpdateBooking.fulfilled, (state, action) => {
       state.updateBooking = action.payload;
+    });
+    builder.addCase(fetchHistoryBooking.fulfilled, (state, action) => {
+      state.historyBooking = action.payload;
     });
   },
 });
