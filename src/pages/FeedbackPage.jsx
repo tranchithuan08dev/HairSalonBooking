@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FeedbackItem from "../components/Home/FeedbackItem";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllFeedback } from "../store/homeSlice";
-import "./feedback.css";
+import "../assets/css/feedback.css";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
@@ -19,7 +19,7 @@ const Feedback = () => {
 
   let feedbacks = data;
 
-  if(!Array.isArray(data)){
+  if (!Array.isArray(data)) {
     feedbacks = [];
   }
   const indexOfLastFeedback = currentPage * feedbacksPerPage;
@@ -33,31 +33,31 @@ const Feedback = () => {
 
   return (
     <>
-    <Header/>
-    <div className="feedback-list">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        currentFeedbacks.map((feedback) => (
-          <FeedbackItem
-            key={feedback.id}
-            feedbackData={feedback} 
-          />
-        ))
-      )}
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentPage(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
-          </button>
-        ))}
+      <Header />
+      <div style={{paddingTop: '30px', backgroundColor: '#4d4d4d'}}
+      >
+        <div className="feedback-container">
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            currentFeedbacks.map((feedback) => (
+              <FeedbackItem key={feedback.id} feedbackData={feedback} />
+            ))
+          )}
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(index + 1)}
+                className={currentPage === index + 1 ? "active" : ""}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-    <Footer/>
+      <Footer />
     </>
   );
 };

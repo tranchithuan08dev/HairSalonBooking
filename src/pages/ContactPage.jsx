@@ -1,6 +1,5 @@
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import Contact from "../components/Home/Contact";
 import { useDispatch, useSelector } from "react-redux";
 import { sendEmail, setShowAlert } from "../store/homeSlice";
 import { useEffect } from "react";
