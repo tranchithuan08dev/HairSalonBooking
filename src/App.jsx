@@ -25,7 +25,6 @@ import StylistCreateStylistWorkshift from "./pages/Stylist/CreateStylistWorkshif
 import NewService from "./pages/Dashboard/NewService";
 import NewStylist from "./pages/Dashboard/NewStylist";
 import NewStaff from "./pages/Dashboard/NewStaff";
-import ContactPage from "./pages/AboutUsPage";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
 import StylistDetailPage from "./pages/StylistDetailPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -35,6 +34,7 @@ import CreateNews from "./pages/Dashboard/CreateNews";
 import BookingSuccessPage from "./pages/BookingSuccessPage";
 import UpdateBooking from "./pages/UpdateBooking";
 import BookingHistory from "./pages/BookingHistory";
+import AboutUsPage from "./pages/AboutUsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -46,13 +46,18 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/booking" element={<BookingPage />} />
-        <Route path="/contact" element={<AboutUsPage />} />
+        <Route path="/aboutUs" element={<AboutUsPage />} />
         <Route path="/service/:id" element={<ServiceDetailPage />} />
         <Route path="/stylist/:id" element={<StylistDetailPage />} />
+        <Route path="/news/:id" element={<NewsDetail />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/bookingsuccess" element={<BookingSuccessPage />} />
         <Route path="/updateBooking" element={<UpdateBooking />} />
         <Route path="/bookingHistory" element={<BookingHistory />} />
+        <Route path="/dashboard/newStylist" element={<NewStylist />} />
+        <Route path="/dashboard/newStaff" element={<NewStaff />} />
+        <Route path="/dashboard/createNews" element={<CreateNews />} />
+        <Route path="/dashboard/news" element={<News />} />
         <Route element={<DashBroad />}>
           <Route
             path="/dashboard"
