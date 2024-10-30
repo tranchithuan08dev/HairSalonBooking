@@ -1,8 +1,7 @@
 import "../../../../assets/css/staff/salary.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { fetchData } from "../../../../store/staffSlice/salarySlice";
-import dayjs from "dayjs";
 
 function Content() {
   const dispatch = useDispatch();

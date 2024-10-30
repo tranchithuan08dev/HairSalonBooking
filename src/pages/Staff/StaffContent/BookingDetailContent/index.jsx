@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import {
   updatePayment,
   fetchBookingDetail,
-  generateQR,
+  createPaymentUrl,
   setShowAlert,
   updateBooking,
   fetchServices,
   updateCustomer,
 } from "../../../../store/staffSlice/bookingSlice";
+import { fetchMe } from "../../../../store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CheckboxLoyaltyPoints from "../../../../components/Staff/CheckboxLoyaltyPoint";
 import ListServices from "../../../../components/Staff/ListServices";
@@ -27,7 +28,6 @@ function Content() {
   const [getListServices, setListServices] = useState([]);
   const [checked, setChecked] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
-  const [qr, setQr] = useState(null);
 
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
@@ -35,6 +35,8 @@ function Content() {
 
   const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
+  
+  console.log(bookingID);
 
   const fetchData = async () => {
     await dispatch(fetchBookingDetail(bookingID));
@@ -94,15 +96,21 @@ function Content() {
   };
 
   const handleGenerate = async () => {
-    console.log("pushed");
-    const value = {
-      Amount: price || 0,
-      Description: "Paid for hairsalon services",
-    };
-
-    const result = await dispatch(generateQR(value));
-    if (result.payload) {
-      setQr(result.payload.data.qrCode);
+    const object = {
+      amount: price,
+      bankCode: "NCB",
+      language: "vn",
+      orderDescription: "Paid services hair harmony",
+      orderType: "other",
+      returnURL: window.location.href
+    }
+    console.log("object", object);
+    const result = await dispatch(createPaymentUrl(object));
+    if(result.payload.ok){
+      const link = result.payload.link;
+      console.log(window.location.href);
+      sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+      window.location.href = link;
     }
   };
 
@@ -352,7 +360,7 @@ function Content() {
               </div>
             )}
             <div className="col-md-6 QR">
-              {qr && (
+              {/* {qr && (
                 <div className="Image justify-content align-items">
                   <div className="imageContainer">
                     <img
@@ -362,7 +370,7 @@ function Content() {
                     />
                   </div>
                 </div>
-              )}
+              )} */}
               <CheckboxLoyaltyPoints
                 loyaltyPoints={detail.data?.loyaltyPoints || 0}
                 originalPrice={originalPrice}
