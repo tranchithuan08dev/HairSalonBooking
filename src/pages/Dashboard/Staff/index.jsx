@@ -24,7 +24,6 @@ import {
   fetchUpdateSalary,
   fetchUpdateStaff,
 } from "../../../store/dashbroadSlice";
-import CurrencyFormat from "react-currency-format";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
