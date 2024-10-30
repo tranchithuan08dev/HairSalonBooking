@@ -14,13 +14,13 @@ const LoginPage = () => {
         console.log(res.payload.data.currenInfor);
         switch (role) {
           case "stylist":
-            navigate(`/${role}`);
+            navigate(`/stylist`);
             break;
           case "manager":
             navigate("/dashboard");
             break;
           case "staff":
-            navigate(`/${role}`);
+            navigate(`/staff`);
           default:
             navigate("/");
             break;
