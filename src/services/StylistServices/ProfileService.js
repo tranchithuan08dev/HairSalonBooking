@@ -1,4 +1,5 @@
 import API from "../api";
+const token = localStorage.getItem("ACCESS_TOKKEN");
 
 const profileService = {
     getStylist: (id) => {
@@ -8,7 +9,6 @@ const profileService = {
         return API.call().patch(`api/v1/stylist/update?id=${id}`, data, {
             headers: {
                 token: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data"
             }
         });
     }

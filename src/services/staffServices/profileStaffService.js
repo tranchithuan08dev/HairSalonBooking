@@ -12,7 +12,7 @@ const profileStaffService = {
     updateProfile: (id, data) => {
         return API.call().patch(`api/v1/staff/update?id=${id}`, data, {
             headers: {
-                token: `Bearer ${token}`,
+                token: `Bearer ${token}`
         }})
     }
 };

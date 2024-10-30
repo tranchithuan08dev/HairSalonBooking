@@ -21,6 +21,8 @@ function Content() {
   );
   const [date, setDate] = useState(dayjs());
   const [avatarFile, setAvatarFile] = useState();
+  const [hasChanges, setHasChanges] = useState(false);
+
 
   const fetch = async () => {
     const resultAction = await dispatch(fetchStylist(stylistID)).unwrap();
@@ -41,6 +43,7 @@ function Content() {
     if (dateIn) {
       setDate(dateIn);
       dispatch(setData({ yob: dateIn.format("YYYY-MM-DD") }));
+      setHasChanges(true);
     }
   };
 
@@ -51,6 +54,7 @@ function Content() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch(setData({ [name]: value }));
+    setHasChanges(true);
     console.log(data);
   };
 
@@ -58,17 +62,21 @@ function Content() {
     const file = e.target.files[0];
     if (file) {
       setAvatarFile(file);
+      setHasChanges(true);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!hasChanges){
+      alert("No changes to save!");
+    }
     const formData = new FormData();
     const dataToUpdate = {
       userID: data.userID,
       stylistID: data.stylistID,
       gender: data.gender,
-      yob: data.yob,
+      yob: getDateOnly(data.yob),
       fullName: data.fullName,
       address: data.address,
       phoneNumber: data.phoneNumber,
@@ -85,7 +93,7 @@ function Content() {
     const formDataObj = Object.fromEntries(formData.entries());
     console.log(formDataObj);
     const result = await dispatch(updateProfile({ id: stylistID, data: formData }));
-    if(result) fetch();
+    if(result.payload.ok) fetch();
   };
 
   useEffect(() => {
@@ -116,13 +124,13 @@ function Content() {
                   {data.avatar ? (
                     <img
                       name="avatar"
-                      className="img-account-profile rounded-circle mb-2"
+                      className="img-account-profile rounded-circle avatarStylist mb-2"
                       src={data.avatar}
                       alt="avatar"
                     />
                   ) : (
                     <img
-                      className="img-account-profile rounded-circle mb-2"
+                      className="img-account-profile rounded-circle avatarStylist mb-2"
                       src="http://bootdey.com/img/Content/avatar/avatar1.png"
                       alt="avatar"
                     />
@@ -196,12 +204,12 @@ function Content() {
                 <div className="card-body">
                   <div className="row gx-3 mb-3">
                     <div className="col-md-6">
-                      <label className="small mb-1" htmlFor="inputStaffID">
+                      <label className="small mb-1" htmlFor="inputStylistID">
                         StylistID
                       </label>
                       <input
                         className="form-control"
-                        id="inputStaffID"
+                        id="inputStylistID"
                         type="text"
                         name="stylistID"
                         defaultValue={data.stylistID || ""}
@@ -308,7 +316,7 @@ function Content() {
                         className="badge bg-warning text-dark"
                         style={{ marginLeft: "10px" }}
                       >
-                        Staff
+                        Stylist
                       </span>
                     </div>
                     <div className="col-md-6">
