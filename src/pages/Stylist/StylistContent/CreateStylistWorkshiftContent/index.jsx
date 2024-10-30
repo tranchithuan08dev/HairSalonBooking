@@ -9,7 +9,7 @@ import {
 function Content() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, error, duplicated } = useSelector(
+  const { data, loading, duplicated } = useSelector(
     (state) => state.STYLIST.workshift
   );
   const stylistID = currentUser.actorByRole.stylistID;
@@ -124,7 +124,7 @@ function Content() {
       "Sunday",
     ];
 
-    const disableCount = currentDay === 0 ? 6 : currentDay - 1; 
+    const disableCount = currentDay === 0 ? 7 : currentDay; 
     return days.slice(0, disableCount);
   };
 

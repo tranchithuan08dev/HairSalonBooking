@@ -8,6 +8,12 @@ const initialState = {
   stylist: [],
   service: [],
   news: [],
+  //contact
+  message: "",
+  error: "",
+  showAlert: false,
+  // feedback
+  data: []
 };
 
 export const fetchHomeNews = createAsyncThunk(
@@ -36,10 +42,83 @@ export const fetchHomeService = createAsyncThunk(
   }
 );
 
+export const fetchAllFeedback = createAsyncThunk(
+  `${name}/fetchAllFeedback`,
+  async () => {
+    try {
+      const response = await dashboardService.getAllFeedback();
+      const feedbacks = response.data.feedbacks;
+      const bookingPromises = feedbacks.map(async (feedback) => {
+        const bookingResponse = await dashboardService.getBookingDetail(feedback.bookingID);
+        const bookingArray = bookingResponse.data.booking[0];
+        const {customerID, guestID} = bookingArray;
+        let customerName;
+        if(customerID != null){
+          const customer = await dashboardService.getDetailCustomerById(customerID);
+          customerName = customer.data.data.customer.fullName;
+        }
+        const details = bookingResponse.data.details;
+        const servicesNameArray = await Promise.all(
+          details
+            .filter((detail) => !detail.deleted) 
+            .map(async (detail) => {
+              const service = await dashboardService.getServiceById(detail.serviceID);
+              return service.data.service.serviceName;
+            })
+        );
+        return {
+          ...feedback,
+          customerID: customerID,
+          guestID: guestID,
+          customerName: customerName || "",
+          services: servicesNameArray,
+        };
+      });
+      const mergedFeedbacks = await Promise.all(bookingPromises);
+      console.log(mergedFeedbacks); 
+
+      return {
+        ok: true,
+        data: mergedFeedbacks,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Fetch data error!",
+      };
+    }
+  }
+);
+
+export const sendEmail = createAsyncThunk(`${name}/sendEmail`, async (data) => {
+  try {
+    await dashboardService.sendEmail(data);
+    return {
+      ok: true,
+      success: "Send email successfully",
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: "Send email unsuccessfully!",
+    };
+  }
+});
+
 const homeSlice = createSlice({
   name,
   initialState,
-  reducers: {},
+  reducers: {
+    setError: (state, action) => {
+      state.error = action.payload; 
+    },
+    setMessage: (state, action) => {
+      state.message = action.payload;
+    },
+    setShowAlert: (state) => {
+      state.showAlert = !state.showAlert; 
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchHomeNews.fulfilled, (state, action) => {
       state.news = action.payload;
@@ -50,7 +129,24 @@ const homeSlice = createSlice({
     builder.addCase(fetchHomeService.fulfilled, (state, action) => {
       state.service = action.payload;
     });
+    builder.addCase(fetchAllFeedback.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.data = action.payload.data;
+      } else {
+        state.error = action.payload.message;
+      }
+    });
+    builder.addCase(sendEmail.fulfilled, (state, action) => {
+      state.showAlert = true;
+      if (action.payload.ok) {
+        state.message = action.payload.success;
+      } else {
+        state.error = action.payload.message;
+      }
+    })
   },
 });
+
+export const { setError, setMessage, setShowAlert } = homeSlice.actions;
 
 export default homeSlice.reducer;
