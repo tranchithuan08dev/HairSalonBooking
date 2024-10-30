@@ -12,6 +12,7 @@ import { fetchBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { formatPriceToUSD } from "../helpers";
 
 function BookingPage() {
   const nagative = useNavigate();
@@ -132,7 +133,9 @@ function BookingPage() {
     .map((item) => JSON.parse(item))
     .reduce(
       (acc, service) => ({
-        totalPrice: acc.totalPrice + parseFloat(service.price),
+        totalPrice: formatPriceToUSD(
+          acc.totalPrice + parseFloat(service.price)
+        ),
         totalDuration: acc.totalDuration + service.duration,
       }),
       { totalPrice: 0, totalDuration: 0 }
@@ -369,7 +372,8 @@ function BookingPage() {
                     <option selected="">Choose service</option>
                     {dataService.map((item) => (
                       <option key={item.id} value={JSON.stringify(item)}>
-                        {item.serviceName} - {item.price.toLocaleString()} VND
+                        {item.serviceName} -{" "}
+                        {formatPriceToUSD(item.price.toLocaleString())} USD
                       </option>
                     ))}
                   </select>
@@ -378,7 +382,7 @@ function BookingPage() {
                       className="btn btn-danger ms-2"
                       onClick={() => handleRemoveSelect(index)}
                     >
-                      Xóa
+                      Delete
                     </button>
                   )}
                 </div>
