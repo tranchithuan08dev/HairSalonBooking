@@ -10,9 +10,9 @@ const initialState = {
 
 const name = "removeWorkshift";
 
-export const getAll = createAsyncThunk(`${name}/getAll`, async (id) => {
+export const getAllWorkshiftByID = createAsyncThunk(`${name}/getAllWorkshiftByID`, async (id) => {
   try {
-    const response = await removeWorkshiftServices.getAll(id);
+    const response = await removeWorkshiftServices.getAllWorkshiftByID(id);
     console.log(response.data.data);
     return {
       ok: true,
@@ -63,11 +63,11 @@ const removeWorkshiftSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getAll.pending, (state) => {
+      .addCase(getAllWorkshiftByID.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAll.fulfilled, (state, action) => {
+      .addCase(getAllWorkshiftByID.fulfilled, (state, action) => {
         state.loading = true;
         if (action.payload.ok) {
           state.data = action.payload.data;
@@ -75,7 +75,7 @@ const removeWorkshiftSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(getAll.rejected, (state, action) => {
+      .addCase(getAllWorkshiftByID.rejected, (state, action) => {
         state.error = action.error.message;
       })
       .addCase(deleteWorkshift.pending, (state) => {

@@ -14,7 +14,7 @@ export const fetchData = createAsyncThunk(
   async ({id, date}) => {
     try {
       console.log("day", date);
-
+      console.log("id", id);
       const responseSalary = await salaryService.getTotalSalary(id, date);
       console.log(responseSalary);
       return {

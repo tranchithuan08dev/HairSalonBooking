@@ -42,6 +42,9 @@ import BookingDetailStaff from "./pages/Staff/BookingDetail";
 import ProfileStaff from "./pages/Staff/Profile";
 import SalaryStaff from "./pages/Staff/Salary";
 import RemoveStylistWorkshift from "./pages/Staff/RemoveStylistWorkshift";
+import FeedbackPage from "./pages/FeedbackPage";
+import ContactPage from "./pages/ContactPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -61,6 +64,8 @@ function App() {
         <Route path="/bookingsuccess" element={<BookingSuccessPage />} />
         <Route path="/updateBooking" element={<UpdateBooking />} />
         <Route path="/bookingHistory" element={<BookingHistory />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
 
         <Route element={<DashBroad />}>
           <Route
@@ -85,18 +90,6 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
-        <Route path="/staff/" element={<PrivateRoutesStaff />}>
-          <Route element={<LayoutStaff />}>
-            <Route index element={<HomeStaff />} />
-            <Route path="bookingDetail" element={<BookingDetailStaff />} />
-            <Route path="profile" element={<ProfileStaff />} />
-            <Route path="salary" element={<SalaryStaff />} />
-            <Route
-              path="removeStylistWorkshift"
-              element={<RemoveStylistWorkshift />}
-            />
-          </Route>
-        </Route>
 
         <Route path="/stylist/" element={<PrivateRoutesStylist />}>
           <Route element={<StylistLayout />}>
@@ -113,13 +106,17 @@ function App() {
 
         <Route path="/staff/" element={<PrivateRoutesStaff />}>
           <Route element={<LayoutStaff />}>
-            <Route index element={<HomeStaff />} /> 
+            <Route index element={<HomeStaff />} />
             <Route path="bookingDetail" element={<BookingDetailStaff />} />
             <Route path="profile" element={<ProfileStaff />} />
             <Route path="salary" element={<SalaryStaff />} />
-            <Route path="removeStylistWorkshift" element={<RemoveStylistWorkshift />} />
+            <Route
+              path="removeStylistWorkshift"
+              element={<RemoveStylistWorkshift />}
+            />
           </Route>
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

@@ -23,11 +23,10 @@ const CheckboxLoyaltyPoints = (props) => {
             onChange={handleCheckboxChange}
           />
           <label className="checkboxLabel"> Use loyalty points</label>
-          </>
-      ) : null} 
+        </>
+      ) : null}
     </div>
   );
-  
 };
 
 export default CheckboxLoyaltyPoints;

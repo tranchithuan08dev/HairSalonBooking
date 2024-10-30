@@ -69,6 +69,7 @@ export const fetchMe = createAsyncThunk(`${name}/fetchMe`, async (token) => {
   try {
     if (!token) token = localStorage.getItem("ACCESS_TOKKEN");
     const currentUser = await authService.fetchWithMe(token);
+    console.log(currentUser);
     const currenInfor = currentUser.data;
     return {
       ok: true,

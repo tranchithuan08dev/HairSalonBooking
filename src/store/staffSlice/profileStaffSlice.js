@@ -34,11 +34,12 @@ export const updateProfile = createAsyncThunk(
   `${name}/update`, 
   async ({ id, data }) => {
       try {
+          console.log(Object.fromEntries(data.entries()));
           const response = await profileStaffService.updateProfile(id, data);
           console.log("data update: ",response);
           return {
               ok: true,
-              data: response.data.data.user, 
+              success: "Update sucessfully!", 
           };
       } catch (error) {
           return {
@@ -88,12 +89,7 @@ const profileStaffSlice = createSlice({
       state.loading = false;
       state.showAlert = true; 
       if (action.payload.ok) {
-        for (const key in action.payload.data) {
-          if (state.data[key] !== action.payload.data[key]) {
-            state.data[key] = action.payload.data[key];
-          }
-        }
-        state.message = "Profile updated successfully!";
+        state.message = action.payload.success;
       } else {
         state.error = "Cannot update!"; 
       }

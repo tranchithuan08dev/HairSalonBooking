@@ -13,12 +13,19 @@ function Content() {
 
   useEffect(() => {
     const fetch = async () => {
-      const date = new Date(); 
-      const formattedDate = dayjs(date).format('YYYY-MM-DD');
-      await dispatch(fetchData({id: userID, date: formattedDate}));
+      await dispatch(fetchData({id: userID, date: getCurrentDate()}));
     }
     fetch();
   }, [dispatch, userID])
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); 
+    const day = String(today.getDate()).padStart(2, '0'); 
+    const date = `${year}-${month}-${day}`;
+    return date;
+  };
 
   const changeDate = (date) => {
     if (!date) return "";

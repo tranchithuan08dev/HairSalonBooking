@@ -7,15 +7,13 @@ const profileStaffService = {
             headers: {
                 token: `Bearer ${token}`,
             }
-        })
+        });
     },
     updateProfile: (id, data) => {
         return API.call().patch(`api/v1/staff/update?id=${id}`, data, {
             headers: {
-                token: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data"
-            }
-        })
+                token: `Bearer ${token}`
+        }})
     }
 };
 

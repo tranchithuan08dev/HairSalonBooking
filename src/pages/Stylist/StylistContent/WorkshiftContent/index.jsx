@@ -8,7 +8,7 @@ function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading } = useSelector((state) => state.STYLIST.workshift);
+  const { data, loading } = useSelector((state) => state.STYLIST?.workshift);
   const stylistID = currentUser.actorByRole.stylistID;
 
   useEffect(() => {

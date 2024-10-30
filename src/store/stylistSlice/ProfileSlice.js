@@ -38,7 +38,7 @@ export const updateProfile = createAsyncThunk(
           console.log("data update: ",response);
           return {
               ok: true,
-              data: response.data.data.user, 
+              sucess: "Update successfully!" 
           };
       } catch (error) {
           return {
@@ -96,7 +96,7 @@ const profileSlice = createSlice({
       state.loading = false;
       state.showAlert = true; 
       if (action.payload.ok) {
-        state.message = "Updated successfully!";
+        state.message = action.payload.sucess;
       } else {
         state.error = action.payload.message;
       }

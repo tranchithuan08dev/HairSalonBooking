@@ -17,20 +17,23 @@ function Content() {
     (state) => state.STAFF.profile
   );
   const { currentUser } = useSelector((state) => state.AUTH);
-  const staffID = currentUser?.actorByRole.staffID;
+  console.log(currentUser);
+  const staffID = currentUser?.actorByRole?.staffID;
   const [date, setDate] = useState(dayjs());
+  const [hasChanges, setHasChanges] = useState(false);
 
   const [avatarFile, setAvatarFile] = useState();
 
-  useEffect(() => {
-    const fetch = async () => {
-      const resultAction = await dispatch(fetchStaff(staffID)).unwrap();
-      if (resultAction.ok && resultAction.data) {
-        if (resultAction.data.yob) {
-          setDate(dayjs(resultAction.data.yob));
-        }
+  const fetch = async () => {
+    const resultAction = await dispatch(fetchStaff(staffID)).unwrap();
+    if (resultAction.ok && resultAction.data) {
+      if (resultAction.data.yob) {
+        setDate(dayjs(resultAction.data.yob));
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     fetch();
   }, [dispatch]);
 
@@ -38,32 +41,46 @@ function Content() {
     if (dateIn) {
       setDate(dateIn);
       dispatch(setData({ yob: dateIn.format("YYYY-MM-DD") }));
+      setHasChanges(true);
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch(setData({ [name]: value }));
+    setHasChanges(true);
     console.log(data);
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setAvatarFile(file);
+      console.log("Selected File:", file);
+    setAvatarFile(file);
+    setHasChanges(true);
     }
   };
 
-  const handleSubmit = (e) => {
+  const getDateOnly = (isoDate) => {
+    return dayjs(isoDate).format("YYYY-MM-DD");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!hasChanges){
+      alert("No changes to save!");
+    }
+
     const formData = new FormData();
     const dataToUpdate = {
       userID: data.userID,
       staffID: data.staffID,
       gender: data.gender,
-      yob: data.yob,
+      yob: getDateOnly(data.yob),
       fullName: data.fullName,
       address: data.address,
+      email: data.email,
+      phoneNumber: data.phoneNumber
     };
 
     if (avatarFile) {
@@ -73,9 +90,13 @@ function Content() {
     for (const key in dataToUpdate) {
       formData.append(key, dataToUpdate[key]);
     }
+    
     const formDataObj = Object.fromEntries(formData.entries());
-    console.log(formDataObj);
-    dispatch(updateProfile({ id: staffID, data: formData }));
+    console.log("form", formDataObj);
+    const result = await dispatch(updateProfile({ id: staffID, data: formData }));
+    if(result.payload.ok){
+      fetch();
+    }
   };
 
   useEffect(() => {
@@ -89,10 +110,6 @@ function Content() {
 
   if (loading) {
     return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error</div>;
   }
 
   return (
@@ -110,13 +127,13 @@ function Content() {
                   {data.avatar ? (
                     <img
                       name="avatar"
-                      className="img-account-profile rounded-circle mb-2"
+                      className="img-account-profile rounded-circle avatarStaff mb-2"
                       src={data.avatar}
                       alt="avatar"
                     />
                   ) : (
                     <img
-                      className="img-account-profile rounded-circle mb-2"
+                      className="img-account-profile rounded-circle avatarStaff mb-2"
                       src="http://bootdey.com/img/Content/avatar/avatar1.png"
                       alt="avatar"
                     />
