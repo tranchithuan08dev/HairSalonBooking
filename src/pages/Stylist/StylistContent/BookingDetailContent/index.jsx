@@ -13,6 +13,7 @@ function Content() {
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
   const [showModal, setShowModal] = useState(false);
+  const [isDone, setIsDone] = useState(false);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.AUTH);
   const stylistID = currentUser?.actorByRole.stylistID;
@@ -27,7 +28,7 @@ function Content() {
     };
     fetch();
     changeDate();
-    console.log(data, data);
+    setIsDone(data.data?.status ? true : false);
   }, [dispatch, stylistID, updateStatus]);
 
   const handleUpdate = () => {
@@ -43,10 +44,10 @@ function Content() {
       const dataCreate = {
         bookingID: data.data?.bookingID || "",
       };
-      console.log(dataCreate);
 
       const resultCreate = await dispatch(createPayment(dataCreate));
       if(resultCreate){
+        setIsDone(true);
         dispatch(fetchBookingDetail(id));
       }
       setShowModal(false);
@@ -124,7 +125,9 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  <div className="form-group form-groupTest">
+                  {isDone ? (<></>
+                  ): (
+                    <div className="form-group form-groupTest">
                     <strong>Services:</strong>
                     <textarea
                       name="servicesName"
@@ -139,6 +142,7 @@ function Content() {
                       className="form-control text"
                     />
                   </div>
+                  )}
                   <div className="form-group form-groupTest">
                     <strong>FullName:</strong>
                     <input

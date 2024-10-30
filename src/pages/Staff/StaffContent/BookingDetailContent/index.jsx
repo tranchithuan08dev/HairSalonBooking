@@ -75,7 +75,7 @@ function Content() {
       originalPrice: originalPrice || 0,
       discountPrice: price || 0,
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
-      status: status,
+      status: "Completed",
     };
     console.log(form);
     const resultUpdate = await dispatch(updateBooking(form));

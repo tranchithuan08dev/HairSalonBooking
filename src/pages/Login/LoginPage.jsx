@@ -22,6 +22,7 @@ const LoginPage = () => {
             break;
           case "staff":
             navigate(`/staff`);
+            break;
           default:
             navigate("/");
             break;

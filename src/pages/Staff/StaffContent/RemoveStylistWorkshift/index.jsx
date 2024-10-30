@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAll,
+  getAllWorkshiftByID,
   deleteWorkshift,
   setShowAlert,
 } from "../../../../store/staffSlice/removeWorkshift";
@@ -46,7 +46,7 @@ function Content() {
   }, [!stylistID])
 
   const handleLoadData = async () => {
-    await dispatch(getAll(stylistID));
+    await dispatch(getAllWorkshiftByID(stylistID));
   };
 
   const handleUpdate = () => {
@@ -62,7 +62,7 @@ function Content() {
     console.log(dataToUpdate);
     const result = await dispatch(deleteWorkshift(dataToUpdate));
     if(result.payload.ok){
-      await dispatch(getAll(stylistID));
+      await dispatch(getAllWorkshiftByID(stylistID));
     }
     setShowModal(false);
   };

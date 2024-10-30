@@ -17,7 +17,8 @@ function Content() {
     (state) => state.STAFF.profile
   );
   const { currentUser } = useSelector((state) => state.AUTH);
-  const staffID = currentUser?.actorByRole.staffID;
+  console.log(currentUser);
+  const staffID = currentUser?.actorByRole?.staffID;
   const [date, setDate] = useState(dayjs());
 
   const [avatarFile, setAvatarFile] = useState();
@@ -73,9 +74,10 @@ function Content() {
     for (const key in dataToUpdate) {
       formData.append(key, dataToUpdate[key]);
     }
+    
     const formDataObj = Object.fromEntries(formData.entries());
-    console.log(formDataObj);
-    dispatch(updateProfile({ id: staffID, data: formData }));
+    console.log("form", formDataObj);
+    dispatch(updateProfile({ id: staffID, data: formDataObj }));
   };
 
   useEffect(() => {
