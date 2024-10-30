@@ -59,3 +59,25 @@ export function mappingCustomer(item) {
     deleted: item.deleted,
   };
 }
+
+export function formatPriceToUSD(price) {
+  // Check if price is defined and is a valid string
+  if (!price || typeof price !== "string") {
+    return "$0"; // Return a default value or handle it accordingly
+  }
+
+  // Remove any unwanted characters and convert to a number
+  const cleanedPrice = price.replace(/[^0-9.-]+/g, "");
+  const numericPrice = parseFloat(cleanedPrice);
+
+  if (isNaN(numericPrice)) {
+    return "$0"; // Return a default value or handle it accordingly
+  }
+
+  return numericPrice.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+}
