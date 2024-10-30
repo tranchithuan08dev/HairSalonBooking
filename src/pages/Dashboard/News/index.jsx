@@ -106,7 +106,7 @@ function News() {
     },
   ];
 
-  const data = dataNews?.map((item) => ({
+  const data = dataNews.map((item) => ({
     key: item.newsID,
     title: item.title,
     type: item.type,
