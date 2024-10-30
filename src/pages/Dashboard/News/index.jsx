@@ -40,8 +40,7 @@ function News() {
   // console.log("auth", auth);
   const [open, setOpen] = useState(false);
 
-  if (!dataNews) return <></>;
-  if (!dataDetailNews) return <></>;
+  if (!dataNews || !dataDetailNews) return null;
   useEffect(() => {
     dispatch(fetchPostNews());
   }, [dispatch]);
@@ -107,7 +106,7 @@ function News() {
     },
   ];
 
-  const data = dataNews.map((item) => ({
+  const data = dataNews?.map((item) => ({
     key: item.newsID,
     title: item.title,
     type: item.type,
