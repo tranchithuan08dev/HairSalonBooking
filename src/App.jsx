@@ -89,18 +89,6 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
-        <Route path="/staff/" element={<PrivateRoutesStaff />}>
-          <Route element={<LayoutStaff />}>
-            <Route index element={<HomeStaff />} />
-            <Route path="bookingDetail" element={<BookingDetailStaff />} />
-            <Route path="profile" element={<ProfileStaff />} />
-            <Route path="salary" element={<SalaryStaff />} />
-            <Route
-              path="removeStylistWorkshift"
-              element={<RemoveStylistWorkshift />}
-            />
-          </Route>
-        </Route>
 
         <Route path="/stylist/" element={<PrivateRoutesStylist />}>
           <Route element={<StylistLayout />}>
@@ -117,11 +105,14 @@ function App() {
 
         <Route path="/staff/" element={<PrivateRoutesStaff />}>
           <Route element={<LayoutStaff />}>
-            <Route index element={<HomeStaff />} /> 
+            <Route index element={<HomeStaff />} />
             <Route path="bookingDetail" element={<BookingDetailStaff />} />
             <Route path="profile" element={<ProfileStaff />} />
             <Route path="salary" element={<SalaryStaff />} />
-            <Route path="removeStylistWorkshift" element={<RemoveStylistWorkshift />} />
+            <Route
+              path="removeStylistWorkshift"
+              element={<RemoveStylistWorkshift />}
+            />
           </Route>
         </Route>
       </Routes>
