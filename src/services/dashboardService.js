@@ -26,7 +26,7 @@ const dashboardService = {
     });
   },
   createNews: (data) => {
-    return API.call.post(`api/v1/news/create?id=${data.id}`, data);
+    return API.call().post(`api/v1/news/create?id=${data.managerID}`, data);
   },
   //Create  Stylist and Staff and Update salary
   createStaff: (data) => {
@@ -196,12 +196,12 @@ const dashboardService = {
   },
   // booking
   getBookingDetail: (id) => {
-    return API.call().get(`api/v1/booking/detail?bookingID=${id}`,{
-        headers: {
-            token: `Bearer ${token}`,
-        }
+    return API.call().get(`api/v1/booking/detail?bookingID=${id}`, {
+      headers: {
+        token: `Bearer ${token}`,
+      },
     });
-},
+  },
 };
 
 export default dashboardService;
