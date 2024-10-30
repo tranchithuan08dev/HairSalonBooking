@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 const ListServices = (props) => {
-  const { detail, services, addService, isPaid, setListServices} = props;
+  const { detail, services, addService, isPaid, setListServices } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedServices, setSelectedServices] = useState(detail.servicesName || []);
+  const [selectedServices, setSelectedServices] = useState(
+    detail.servicesName || []
+  );
 
   const singleServices = services.filter(
     (s) => s.type === "single" && !s.deleted
@@ -20,61 +22,64 @@ const ListServices = (props) => {
     } else {
       const selectedIDs = services
         .filter((service) => selectedServices.includes(service.serviceName))
-        .map((service) => service.serviceID); 
-  
-      setListServices(selectedIDs); 
-      console.log("Updated service IDs:", selectedIDs); 
+        .map((service) => service.serviceID);
+
+      setListServices(selectedIDs);
+      console.log("Updated service IDs:", selectedIDs);
     }
-    setIsModalOpen(false); 
+    setIsModalOpen(false);
   };
-  
 
   const handleServiceChange = (service) => {
     setSelectedServices((prev) => {
       const serviceName = service.serviceName;
       const newSelected = prev.includes(serviceName)
-        ? prev.filter((name) => name !== serviceName)
+        ? prev.filter((name) => name !== serviceName) 
         : [...prev, serviceName]; 
-
+  
       return newSelected;
     });
   };
+  
 
   const handleAddServices = () => {
     if (selectedServices.length > 0) {
-        const filteredServices = services.filter((service) =>
-            selectedServices.includes(service.serviceName)
-        );
-        const serviceDetails = filteredServices.filter((service) => service.serviceID);
+      const filteredServices = services.filter((service) =>
+        selectedServices.includes(service.serviceName)
+      );
+      const serviceDetails = filteredServices.filter(
+        (service) => service.serviceID
+      );
 
-        console.log("Selected Services:", serviceDetails);
-        
-        const totalPrice = serviceDetails.reduce((acc, detail) => acc + parseFloat(detail.price || 0), 0);
+      console.log("Selected Services:", serviceDetails);
 
-        const result = serviceDetails.map(service => service.serviceID); 
-        result.push(totalPrice); 
+      const totalPrice = serviceDetails.reduce(
+        (acc, detail) => acc + parseFloat(detail.price || 0),
+        0
+      );
 
-        console.log("Result:", result);
-        addService(result); 
-        handleModalClose(true);
-    }
-};
+      const result = serviceDetails.map((service) => service.serviceID);
+      result.push(totalPrice);
 
-
-  const getDisplayServices = () => {
-    if(Array.isArray(selectedServices)){
-      if (selectedServices.length > 5) {
-        return [...selectedServices.slice(0, 5), "..."].join(", ");
-      }
-      return selectedServices.join(", ");
+      console.log("Result:", result);
+      addService(result);
+      handleModalClose(true);
     }
   };
+
+  const getDisplayServices = () => {
+    if (selectedServices.length > 5) {
+      return [...selectedServices.slice(0, 5), "..."].join(", ");
+    }
+    return selectedServices.join(", ");
+  };
+
   return (
     <div className="form-group textDiv">
       <strong>Services:</strong>
       <textarea
         name="servicesName"
-        defaultValue={getDisplayServices()}
+        value={getDisplayServices()}
         readOnly={isPaid}
         rows={4}
         className="form-control text"
