@@ -44,7 +44,7 @@ import SalaryStaff from "./pages/Staff/Salary";
 import RemoveStylistWorkshift from "./pages/Staff/RemoveStylistWorkshift";
 import FeedbackPage from "./pages/FeedbackPage";
 import ContactPage from "./pages/ContactPage";
-import NotFoundPage from "./pages/404NotFoundPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -115,10 +115,8 @@ function App() {
               element={<RemoveStylistWorkshift />}
             />
           </Route>
-          
         </Route>
-        
-
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );
