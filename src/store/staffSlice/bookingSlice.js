@@ -9,53 +9,56 @@ const initialState = {
   message: null,
   showAlert: false,
   services: [],
+  link: ""
 };
 
 const name = "booking";
 
-export const fetchBookings = createAsyncThunk(
-  `${name}/fetchAll`,
-  async () => {
-    try {
-      const response = await bookingService.getAll();
-      return {
-        ok: true,
-        data: response.data,
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        message: "Error fetching bookings data!",
-      };
-    }
+export const fetchBookings = createAsyncThunk(`${name}/fetchAll`, async () => {
+  try {
+    const response = await bookingService.getAll();
+    return {
+      ok: true,
+      data: response.data,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: "Error fetching bookings data!",
+    };
   }
-);
+});
 
 export const fetchBookingDetail = createAsyncThunk(
   `${name}/fetchDetail`,
-  async (bookingID) => {
+  async (id) => {
     try {
       let servicesNameArray = [];
       let stylistName = "";
-      const response = await bookingService.getDetail(bookingID);
+      console.log("id", id);
+      const response = await bookingService.getDetail(id);
       const payment = await bookingService.getAllPayment();
       let data = response.data.booking[0];
       let customerPoint;
-      if(data.customerID != null){
+      if (data.customerID != null) {
         const customer = await bookingService.getCustomer(data.customerID);
         customerPoint = customer.data.data.customer.loyaltyPoints;
       }
-      let detail = response.data.details; 
+      let detail = response.data.details;
       for (let index = 0; index < detail.length; index++) {
-        const service = await bookingService.getServiceDetail(detail[index].serviceID);
+        const service = await bookingService.getServiceDetail(
+          detail[index].serviceID
+        );
         let name = service.data.service.serviceName;
-        servicesNameArray[index] = name; 
+        servicesNameArray[index] = name;
       }
       const stylist = await bookingService.getStylistDetail(data.stylistID);
       let name = stylist.data.data.user.fullName;
       stylistName = name;
       let paymentList = payment.data.paymentList;
-      const foundPayment = paymentList.find(paymentItem => paymentItem.bookingID === bookingID);
+      const foundPayment = paymentList.find(
+        (paymentItem) => paymentItem.bookingID === id
+      );
       data.loyaltyPoints = customerPoint;
       return {
         ok: true,
@@ -66,6 +69,7 @@ export const fetchBookingDetail = createAsyncThunk(
         payment: foundPayment,
       };
     } catch (error) {
+      console.log(error);
       return {
         ok: false,
         message: "Error fetching booking detail!",
@@ -102,7 +106,7 @@ export const updateBooking = createAsyncThunk(
       console.log("Data update: ", response);
       return {
         ok: true,
-        data: response.data.data
+        data: response.data.data,
       };
     } catch (error) {
       return {
@@ -133,22 +137,42 @@ export const generateQR = createAsyncThunk(
 
 export const updatePayment = createAsyncThunk(
   `${name}/updatePayment`,
-  async ({id, data}) => {
-    try{
+  async ({ id, data }) => {
+    try {
       const response = await bookingService.updatePayment(id, data);
       console.log(response.data);
       return {
         ok: true,
-        message: "Update payment successfully!"
+        message: "Update payment successfully!",
       };
-    }catch(error){
+    } catch (error) {
       return {
         ok: false,
         error: "This booking was paid!",
       };
     }
   }
-)
+);
+
+export const createPaymentUrl = createAsyncThunk(
+  `${name}/createPaymentUrl`,
+  async (data) => {
+    try {
+      const response = await bookingService.createPaymentUrl(data);
+      console.log(response.data.link);
+      return {
+        ok: true,
+        link: response.data.link
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Error",
+      };
+    }
+  }
+);
 
 export const updateStatus = createAsyncThunk(
   `${name}/updateStatus`,
@@ -158,7 +182,7 @@ export const updateStatus = createAsyncThunk(
       console.log("Data update: ", response);
       return {
         ok: true,
-        success: "Updated status successfullly!"
+        success: "Updated status successfullly!",
       };
     } catch (error) {
       return {
@@ -176,7 +200,7 @@ export const updateCustomer = createAsyncThunk(
       const response = await bookingService.updateCustomer(id, data);
       console.log("Data update: ", response.data);
       return {
-        ok: true
+        ok: true,
       };
     } catch (error) {
       return {
@@ -208,7 +232,7 @@ const bookingSlice = createSlice({
     },
     setShowAlert: (state) => {
       state.showAlert = !state.showAlert;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -319,6 +343,14 @@ const bookingSlice = createSlice({
       .addCase(updateCustomer.rejected, (state, action) => {
         state.error = action.payload.message;
       })
+      .addCase(createPaymentUrl.fulfilled, (state, action) => {
+        if (action.payload.ok) {
+          state.link = action.payload.link;
+        }else{
+          state.showAlert = true;
+          state.error = action.payload.message;
+        }
+      });
   },
 });
 
