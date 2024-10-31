@@ -174,6 +174,26 @@ export const createPaymentUrl = createAsyncThunk(
   }
 );
 
+export const vnpayReturnURL = createAsyncThunk(
+  `${name}/vnpayReturnURL`,
+  async (data) => {
+    try {
+      const response = await bookingService.vnpayReturnURL(data);
+      console.log(response.data);
+      return {
+        ok: true,
+        data: response.data
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: "Error",
+      };
+    }
+  }
+);
+
 export const updateStatus = createAsyncThunk(
   `${name}/updateStatus`,
   async (data) => {
@@ -346,6 +366,14 @@ const bookingSlice = createSlice({
       .addCase(createPaymentUrl.fulfilled, (state, action) => {
         if (action.payload.ok) {
           state.link = action.payload.link;
+        }else{
+          state.showAlert = true;
+          state.error = action.payload.message;
+        }
+      })
+      .addCase(vnpayReturnURL.fulfilled, (state, action) => {
+        if (action.payload.ok) {
+          state.link = action.payload.data;
         }else{
           state.showAlert = true;
           state.error = action.payload.message;

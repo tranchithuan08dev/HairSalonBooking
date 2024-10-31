@@ -130,7 +130,11 @@ export const fetchResetPassWord = createAsyncThunk(
 const authSlice = createSlice({
   name,
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(Login.fulfilled, (state, action) => {
       if (action.payload.ok) {
