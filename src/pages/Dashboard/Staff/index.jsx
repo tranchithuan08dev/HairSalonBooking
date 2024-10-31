@@ -24,6 +24,7 @@ import {
   fetchUpdateSalary,
   fetchUpdateStaff,
 } from "../../../store/dashbroadSlice";
+import CurrencyFormat from "react-currency-format";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -69,7 +70,7 @@ const Staff = () => {
       form.setFieldsValue({
         fullName: dataStaffDetail.fullName,
         gender: dataStaffDetail.gender,
-        yob: dayjs(dataStaffDetail.yob),
+        yob: dayjs(dataStaffDetail.dob),
         phoneNumber: dataStaffDetail.phoneNumber,
         email: dataStaffDetail.email,
         address: dataStaffDetail.address,
