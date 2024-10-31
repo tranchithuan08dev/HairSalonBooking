@@ -83,6 +83,7 @@ const ListServices = (props) => {
         readOnly={isPaid}
         rows={4}
         className="form-control text"
+        onChange={() => {}}
       />
       {!isPaid && (
         <label className="add-more-label" onClick={handleServicesOpen}>
