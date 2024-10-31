@@ -85,7 +85,7 @@ const bookingService = {
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-           token: `Bearer ${token}`,
+          token: `Bearer ${token}`,
         },
       }
     );
