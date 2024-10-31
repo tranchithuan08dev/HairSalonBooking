@@ -46,6 +46,7 @@ import FeedbackPage from "./pages/FeedbackPage";
 import ContactPage from "./pages/ContactPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import FeedBack from "./pages/FeedBack";
 
 function App() {
   const dispatch = useDispatch();
@@ -67,6 +68,7 @@ function App() {
         <Route path="/bookingHistory" element={<BookingHistory />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/rating" element={<FeedBack />} />
         <Route path="/changePassword" element={<ChangePasswordPage />} />
         <Route element={<DashBroad />}>
           <Route
