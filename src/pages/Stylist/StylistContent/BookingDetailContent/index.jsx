@@ -175,7 +175,7 @@ function Content() {
                     <input
                       type="number"
                       name="originalPrice"
-                      value={data.data?.originalPrice || ""}
+                      value={data.data?.originalPrice || ""}VND
                       readOnly
                     />
                   </div>

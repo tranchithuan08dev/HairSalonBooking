@@ -205,7 +205,7 @@ function Content() {
                       <div className="TotalPrice">
                         <h6>Total Price</h6>
                         <span className="block-span-edit">
-                          {item.discountPrice}$
+                          {item.discountPrice}VND
                         </span>
                       </div>
                       <div className="Status">
