@@ -30,7 +30,7 @@ function NewBlog() {
             ))}
           </div>
         </div>
-        {total.length > itemsPerPage && (
+        {total?.length > itemsPerPage && (
           <div className="d-flex justify-content-center p-5">
             <button onClick={loadMore} className="loading">
               Xem thêm

@@ -192,7 +192,7 @@ const Staff = () => {
     staffname: index.fullName,
     status: index.deleted ? "Inactive" : "Active",
     phone: index.phone,
-    hiredate: index.hireDate,
+    hiredate: dayjs(index.hireDate).format("YYYY-MM-DD"),
   }));
 
   return (
@@ -266,12 +266,24 @@ const Staff = () => {
             rules={[
               { required: true, message: "Please enter the base salary" },
               {
-                pattern: /^\d+(\.\d{1,2})?$/,
-                message: "Please enter a valid amount",
+                validator: (_, value) => {
+                  if (value && isNaN(value.replace(/[^0-9]/g, ""))) {
+                    return Promise.reject(
+                      new Error("Price must be a valid number")
+                    );
+                  }
+                  return Promise.resolve();
+                },
               },
             ]}
           >
-            <Input addonAfter="USD" />
+            <CurrencyFormat
+              customInput={Input}
+              thousandSeparator={true}
+              decimalScale={0}
+              fixedDecimalScale={false}
+              allowNegative={false}
+            />
           </Form.Item>
           <Form.Item name="totalsalary" label="Salary">
             <Input addonAfter="USD" disabled />

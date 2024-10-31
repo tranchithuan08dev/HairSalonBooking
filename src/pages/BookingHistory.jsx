@@ -61,8 +61,8 @@ const BookingHistory = () => {
         <Table
           dataSource={data}
           columns={columns}
-          rowKey="id" // Use 'id' as the unique key for rows
-          pagination={false} // Disable pagination if not needed
+          rowKey="id"
+          pagination={false}
         />
       </div>
       <Footer />

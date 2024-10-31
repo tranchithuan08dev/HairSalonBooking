@@ -20,6 +20,8 @@ import {
   fetchPostServiceById,
   fetchUpdateService,
 } from "../../../store/dashbroadSlice";
+import { formatPriceToUSD } from "../../../helpers";
+import CurrencyFormat from "react-currency-format";
 
 const layout = {
   labelCol: {
@@ -57,7 +59,7 @@ const Service = () => {
     if (dataServiceDetail) {
       form.setFieldsValue({
         serviceName: dataServiceDetail.serviceName,
-        price: dataServiceDetail.price,
+        price: formatPriceToUSD(dataServiceDetail.price),
         type: dataServiceDetail.type,
         duration: dataServiceDetail.duration,
         description: dataServiceDetail.description,
@@ -99,12 +101,13 @@ const Service = () => {
       serviceID: selectServiceId,
       serviceName: values.serviceName,
       type: values.type,
-      price: values.price,
+      price: values.price.replace(/,/g, ""),
       description: values.description,
       duration: values.duration,
       deleted: values.status,
       img: selectedFile,
     };
+    console.log("updateService", updateService);
 
     dispatch(fetchUpdateService(updateService))
       .then(() => {
@@ -164,7 +167,7 @@ const Service = () => {
     status: index.deleted ? "Inactive" : "Active",
     servicename: index.serviceName,
     duration: index.duration,
-    price: index.price,
+    price: formatPriceToUSD(index.price),
   }));
 
   return (
@@ -234,13 +237,24 @@ const Service = () => {
             rules={[
               { required: true, message: "Please enter the price" },
               {
-                type: "number",
-                min: 1,
-                message: "Price must be greater than zero",
+                validator: (_, value) => {
+                  if (value && isNaN(value.replace(/[^0-9]/g, ""))) {
+                    return Promise.reject(
+                      new Error("Price must be a valid number")
+                    );
+                  }
+                  return Promise.resolve();
+                },
               },
             ]}
           >
-            <InputNumber addonAfter="USD" />
+            <CurrencyFormat
+              customInput={Input}
+              thousandSeparator={true}
+              decimalScale={0}
+              fixedDecimalScale={false}
+              allowNegative={false}
+            />
           </Form.Item>
           <Form.Item
             name="type"

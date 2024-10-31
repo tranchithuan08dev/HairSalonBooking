@@ -3,7 +3,6 @@ import Item from "../CardItem";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPostService } from "../../../store/dashbroadSlice";
 import { fetchHomeService } from "../../../store/homeSlice";
-import { Link } from "react-router-dom";
 
 function Service() {
   const dispatch = useDispatch();
@@ -40,7 +39,7 @@ function Service() {
         {total.length > itemsPerPage && (
           <div className="d-flex justify-content-center p-5">
             <button onClick={loadMore} className="loading">
-              Xem thêm
+              MORE
             </button>
           </div>
         )}
