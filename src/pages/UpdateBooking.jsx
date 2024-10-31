@@ -136,19 +136,22 @@ function UpdateBooking() {
   };
 
   // SELECT SERVICE AND SHOW ADD MORE
+  // SELECT SERVICE AND SHOW ADD MORE
   const dataTotal = selectedServices
     .map((item) => JSON.parse(item))
     .reduce(
       (acc, service) => ({
-        totalPrice: formatPriceToUSD(
-          acc.totalPrice + parseFloat(service.price)
-        ),
+        totalPrice: acc.totalPrice + parseFloat(service.price),
         totalDuration: acc.totalDuration + service.duration,
       }),
       { totalPrice: 0, totalDuration: 0 }
     );
+
+  // Format total price to USD after calculating the total
+  const formattedTotalPrice = formatPriceToUSD(dataTotal.totalPrice);
+
   useEffect(() => {
-    setTotalPrice(dataTotal.totalPrice);
+    setTotalPrice(formattedTotalPrice);
     setTotalDuration(dataTotal.totalDuration);
   }, [selectedServices]);
 
