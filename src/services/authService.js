@@ -17,5 +17,8 @@ const authService = {
   resetPassword: (data) => {
     return API.call().post(`api/v1/auth/reset-password`, data);
   },
+  changePassword: (data) => {
+    return API.callWithToken().post(`/api/v1/auth/change-password`, data);
+  },
 };
 export default authService;
