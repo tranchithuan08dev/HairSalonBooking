@@ -54,7 +54,7 @@ function NewStaff() {
       address: values.address,
       phoneNumber: values.phoneNumber,
       email: values.email,
-      yob: values.yob.format(dateFormat),
+      dob: values.yob.format(dateFormat),
     };
     dispatch(fetchCreate(createStaff))
       .then(() => {
