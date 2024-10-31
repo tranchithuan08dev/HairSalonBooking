@@ -25,7 +25,6 @@ import {
   fetchUpdateSalary,
   fetchUpdateStylist,
 } from "../../../store/dashbroadSlice";
-import { formatPriceToUSD } from "../../../helpers";
 import CurrencyFormat from "react-currency-format";
 
 dayjs.extend(customParseFormat);
@@ -75,7 +74,7 @@ const Stylist = () => {
       form.setFieldsValue({
         fullName: dataStylistById.fullName,
         gender: dataStylistById.gender,
-        yob: dayjs(dataStylistById.yob),
+        yob: dayjs(dataStylistById.dob),
         phoneNumber: dataStylistById.phoneNumber,
         email: dataStylistById.email,
         address: dataStylistById.address,
@@ -128,7 +127,7 @@ const Stylist = () => {
       address: values.address,
       phoneNumber: values.phoneNumber,
       email: values.email,
-      yob: values.yob.format(dateFormat),
+      dob: values.yob.format(dateFormat),
       level: values.level,
       deleted: values.status,
       userID: dataStylistById?.userID || null,

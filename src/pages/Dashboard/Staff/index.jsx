@@ -130,7 +130,7 @@ const Staff = () => {
       address: values.address,
       phoneNumber: values.phoneNumber,
       email: values.email,
-      yob: values.yob.format(dateFormat),
+      dob: values.yob.format(dateFormat),
       deleted: values.status,
       userID: dataStaffDetail?.userID || null,
     };
