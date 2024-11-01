@@ -22,7 +22,7 @@ export const fetchData = createAsyncThunk(
           return {
               ok: true,
               count: matchingBookings.length,
-              salary: responseSalary.data.data
+              salary: responseSalary.data.salary[0]
           };
       } catch (error) {
           return {
