@@ -8,6 +8,7 @@ import {
   updateProfile,
   setData,
   setShowAlert,
+  setError,
 } from "../../../../store/stylistSlice/ProfileSlice";
 import dayjs from "dayjs";
 
@@ -23,7 +24,6 @@ function Content() {
   const [avatarFile, setAvatarFile] = useState();
   const [hasChanges, setHasChanges] = useState(false);
 
-
   const fetch = async () => {
     const resultAction = await dispatch(fetchStylist(stylistID)).unwrap();
     if (resultAction.ok && resultAction.data) {
@@ -32,8 +32,6 @@ function Content() {
       }
     }
   };
-  
-
 
   useEffect(() => {
     fetch();
@@ -68,9 +66,11 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!hasChanges){
-      alert("No changes to save!");
-    }
+    if (!hasChanges) {
+      dispatch(setShowAlert(true));
+      dispatch(setError("No changes to save!"));
+      return;
+  }
     const formData = new FormData();
     const dataToUpdate = {
       userID: data.userID,
@@ -92,8 +92,10 @@ function Content() {
     }
     const formDataObj = Object.fromEntries(formData.entries());
     console.log(formDataObj);
-    const result = await dispatch(updateProfile({ id: stylistID, data: formData }));
-    if(result.payload.ok) fetch();
+    const result = await dispatch(
+      updateProfile({ id: stylistID, data: formData })
+    );
+    if (result.payload.ok) fetch();
   };
 
   useEffect(() => {
@@ -111,6 +113,14 @@ function Content() {
 
   return (
     <>
+      {showAlert && (
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error}
+        </div>
+      )}
       <div className="container mt-5 custom-mt5">
         <form onSubmit={handleSubmit}>
           <div
@@ -320,7 +330,7 @@ function Content() {
                       </span>
                     </div>
                     <div className="col-md-6">
-                    <label className="small mb-1" htmlFor="role">
+                      <label className="small mb-1" htmlFor="role">
                         Level
                       </label>
                       <input
@@ -336,16 +346,6 @@ function Content() {
                     Save changes
                   </button>
                 </div>
-                {showAlert && (
-                  <div
-                    className={`alert ${
-                      message ? "alert-success" : "alert-danger"
-                    } mt-3`}
-                    role="alert"
-                  >
-                    {message || error}
-                  </div>
-                )}
               </div>
               {data.certificateURL && (
                 <div

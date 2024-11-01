@@ -32,7 +32,6 @@ function Content() {
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
   );
-  console.log("detailBoooking", detail);
 
   const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
@@ -52,7 +51,7 @@ function Content() {
       setOriginalPrice(detail.data?.originalPrice || 0);
       setPrice(detail.data?.discountPrice || 0);
     }
-    const isPaid = detail.payment?.status === "paid";
+    console.log(isPaid);
     setIsPaid(isPaid);
   }, [detail]);
 
@@ -69,6 +68,7 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const form = {
       bookingID: detail.data?.bookingID,
       stylistID: detail.data?.stylistID,
@@ -76,7 +76,7 @@ function Content() {
       originalPrice: originalPrice || 0,
       discountPrice: price || 0,
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
-      status: "Completed",
+      status: status === "Done" ? "Completed" : status !== "Done" ? status : "",
     };
     console.log(form);
     const resultUpdate = await dispatch(updateBooking(form));
@@ -86,10 +86,11 @@ function Content() {
         userID: userID,
         loyaltyPoints: 0,
       };
+
       for (const key in dataToUpdate) {
         formData.append(key, dataToUpdate[key]);
       }
-      await dispatch(updateCustomer(userID, form));
+      await dispatch(updateCustomer(userID, formData));
       fetchData();
     }
   };
@@ -121,15 +122,12 @@ function Content() {
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
-    const dataUpdate = {
-      method: paymentMethod,
-      status: "paid",
+    const dataCreate = {
+      bookingID: data.data?.bookingID || "",
     };
 
-    const result = await dispatch(
-      updatePayment({ id: detail.payment?.paymentID, data: dataUpdate })
-    );
-    if (result.payload.ok) {
+    const resultCreate = await dispatch(createPayment(dataCreate));
+    if (resultCreate.payload.ok) {
       fetchData();
       setShowForm(false);
     }
@@ -236,7 +234,7 @@ function Content() {
                       <input
                         type="number"
                         name="originalPrice"
-                        value={`${originalPrice} VND` || 0}
+                        value={originalPrice || 0}
                         readOnly
                       />
                     </div>
@@ -257,7 +255,7 @@ function Content() {
                     <input
                       type="number"
                       name="originalPrice"
-                      value={`${originalPrice} VND` || 0}
+                      value={originalPrice || 0}
                       readOnly
                     />
                   </div>
@@ -279,7 +277,7 @@ function Content() {
                   </div>
                 )}
               </div>
-              {isPaid || status === "Cancelled" ? (
+              {isPaid || status === "Cancelled" || status === "Completed" ? (
                 <></>
               ) : status === "In-progress" ? (
                 <button

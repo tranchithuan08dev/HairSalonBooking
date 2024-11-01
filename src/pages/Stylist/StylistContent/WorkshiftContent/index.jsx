@@ -3,12 +3,13 @@ import "../../../../assets/css/stylist/workshift.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAll } from "../../../../store/stylistSlice/WorkShiftSlice";
 import { useNavigate } from "react-router-dom";
+import {setShowAlert, setError} from "../../../../store/stylistSlice/WorkShiftSlice";
 
 function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading } = useSelector((state) => state.STYLIST?.workshift);
+  const { data, loading, showAlert } = useSelector((state) => state.STYLIST?.workshift);
   const stylistID = currentUser.actorByRole.stylistID;
 
   useEffect(() => {
@@ -22,7 +23,7 @@ function Content() {
     fetchData();
   }, [stylistID, dispatch]);
 
-  const handleClick = (shift) => {
+  const handleClick = async (shift) => {
     if (shift) {
       console.log("Shift data:", shift);
       console.log("Booking ID:", shift.bookingID);
@@ -30,7 +31,8 @@ function Content() {
       if (shift.bookingID && shift.bookingID.trim() !== "") {
         navigate(`bookingDetail?id=${shift.bookingID}`);
       } else {
-        alert("This slot is not booked yet");
+        dispatch(setError("Slot haven't booked yet!"));
+        dispatch(setShowAlert(true));
       }
     } else {
       console.error("Shift is undefined or null");
@@ -67,7 +69,7 @@ function Content() {
   };
 
   const getWorkshiftData = (day, slot) => {
-    const startTime = slot.split(" - ")[0]; 
+    const startTime = slot.split(" - ")[0];
     if (Array.isArray(data)) {
       const foundShift = data.find(
         (shift) =>
@@ -95,21 +97,36 @@ function Content() {
       "Sunday",
     ];
 
-    const disableCount = currentDay === 0 ? 6 : currentDay - 1; 
+    const disableCount = currentDay === 0 ? 6 : currentDay - 1;
     return days.slice(0, disableCount);
   };
 
   const currentDay = getCurrentDay();
   const disabledDays = disableSlots(currentDay);
-//   const mockCurrentDay = 3; // 2 đại diện cho thứ Ba
-// const disabledDays = disableSlots(mockCurrentDay);
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        dispatch(setShowAlert(false));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert, dispatch]);
+
   return (
     <>
+      {showAlert && (
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error}
+        </div>
+      )}
       <h2 className="header-cus">WorkShift</h2>
       <div className="container customContainer">
         <div className="calendar-view">

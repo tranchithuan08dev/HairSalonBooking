@@ -8,8 +8,11 @@ import {
 
 function Content() {
   const dispatch = useDispatch();
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, duplicated } = useSelector(
+  const { data, loading, duplicated} = useSelector(
     (state) => state.STYLIST.workshift
   );
   const stylistID = currentUser.actorByRole.stylistID;
@@ -84,6 +87,11 @@ function Content() {
     const result = await dispatch(createStylistWorkshift(dataToCreate));
     if (result.payload) {
       await dispatch(fetchAllWorkshift(stylistID));
+      setMessage("Added workshift successfully!");
+      setShowAlert(true);
+    }else{
+      setError("Add workshift failed!");
+      setShowAlert(true);
     }
   };
 
@@ -135,7 +143,8 @@ function Content() {
     if (bookedShifts.length > 0) {
       setShowModal(true);
     } else {
-      alert("Please choose at least 1 slot first!");
+      setError("Add workshift failed!");
+      setShowAlert(true);
     }
   };
 
@@ -143,8 +152,27 @@ function Content() {
     return <p>Loading...</p>;
   }
 
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+        setMessage(null),
+        setError(null)
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
+
   return (
     <>
+    {showAlert && (
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error}
+        </div>
+      )}
       <h2 className="header-cus">Create Workshift</h2>
       <div className="container customContainer">
         <div className="calendar-view">
