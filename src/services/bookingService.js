@@ -22,8 +22,8 @@ const bookingService = {
   updateBooking: (data) => {
     return API.call().patch(`/api/v1/booking/update`, data);
   },
-  cancleBooking: (id) => {
-    return API.call().delete(`/api/v1/booking/delete?bookingID=${id}`);
+  cancleBooking: (data) => {
+    return API.call().patch(`/api/v1/booking/change-status`, data);
   },
   historyBooking: (id) => {
     return API.call().get(`/api/v1/booking/history?id=${id}`, {

@@ -57,7 +57,7 @@ const Stylist = () => {
     (state) => state.DASHBOARD.postStylistDetailById
   );
   const dataSalaryStylist = useSelector((state) => state.DASHBOARD.salary);
-  console.log("data", dataSalaryStylist);
+  console.log("dataSalaryStylist", dataSalaryStylist);
 
   if (dataStylist == null) {
     return <></>;
@@ -116,7 +116,7 @@ const Stylist = () => {
     setIsSpin(true);
     const updatedSalary = {
       salaryID: dataSalaryStylist.salaryID,
-      baseSalary: values.basesalary,
+      baseSalary: values.basesalary.toString().replace(/,/g, ""),
     };
 
     const updatedData = {
@@ -132,8 +132,9 @@ const Stylist = () => {
       deleted: values.status,
       userID: dataStylistById?.userID || null,
     };
-    dispatch(fetchUpdateSalary(updatedSalary));
-    dispatch(fetchUpdateStylist(updatedData))
+
+    dispatch(fetchUpdateStylist(updatedData));
+    dispatch(fetchUpdateSalary(updatedSalary))
       .then(() => {
         message.success("Staff updated successfully!");
         setIsSpin(false);
@@ -271,16 +272,6 @@ const Stylist = () => {
             label="Base Salary"
             rules={[
               { required: true, message: "Please enter the base salary" },
-              {
-                validator: (_, value) => {
-                  if (value && isNaN(value.replace(/[^0-9]/g, ""))) {
-                    return Promise.reject(
-                      new Error("Price must be a valid number")
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              },
             ]}
           >
             <CurrencyFormat

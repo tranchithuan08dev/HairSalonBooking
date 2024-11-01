@@ -44,9 +44,6 @@ const bookingService = {
       },
     });
   },
-  getAllPayment: () => {
-    return API.call().get(`api/v1/payment/getAll`);
-  },
   updateStatus: (data) => {
     return API.call().patch(`api/v1/booking/change-status`, data, {
       headers: {

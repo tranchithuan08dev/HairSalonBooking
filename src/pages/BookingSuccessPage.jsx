@@ -12,7 +12,11 @@ function BookingSuccessPage() {
   const nagative = useNavigate();
   const cancelBooking = () => {
     alert("Do you want cancle booking???");
-    dispatch(fetchCancleBooking(booking?.newBooking?.bookingID))
+    const cancleBooking = {
+      bookingID: booking?.newBooking?.bookingID,
+      status: "Cancelled",
+    };
+    dispatch(fetchCancleBooking(cancleBooking))
       .then(() => {
         message.success("Booking has been successfully canceled.");
         nagative("/");

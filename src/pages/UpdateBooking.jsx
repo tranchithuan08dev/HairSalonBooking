@@ -12,6 +12,7 @@ import { fetchUpdateBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { formatPriceToUSD } from "../helpers";
 
 function UpdateBooking() {
   const nagative = useNavigate();
@@ -104,7 +105,7 @@ function UpdateBooking() {
       customerID: customerID,
       stylistID: selectedStylist,
       serviceID: serviceIDs,
-      totalPrice: totalPrice,
+      originalPrice: totalPrice.toString().replace(/,/g, ""),
       stylistWorkShiftID: selectStylistWorkShift,
     };
     console.log("updateBooking", updateBooking);
@@ -247,7 +248,7 @@ function UpdateBooking() {
   };
 
   useEffect(() => {
-    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Friday" }));
   }, [selectedStylist, selectDay]);
 
   return (
@@ -461,7 +462,7 @@ function UpdateBooking() {
               Select service time slot:
             </label>
             <div className="row mt-3">
-              {dataWorkShift.map((slot) => (
+              {dataWorkShift?.map((slot) => (
                 <div
                   key={slot.id}
                   className={`col-2 time-slot btn btn-light ${

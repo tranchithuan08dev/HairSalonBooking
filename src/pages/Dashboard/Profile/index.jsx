@@ -45,7 +45,7 @@ function Profile() {
       form.setFieldsValue({
         fullName: dataManagerDetail.manager.fullName,
         gender: dataManagerDetail.manager.gender,
-        yob: dayjs(dataManagerDetail.manager.yob, dateFormat),
+        yob: dayjs(dataManagerDetail.manager.dob, dateFormat),
         phone: dataManagerDetail.user.phoneNumber,
         email: dataManagerDetail.user.email,
         address: dataManagerDetail.manager.address,
@@ -76,7 +76,7 @@ function Profile() {
       phoneNumber: values.phone,
       gender: values.gender,
       address: values.address,
-      yob: dayjs(values.yob).format(dateFormat),
+      dob: dayjs(values.yob).format(dateFormat),
     };
     dispatch(fetchUpdateManager(updateManager))
       .then(() => {

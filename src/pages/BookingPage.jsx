@@ -97,7 +97,7 @@ function BookingPage() {
       customerID: customerID,
       stylistID: selectedStylist,
       serviceID: serviceIDs,
-      originalPrice: totalPrice,
+      originalPrice: totalPrice.toString().replace(/,/g, ""),
       stylistWorkShiftID: selectStylistWorkShift,
     };
     console.log("Booking", booking);
@@ -240,7 +240,7 @@ function BookingPage() {
     }
   };
   useEffect(() => {
-    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Friday" }));
   }, [selectedStylist, selectDay]);
 
   return (

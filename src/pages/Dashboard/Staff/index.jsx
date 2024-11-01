@@ -118,7 +118,7 @@ const Staff = () => {
     setIsSpin(true);
     const updatedSalary = {
       salaryID: dataSalaryStaff.salaryID,
-      baseSalary: values.basesalary,
+      baseSalary: values.basesalary.toString().replace(/,/g, ""),
     };
     console.log("updatedSalary", updatedSalary);
 
@@ -134,8 +134,9 @@ const Staff = () => {
       deleted: values.status,
       userID: dataStaffDetail?.userID || null,
     };
-    dispatch(fetchUpdateSalary(updatedSalary));
-    dispatch(fetchUpdateStaff(updatedData))
+
+    dispatch(fetchUpdateStaff(updatedData));
+    dispatch(fetchUpdateSalary(updatedSalary))
       .then(() => {
         message.success("Staff updated successfully!");
         setIsSpin(false);
@@ -266,16 +267,6 @@ const Staff = () => {
             label="Base Salary"
             rules={[
               { required: true, message: "Please enter the base salary" },
-              {
-                validator: (_, value) => {
-                  if (value && isNaN(value.replace(/[^0-9]/g, ""))) {
-                    return Promise.reject(
-                      new Error("Price must be a valid number")
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              },
             ]}
           >
             <CurrencyFormat

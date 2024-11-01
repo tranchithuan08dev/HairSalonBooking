@@ -61,22 +61,30 @@ export function mappingCustomer(item) {
 }
 
 export function formatPriceToUSD(price) {
-  // Check if price is defined and is a valid string
-  if (!price || typeof price !== "string") {
-    return "$0"; // Return a default value or handle it accordingly
+  // Handle undefined, null, or empty string cases upfront
+  if (price === null || price === undefined || price === "") {
+    return "0";
   }
 
-  // Remove any unwanted characters and convert to a number
-  const cleanedPrice = price.replace(/[^0-9.-]+/g, "");
-  const numericPrice = parseFloat(cleanedPrice);
+  // Convert price to a number if it's a string
+  let numericPrice;
+  if (typeof price === "string") {
+    // Remove any unwanted characters
+    const cleanedPrice = price.replace(/[^0-9.-]+/g, "");
+    numericPrice = parseFloat(cleanedPrice);
+  } else if (typeof price === "number") {
+    numericPrice = price;
+  } else {
+    return "0"; // If price is neither string nor number, return default
+  }
 
+  // Check if conversion succeeded
   if (isNaN(numericPrice)) {
-    return "$0"; // Return a default value or handle it accordingly
+    return "0";
   }
 
+  // Format to string with commas, without currency sign
   return numericPrice.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });

@@ -9,7 +9,7 @@ const initialState = {
   message: null,
   showAlert: false,
   services: [],
-  link: ""
+  link: "",
 };
 
 const name = "booking";
@@ -37,14 +37,18 @@ export const fetchBookingDetail = createAsyncThunk(
       let stylistName = "";
       console.log("id", id);
       const response = await bookingService.getDetail(id);
-      const payment = await bookingService.getAllPayment();
+
       let data = response.data.booking[0];
+      console.log("dataBoooking", data);
+
       let customerPoint;
       if (data.customerID != null) {
         const customer = await bookingService.getCustomer(data.customerID);
         customerPoint = customer.data.data.customer.loyaltyPoints;
       }
       let detail = response.data.details;
+      console.log("Detail", detail);
+
       for (let index = 0; index < detail.length; index++) {
         const service = await bookingService.getServiceDetail(
           detail[index].serviceID
@@ -55,10 +59,6 @@ export const fetchBookingDetail = createAsyncThunk(
       const stylist = await bookingService.getStylistDetail(data.stylistID);
       let name = stylist.data.data.user.fullName;
       stylistName = name;
-      let paymentList = payment.data.paymentList;
-      const foundPayment = paymentList.find(
-        (paymentItem) => paymentItem.bookingID === id
-      );
       data.loyaltyPoints = customerPoint;
       return {
         ok: true,
@@ -66,7 +66,6 @@ export const fetchBookingDetail = createAsyncThunk(
         detail: detail,
         servicesName: servicesNameArray,
         stylistName: stylistName,
-        payment: foundPayment,
       };
     } catch (error) {
       console.log(error);
@@ -162,7 +161,7 @@ export const createPaymentUrl = createAsyncThunk(
       console.log(response.data.link);
       return {
         ok: true,
-        link: response.data.link
+        link: response.data.link,
       };
     } catch (error) {
       console.log(error);
@@ -182,7 +181,7 @@ export const vnpayReturnURL = createAsyncThunk(
       console.log(response.data);
       return {
         ok: true,
-        data: response.data
+        data: response.data,
       };
     } catch (error) {
       console.log(error);
@@ -366,7 +365,7 @@ const bookingSlice = createSlice({
       .addCase(createPaymentUrl.fulfilled, (state, action) => {
         if (action.payload.ok) {
           state.link = action.payload.link;
-        }else{
+        } else {
           state.showAlert = true;
           state.error = action.payload.message;
         }
@@ -374,7 +373,7 @@ const bookingSlice = createSlice({
       .addCase(vnpayReturnURL.fulfilled, (state, action) => {
         if (action.payload.ok) {
           state.link = action.payload.data;
-        }else{
+        } else {
           state.showAlert = true;
           state.error = action.payload.message;
         }

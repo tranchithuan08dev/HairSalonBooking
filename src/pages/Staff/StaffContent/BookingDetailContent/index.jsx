@@ -34,10 +34,11 @@ function Content() {
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
   );
+  console.log("detailBoooking", detail);
 
-  const {currentUser } = useSelector((state) => state.AUTH);
+  const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
-  
+
   console.log(bookingID);
 
   const fetchData = async () => {
@@ -48,18 +49,18 @@ function Content() {
     const url = `${window.location.origin}/staff/bookingDetail?bookingID=${bookingID}`;
     const isRedirect = sessionStorage.getItem("isRedirect") === "true";
     if (isRedirect) {
-        const vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
-        if (vnp_ResponseCode === "00") {
-            await dispatch(setMessage("Transaction success!"));
-            await dispatch(setShowAlert(true));
-        } else {
-            await dispatch(setError("Transaction failed!"));
-            await dispatch(setShowAlert(true));
-        }
-        window.history.replaceState({}, document.title, url); 
-        sessionStorage.setItem("isRedirect", "false"); 
+      const vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
+      if (vnp_ResponseCode === "00") {
+        await dispatch(setMessage("Transaction success!"));
+        await dispatch(setShowAlert(true));
+      } else {
+        await dispatch(setError("Transaction failed!"));
+        await dispatch(setShowAlert(true));
+      }
+      window.history.replaceState({}, document.title, url);
+      sessionStorage.setItem("isRedirect", "false");
     }
-};
+  };
 
   useEffect(() => {
     fetchData();
@@ -113,21 +114,21 @@ function Content() {
     }
   };
   const handleGenerate = async () => {
-    if(bank === ""){
+    if (bank === "") {
       alert("Please choose bank!");
       return;
     }
     const object = {
-        amount: price,
-        bankCode: bank,
-        language: "vn",
-        orderDescription: "Paid services hair harmony",
-        orderType: "other",
-        returnURL: window.location.href
+      amount: price,
+      bankCode: bank,
+      language: "vn",
+      orderDescription: "Paid services hair harmony",
+      orderType: "other",
+      returnURL: window.location.href,
     };
 
     const result = await dispatch(createPaymentUrl(object));
-    if(result.payload.ok){
+    if (result.payload.ok) {
       sessionStorage.setItem("isRedirect", true);
       const link = result.payload.link;
       window.location.href = link;
@@ -165,7 +166,6 @@ function Content() {
     if (showAlert) {
       const timer = setTimeout(() => {
         dispatch(setShowAlert(false));
-        setIsNotificationTriggered(false);
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -264,7 +264,8 @@ function Content() {
                       <input
                         type="number"
                         name="originalPrice"
-                        value={originalPrice || 0}VND
+                        value={originalPrice || 0}
+                        VND
                         readOnly
                       />
                     </div>
@@ -273,7 +274,8 @@ function Content() {
                       <input
                         type="number"
                         name="discountPrice"
-                        value={price || 0}VND
+                        value={price || 0}
+                        VND
                         readOnly
                       />
                     </div>
@@ -292,7 +294,7 @@ function Content() {
 
                 <div className="form-group">
                   <strong>Status:</strong>
-                  <input name="status" value={status} readOnly/>
+                  <input name="status" value={status} readOnly />
                 </div>
                 {detail.payment?.status && (
                   <div className="form-group">
@@ -381,7 +383,7 @@ function Content() {
               </div>
             )}
             <div className="col-md-6 QR">
-              <BankSelect isPaid={isPaid} setBank={setBank}/>
+              <BankSelect isPaid={isPaid} setBank={setBank} />
               <CheckboxLoyaltyPoints
                 loyaltyPoints={detail.data?.loyaltyPoints || 0}
                 originalPrice={originalPrice}
