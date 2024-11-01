@@ -13,7 +13,6 @@ function Content() {
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
   const [showModal, setShowModal] = useState(false);
-  const [isDone, setIsDone] = useState(false);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.AUTH);
   const stylistID = currentUser?.actorByRole.stylistID;
@@ -22,13 +21,13 @@ function Content() {
     (state) => state.STYLIST.bookingDetail
   );
 
+  const fetch = async () => {
+    await dispatch(fetchBookingDetail(id));
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      await dispatch(fetchBookingDetail(id));
-    };
     fetch();
     changeDate();
-    setIsDone(data.data?.status ? true : false);
   }, [dispatch, stylistID, updateStatus]);
 
   const handleUpdate = () => {
@@ -48,7 +47,7 @@ function Content() {
       const resultCreate = await dispatch(createPayment(dataCreate));
       if(resultCreate){
         setIsDone(true);
-        dispatch(fetchBookingDetail(id));
+        fetch();
       }
       setShowModal(false);
     }
@@ -125,8 +124,6 @@ function Content() {
                       readOnly
                     />
                   </div>
-                  {isDone ? (<></>
-                  ): (
                     <div className="form-group form-groupTest">
                     <strong>Services:</strong>
                     <textarea
@@ -142,7 +139,6 @@ function Content() {
                       className="form-control text"
                     />
                   </div>
-                  )}
                   <div className="form-group form-groupTest">
                     <strong>FullName:</strong>
                     <input
@@ -175,7 +171,7 @@ function Content() {
                     <input
                       type="number"
                       name="originalPrice"
-                      value={data.data?.originalPrice || ""}
+                      value={data.data?.originalPrice || 0}VND
                       readOnly
                     />
                   </div>

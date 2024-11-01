@@ -27,8 +27,8 @@ function Content() {
   const fetch = async () => {
     const resultAction = await dispatch(fetchStaff(staffID)).unwrap();
     if (resultAction.ok && resultAction.data) {
-      if (resultAction.data.yob) {
-        setDate(dayjs(resultAction.data.yob));
+      if (resultAction.data.dob) {
+        setDate(dayjs(resultAction.data.dob));
       }
     }
   };
@@ -40,7 +40,7 @@ function Content() {
   const handleChangeDate = (dateIn) => {
     if (dateIn) {
       setDate(dateIn);
-      dispatch(setData({ yob: dateIn.format("YYYY-MM-DD") }));
+      dispatch(setData({ dob: dateIn.format("YYYY-MM-DD") }));
       setHasChanges(true);
     }
   };
@@ -76,7 +76,7 @@ function Content() {
       userID: data.userID,
       staffID: data.staffID,
       gender: data.gender,
-      yob: getDateOnly(data.yob),
+      dob: getDateOnly(data.dob),
       fullName: data.fullName,
       address: data.address,
       email: data.email,
@@ -289,7 +289,7 @@ function Content() {
                     <br />
                     <DatePicker
                       className="form-control-date"
-                      name="yob"
+                      name="dob"
                       defaultValue={date}
                       dateFormat="yyyy-MM-dd"
                       onChange={handleChangeDate}
