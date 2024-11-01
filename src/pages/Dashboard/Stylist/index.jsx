@@ -26,6 +26,7 @@ import {
   fetchUpdateStylist,
 } from "../../../store/dashbroadSlice";
 import CurrencyFormat from "react-currency-format";
+import Search from "antd/es/input/Search";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -46,6 +47,7 @@ const Stylist = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSpin, setIsSpin] = useState(false);
   const fileInputRef = useRef(null);
+  const [filteredData, setFilteredData] = useState(null);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   useEffect(() => {
@@ -79,7 +81,7 @@ const Stylist = () => {
         email: dataStylistById.email,
         address: dataStylistById.address,
         level: dataStylistById.level,
-        status: dataStylistById.deleted,
+        status: dataStylistById.StylistDeleted,
       });
       setAvatarUrl(dataStylistById.avatar);
     }
@@ -189,7 +191,14 @@ const Stylist = () => {
     },
   ];
 
-  const data = dataStylist.map((index) => ({
+  const hanldeSearch = (value) => {
+    const filteredData = dataStylist.filter((item) =>
+      item.phone.includes(value)
+    );
+    setFilteredData(filteredData.length ? filteredData : dataStaff);
+  };
+
+  const data = (filteredData || dataStylist).map((index) => ({
     key: index.id,
     stylistname: index.fullName,
     status: index.deleted ? "Inactive" : "Active",
@@ -199,6 +208,17 @@ const Stylist = () => {
 
   return (
     <>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Space>
+          <Search
+            placeholder="Search by phone"
+            onSearch={hanldeSearch}
+            style={{
+              width: 200,
+            }}
+          />
+        </Space>
+      </div>
       <Table columns={columns} dataSource={data} />
       <Drawer
         title="Detail Stylist"
