@@ -12,10 +12,14 @@ function Content() {
 
   useEffect(() => {
     const fetch = async () => {
-      await dispatch(fetchData({id: userID}));
+      console.log(userID);
+      await dispatch(fetchData(userID));
     }
     fetch();
   }, [dispatch, userID])
+
+  console.log("data ne", data);
+
 
   const changeDate = (date) => {
     if (!date) return "";
@@ -42,7 +46,7 @@ function Content() {
                 <div className="d-flex align-items-center">
                   <div>
                     <p className="mb-0 text-secondary">Total Revenue</p>
-                    <h2 className="my-1 text-danger">{data.salary.totalSalary}VND</h2>
+                    <h2 className="my-1 text-danger">{data.totalSalary}VND</h2>
                   </div>
                   <div className="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
                     <i className="fa fa-dollar"></i>
@@ -70,7 +74,7 @@ function Content() {
                     className="my-1 text-warning"
                     style={{ fontSize: "2rem" }}
                   >
-                    {changeDate(data.salary.receivedDate) || "None"}
+                    {changeDate(data.receivedDate) || "None"}
                   </h2>
                 </div>
               </div>

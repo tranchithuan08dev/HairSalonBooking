@@ -1,9 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../../../../assets/css/stylist/workshift.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAll } from "../../../../store/stylistSlice/WorkShiftSlice";
+import { getAll, setError, setShowAlert } from "../../../../store/stylistSlice/WorkShiftSlice";
 import { useNavigate } from "react-router-dom";
-import {setShowAlert, setError} from "../../../../store/stylistSlice/WorkShiftSlice";
 
 function Content() {
   const dispatch = useDispatch();
@@ -23,7 +22,7 @@ function Content() {
     fetchData();
   }, [stylistID, dispatch]);
 
-  const handleClick = async (shift) => {
+  const handleClick = (shift) => {
     if (shift) {
       console.log("Shift data:", shift);
       console.log("Booking ID:", shift.bookingID);
@@ -31,7 +30,7 @@ function Content() {
       if (shift.bookingID && shift.bookingID.trim() !== "") {
         navigate(`bookingDetail?id=${shift.bookingID}`);
       } else {
-        dispatch(setError("Slot haven't booked yet!"));
+        dispatch(setError("This slot haven't booked yet"));
         dispatch(setShowAlert(true));
       }
     } else {
@@ -69,7 +68,7 @@ function Content() {
   };
 
   const getWorkshiftData = (day, slot) => {
-    const startTime = slot.split(" - ")[0];
+    const startTime = slot.split(" - ")[0]; 
     if (Array.isArray(data)) {
       const foundShift = data.find(
         (shift) =>
@@ -97,34 +96,35 @@ function Content() {
       "Sunday",
     ];
 
-    const disableCount = currentDay === 0 ? 6 : currentDay - 1;
+    const disableCount = currentDay === 0 ? 6 : currentDay - 1; 
     return days.slice(0, disableCount);
   };
 
   const currentDay = getCurrentDay();
   const disabledDays = disableSlots(currentDay);
 
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+        setError(null)
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
+
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  useEffect(() => {
-    if (showAlert) {
-      const timer = setTimeout(() => {
-        dispatch(setShowAlert(false));
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showAlert, dispatch]);
-
   return (
     <>
-      {showAlert && (
+    {showAlert && (
         <div
-          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          className={`alert ${error} "alert-danger"} mt-3`}
           role="alert"
         >
-          {message || error}
+          {error}
         </div>
       )}
       <h2 className="header-cus">WorkShift</h2>

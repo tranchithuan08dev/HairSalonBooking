@@ -8,54 +8,29 @@ import {
 
 function Content() {
   const dispatch = useDispatch();
-  const [showAlert, setShowAlert] = useState(false);
-  const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, duplicated} = useSelector(
+  const { data, loading, duplicated } = useSelector(
     (state) => state.STYLIST.workshift
   );
   const stylistID = currentUser.actorByRole.stylistID;
-  const [showModal, setShowModal] = useState(false);
-
-  const [duplicateWorkshiftIDs, setDuplicateWorkshiftIDs] = useState([]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      await dispatch(fetchAllWorkshift(stylistID));
-    };
-    fetch();
-  }, [dispatch, stylistID]);
-
-  useEffect(() => {
-    setDuplicateWorkshiftIDs(duplicated);
-  }, [data]);
+  const [modal, setModal] = useState(false);
+  const [uiState, setUiState] = useState({
+    showAlert: false,
+    message: null,
+    error: null,
+  });
+  const [bookedShifts, setBookedShifts] = useState([]);
 
   const timeSlots = [
-    "08:00 - 09:00",
-    "09:00 - 10:00",
-    "10:00 - 11:00",
-    "11:00 - 12:00",
-    "12:00 - 13:00",
-    "13:00 - 14:00",
-    "14:00 - 15:00",
-    "15:00 - 16:00",
-    "16:00 - 17:00",
-    "17:00 - 18:00",
-    "18:00 - 19:00",
+    "08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00",
+    "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00",
+    "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00",
+    "17:00 - 18:00", "18:00 - 19:00",
   ];
 
   const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
   ];
-
-  const [bookedShifts, setBookedShifts] = useState([]);
 
   const formatTime = (time) => time.substring(0, 5);
 
@@ -63,114 +38,71 @@ function Content() {
     if (!data.data?.workshifts) return null;
     const [startTime] = slot.split(" - ");
 
-    const shift = data.data.workshifts.find((shift) => {
-      const formattedStartTime = formatTime(shift.startTime);
+    return data.data.workshifts.find((shift) => {
       const isMatchingShiftDay = shift.shiftDay === day;
-      const isMatchingStartTime = formattedStartTime === startTime;
-      const isNotDeleted = !shift.deleted;
-
-      return isMatchingShiftDay && isMatchingStartTime && isNotDeleted;
+      const isMatchingStartTime = formatTime(shift.startTime) === startTime;
+      return isMatchingShiftDay && isMatchingStartTime && !shift.deleted;
     });
-
-    return shift;
   };
 
   const confirmUpdate = async () => {
-    setShowModal(false);
     const bookedWorkShiftIDs = bookedShifts.map((shift) => shift.workShiftID);
-    console.log("Booked Workshifts IDs:", bookedWorkShiftIDs);
-    let dataToCreate = {
-      stylistID: stylistID,
-      workShiftID: bookedWorkShiftIDs,
-    };
-    console.log(dataToCreate);
-    const result = await dispatch(createStylistWorkshift(dataToCreate));
-    if (result.payload) {
+    const result = await dispatch(createStylistWorkshift({
+      stylistID, workShiftID: bookedWorkShiftIDs,
+    }));
+    console.log(bookedWorkShiftIDs);
+    if (result.payload.ok) {
       await dispatch(fetchAllWorkshift(stylistID));
-      setMessage("Added workshift successfully!");
-      setShowAlert(true);
-    }else{
-      setError("Add workshift failed!");
-      setShowAlert(true);
+      setUiState({ showAlert: true, message: "Chose workshift successfully!"});
+    } else {
+      setUiState({ showAlert: true, error: "Failed to choose workshift!" });
     }
+    setModal(false);
+    setBookedShifts([]);
   };
-
-  const cancelUpdate = () => {
-    console.log("Cancelled");
-    setShowModal(false);
-  };
+  
 
   const handleClick = (shift) => {
-    if (shift) {
-      const isAlreadyBooked = bookedShifts.some(
-        (s) => s.workShiftID === shift.workShiftID
-      );
-
-      if (isAlreadyBooked) {
-        setBookedShifts((prev) =>
-          prev.filter((s) => s.workShiftID !== shift.workShiftID)
-        );
-      } else {
-        setBookedShifts((prev) => [...prev, shift]);
-      }
-    }
+    if (!shift) return;
+    setBookedShifts((prev) =>
+      prev.some((s) => s.workShiftID === shift.workShiftID)
+        ? prev.filter((s) => s.workShiftID !== shift.workShiftID)
+        : [...prev, shift]
+    );
   };
-
-  const getCurrentDay = () => {
-    const today = new Date();
-    return today.getDay();
-  };
-
-  const disableSlots = (currentDay) => {
-    const days = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ];
-
-    const disableCount = currentDay === 0 ? 7 : currentDay; 
-    return days.slice(0, disableCount);
-  };
-
-  const currentDay = getCurrentDay();
-  const disabledDays = disableSlots(currentDay);
 
   const handleChoose = () => {
+    console.log(bookedShifts);
     if (bookedShifts.length > 0) {
-      setShowModal(true);
+      setModal(true);
     } else {
-      setError("Add workshift failed!");
-      setShowAlert(true);
+      setUiState({ ...uiState, showAlert: true, error: "Please choose at least 1 slot!" });
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    dispatch(fetchAllWorkshift(stylistID));
+  }, [dispatch, stylistID]);
 
   useEffect(() => {
-    if (showAlert) {
-      const timer = setTimeout(() => {
-        setShowAlert(false);
-        setMessage(null),
-        setError(null)
-      }, 3000);
+    if (uiState.showAlert) {
+      const timer = setTimeout(() => setUiState({ ...uiState, showAlert: false }), 3000);
       return () => clearTimeout(timer);
     }
-  }, [showAlert]);
+  }, [uiState.showAlert]);
+
+  const disabledDays = (() => {
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    return days.slice(0, new Date().getDay() || 7); 
+  })();
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
-    {showAlert && (
-        <div
-          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
-          role="alert"
-        >
-          {message || error}
+      {uiState.showAlert && (
+        <div className={`alert ${uiState.message ? "alert-success" : "alert-danger"} mt-3`} role="alert">
+          {uiState.message || uiState.error}
         </div>
       )}
       <h2 className="header-cus">Create Workshift</h2>
@@ -179,16 +111,9 @@ function Content() {
           <table className="table table-bordered customTable">
             <thead>
               <tr className="calendar-month-row dayWeek">
-                <td className="calendar-prior-months-date dayWeek-date-not">
-                  Time
-                </td>
+                <td className="calendar-prior-months-date dayWeek-date-not">Time</td>
                 {daysOfWeek.map((day, index) => (
-                  <td
-                    key={index}
-                    className="calendar-prior-months-date dayWeek-date"
-                  >
-                    {day}
-                  </td>
+                  <td key={index} className="calendar-prior-months-date dayWeek-date">{day}</td>
                 ))}
               </tr>
             </thead>
@@ -198,29 +123,20 @@ function Content() {
                   <td className="slotTime">{slot}</td>
                   {daysOfWeek.map((day, colIndex) => {
                     const shift = getWorkshiftData(day, slot);
-                    const isBooked = bookedShifts.some(
-                      (s) => s.workShiftID === shift?.workShiftID
-                    );
-                    const isDisabled =
-                      shift &&
-                      duplicateWorkshiftIDs.includes(shift.workShiftID);
+                    const isBooked = bookedShifts.some((s) => s.workShiftID === shift?.workShiftID);
+                    const isDisabled = shift && duplicated.includes(shift.workShiftID);
                     const isDisabledSlotChoose = disabledDays.includes(day);
-
 
                     return (
                       <td
                         key={colIndex}
                         onClick={() => !isDisabled && handleClick(shift)}
-                        className={`slotCell-choose ${
-                          isBooked ? "booked" : ""
-                        } ${isDisabled ? "disabled" : `${isDisabledSlotChoose ? "disabled-slot" : ""}`}`}
-                        style={{
-                          cursor: isDisabled ? "not-allowed" : "pointer",
-                        }}
+                        className={`slotCell-choose ${isBooked ? "booked" : ""} ${
+                          isDisabled ? "disabled" : `${isDisabledSlotChoose ? "disabled-slot" : ""}`
+                        }`}
+                        style={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
                       >
-                        {isDisabled && (
-                          <span className="disabled-overlay"></span>
-                        )}
+                        {isDisabled && <span className="disabled-overlay"></span>}
                       </td>
                     );
                   })}
@@ -229,74 +145,28 @@ function Content() {
             </tbody>
           </table>
         </div>
-        <div className="container">
-  <div className="row">
-    <div className="col-md-6 d-flex align-items-start" style={{ marginTop: "20px" }}>
-      <button onClick={handleChoose} className="btn btn-primary">
-        Choose
-      </button>
-    </div>
+        <button onClick={handleChoose} className="btn btn-primary mt-3">Choose</button>
+      </div>
 
-    <div className="slot-legend col-md-6" style={{ marginTop: "20px" }}>
-      <h4 style={{marginLeft: "30px"}}>Sign</h4>
-      <table className="slot-legend-table">
-        <tbody className="table-sign-body">
-          <tr className="sign-1">
-            <td className="booked-slot sign"></td>
-            <td className="contentSpan">Choosing slot</td>
-            <td className="disabled sign"></td>
-            <td className="contentSpan">Registered slot</td>
-          </tr>
-          <tr>
-            <td className="disabled-slot sign"></td>
-            <td className="contentSpan">Slot is disabled</td>
-            <td className="notInSchedule-slot sign"></td>
-            <td className="contentSpan">Out of Schedule</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-        <div
-          className={`modal fade ${showModal ? "show" : ""}`}
-          style={{ display: showModal ? "block" : "none" }}
-          tabIndex="-1"
-          role="dialog"
-          aria-hidden={!showModal}
-        >
+      {uiState.showModal && (
+        <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Confirm Update</h5>
-                <button type="button" className="close" onClick={cancelUpdate}>
+                <button type="button" className="close" onClick={() => setUiState({ ...uiState, showModal: false })}>
                   <span>&times;</span>
                 </button>
               </div>
-              <div className="modal-body">
-                <p>Do you really want to choose these workshift?</p>
-              </div>
+              <div className="modal-body"><p>Do you really want to choose these workshifts?</p></div>
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={cancelUpdate}
-                >
-                  Cancelled
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={confirmUpdate}
-                >
-                  Confirm
-                </button>
+                <button type="button" className="btn btn-secondary" onClick={() => setUiState({ ...uiState, showModal: false })}>Cancel</button>
+                <button type="button" className="btn btn-primary" onClick={confirmUpdate}>Confirm</button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

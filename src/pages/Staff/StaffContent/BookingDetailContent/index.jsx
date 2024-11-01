@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import "../../../../assets/css/staff/bookingDetail.css";
 import { useEffect, useState } from "react";
 import {
-  updatePayment,
+  createPayment,
   fetchBookingDetail,
   generateQR,
   setShowAlert,
@@ -124,6 +124,8 @@ function Content() {
     e.preventDefault();
     const dataCreate = {
       bookingID: data.data?.bookingID || "",
+      method: paymentMethod,
+      status: "paid"
     };
 
     const resultCreate = await dispatch(createPayment(dataCreate));
