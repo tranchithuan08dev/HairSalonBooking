@@ -21,7 +21,7 @@ function CreateNews() {
   const onFinish = (values) => {
     setIsSpin(true);
     const createNews = {
-      img: avatarUrl,
+      img: selectedFile,
       managerID: auth?.actorByRole?.managerID,
       title: values.title,
       type: values.type,

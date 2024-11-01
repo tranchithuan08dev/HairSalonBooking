@@ -26,7 +26,12 @@ const dashboardService = {
     });
   },
   createNews: (data) => {
-    return API.call().post(`api/v1/news/create?id=${data.managerID}`, data);
+    return API.call().post(`api/v1/news/create?id=${data.managerID}`, data, {
+      headers: {
+        token: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   //Create  Stylist and Staff and Update salary
   createStaff: (data) => {
@@ -38,11 +43,21 @@ const dashboardService = {
     });
   },
   getSalary: (id) => {
-    return API.call().get(`/api/v1/salary/monthlySalary?id=${id}`);
+    return API.call().get(`/api/v1/salary/monthlySalary?id=${id}`, {
+      headers: {
+        token: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 
   getSalaryStaff: (id) => {
-    return API.call().get(`/api/v1/salary/generalMonthlySalary?id=${id}`);
+    return API.call().get(`/api/v1/salary/generalMonthlySalary?id=${id}`, {
+      headers: {
+        token: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 
   updateSalary: (data) => {

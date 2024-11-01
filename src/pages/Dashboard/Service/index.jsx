@@ -169,6 +169,7 @@ const Service = () => {
     duration: index.duration,
     price: formatPriceToUSD(index.price),
   }));
+  console.log("dataService", dataService);
 
   return (
     <>

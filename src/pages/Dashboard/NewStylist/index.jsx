@@ -49,7 +49,7 @@ function NewStylist() {
       avatar: selectedFile,
       fullName: values.stylistName,
       email: values.email,
-      yob: values.yob.format(dateFormat),
+      dob: values.yob.format(dateFormat),
       address: values.address,
       gender: values.gender,
       phoneNumber: values.phoneNumber,

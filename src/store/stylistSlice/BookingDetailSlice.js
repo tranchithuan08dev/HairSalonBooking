@@ -67,25 +67,6 @@ export const updateStatus = createAsyncThunk(
   }
 );
 
-export const createPayment = createAsyncThunk(
-  `${name}/createPayment`,
-  async (data) => {
-    try{
-      const response = await bookingDetailService.createPayment(data);
-      console.log(response.data);
-      return {
-        ok: true,
-        message: "Created payment successfully!"
-      };
-    }catch(error){
-      return {
-        ok: false,
-        error: "Cannot create!",
-      };
-    }
-  }
-)
-
 const bookingDetailSlice = createSlice({
   name,
   initialState,
@@ -144,15 +125,6 @@ const bookingDetailSlice = createSlice({
       })
       .addCase(updateStatus.rejected, (state, action) => {
         state.showAlert = true;
-        state.error = action.payload.message;
-      })
-      .addCase(createPayment.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(createPayment.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(createPayment.rejected, (state, action) => {
         state.error = action.payload.message;
       })
   },

@@ -6,6 +6,7 @@ const initialState = {
   duplicated: [],
   loading: true,
   error: null,
+  showAlert: false
 };
 
 const name = "workshift";
@@ -114,6 +115,12 @@ const stylistWorkshiftSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setShowAlert: (state) => {
+      state.showAlert = !state.showAlert;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -172,4 +179,9 @@ const stylistWorkshiftSlice = createSlice({
   },
 });
 
+
+export const {
+  setError,
+  setShowAlert,
+} = stylistWorkshiftSlice.actions;
 export default stylistWorkshiftSlice.reducer;

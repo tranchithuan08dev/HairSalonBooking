@@ -22,7 +22,7 @@ function Header() {
               </Link>
             </li>
             <li className="nav-item">
-            <Link to="/feedback" className="nav-link text-white">
+              <Link to="/feedback" className="nav-link text-white">
                 Feedback
               </Link>
             </li>
@@ -69,6 +69,11 @@ function Header() {
                     <li>
                       <Link className="dropdown-item" to="/bookingHistory">
                         History
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/changePassword">
+                        Change Password
                       </Link>
                     </li>
                     <li>

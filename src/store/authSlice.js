@@ -6,6 +6,7 @@ const initialState = {
   currentUser: null,
   sendEmail: null,
   resetPassword: null,
+  changePassword: null,
 };
 
 const name = "auth";
@@ -127,6 +128,29 @@ export const fetchResetPassWord = createAsyncThunk(
   }
 );
 
+export const fetchChangePassword = createAsyncThunk(
+  `${name}/fetchChangePassword`,
+  async (data) => {
+    try {
+      const res = await authService.changePassword(data);
+      console.log("res", res);
+
+      const dataChangePassword = res.data;
+      return {
+        ok: true,
+        data: {
+          dataChangePassword,
+        },
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: "Failed to  change password",
+      };
+    }
+  }
+);
+
 const authSlice = createSlice({
   name,
   initialState,
@@ -164,6 +188,12 @@ const authSlice = createSlice({
     builder.addCase(fetchResetPassWord.fulfilled, (state, action) => {
       if (action.payload.ok) {
         state.resetPassword = action.payload.data.dataOTP;
+      }
+    });
+
+    builder.addCase(fetchChangePassword.fulfilled, (state, action) => {
+      if (action.payload.ok) {
+        state.changePassword = action.payload.data.dataChangePassword;
       }
     });
   },

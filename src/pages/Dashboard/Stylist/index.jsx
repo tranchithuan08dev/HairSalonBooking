@@ -25,7 +25,6 @@ import {
   fetchUpdateSalary,
   fetchUpdateStylist,
 } from "../../../store/dashbroadSlice";
-import { formatPriceToUSD } from "../../../helpers";
 import CurrencyFormat from "react-currency-format";
 
 dayjs.extend(customParseFormat);
@@ -58,7 +57,7 @@ const Stylist = () => {
     (state) => state.DASHBOARD.postStylistDetailById
   );
   const dataSalaryStylist = useSelector((state) => state.DASHBOARD.salary);
-  console.log("data", dataSalaryStylist);
+  console.log("dataSalaryStylist", dataSalaryStylist);
 
   if (dataStylist == null) {
     return <></>;
@@ -75,7 +74,7 @@ const Stylist = () => {
       form.setFieldsValue({
         fullName: dataStylistById.fullName,
         gender: dataStylistById.gender,
-        yob: dayjs(dataStylistById.yob),
+        yob: dayjs(dataStylistById.dob),
         phoneNumber: dataStylistById.phoneNumber,
         email: dataStylistById.email,
         address: dataStylistById.address,
@@ -117,7 +116,7 @@ const Stylist = () => {
     setIsSpin(true);
     const updatedSalary = {
       salaryID: dataSalaryStylist.salaryID,
-      baseSalary: values.basesalary,
+      baseSalary: values.basesalary.toString().replace(/,/g, ""),
     };
 
     const updatedData = {
@@ -128,13 +127,14 @@ const Stylist = () => {
       address: values.address,
       phoneNumber: values.phoneNumber,
       email: values.email,
-      yob: values.yob.format(dateFormat),
+      dob: values.yob.format(dateFormat),
       level: values.level,
       deleted: values.status,
       userID: dataStylistById?.userID || null,
     };
-    dispatch(fetchUpdateSalary(updatedSalary));
-    dispatch(fetchUpdateStylist(updatedData))
+
+    dispatch(fetchUpdateStylist(updatedData));
+    dispatch(fetchUpdateSalary(updatedSalary))
       .then(() => {
         message.success("Staff updated successfully!");
         setIsSpin(false);
@@ -272,16 +272,6 @@ const Stylist = () => {
             label="Base Salary"
             rules={[
               { required: true, message: "Please enter the base salary" },
-              {
-                validator: (_, value) => {
-                  if (value && isNaN(value.replace(/[^0-9]/g, ""))) {
-                    return Promise.reject(
-                      new Error("Price must be a valid number")
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              },
             ]}
           >
             <CurrencyFormat

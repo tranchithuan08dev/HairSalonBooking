@@ -12,6 +12,7 @@ import { fetchUpdateBooking, fetchWorkShift } from "../store/bookingSlice";
 import { fetchMe } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
+import { formatPriceToUSD } from "../helpers";
 
 function UpdateBooking() {
   const nagative = useNavigate();
@@ -104,7 +105,7 @@ function UpdateBooking() {
       customerID: customerID,
       stylistID: selectedStylist,
       serviceID: serviceIDs,
-      totalPrice: totalPrice,
+      originalPrice: totalPrice.toString().replace(/,/g, ""),
       stylistWorkShiftID: selectStylistWorkShift,
     };
     console.log("updateBooking", updateBooking);
@@ -136,19 +137,22 @@ function UpdateBooking() {
   };
 
   // SELECT SERVICE AND SHOW ADD MORE
+  // SELECT SERVICE AND SHOW ADD MORE
   const dataTotal = selectedServices
     .map((item) => JSON.parse(item))
     .reduce(
       (acc, service) => ({
-        totalPrice: formatPriceToUSD(
-          acc.totalPrice + parseFloat(service.price)
-        ),
+        totalPrice: acc.totalPrice + parseFloat(service.price),
         totalDuration: acc.totalDuration + service.duration,
       }),
       { totalPrice: 0, totalDuration: 0 }
     );
+
+  // Format total price to USD after calculating the total
+  const formattedTotalPrice = formatPriceToUSD(dataTotal.totalPrice);
+
   useEffect(() => {
-    setTotalPrice(dataTotal.totalPrice);
+    setTotalPrice(formattedTotalPrice);
     setTotalDuration(dataTotal.totalDuration);
   }, [selectedServices]);
 
@@ -244,7 +248,7 @@ function UpdateBooking() {
   };
 
   useEffect(() => {
-    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Friday" }));
   }, [selectedStylist, selectDay]);
 
   return (
@@ -458,7 +462,7 @@ function UpdateBooking() {
               Select service time slot:
             </label>
             <div className="row mt-3">
-              {dataWorkShift.map((slot) => (
+              {dataWorkShift?.map((slot) => (
                 <div
                   key={slot.id}
                   className={`col-2 time-slot btn btn-light ${

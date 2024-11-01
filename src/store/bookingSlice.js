@@ -27,9 +27,9 @@ export const fetchHistoryBooking = createAsyncThunk(
 
 export const fetchCancleBooking = createAsyncThunk(
   `${name}/fetchCancleBooking`,
-  async (id) => {
+  async (data) => {
     try {
-      const res = await bookingService.cancleBooking(id);
+      const res = await bookingService.cancleBooking(data);
       console.log("res", res);
 
       return res.data;

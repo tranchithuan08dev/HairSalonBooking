@@ -74,7 +74,7 @@ export const fetchSalary = createAsyncThunk(
   async (id) => {
     try {
       const res = await dashboardService.getSalary(id);
-      console.log("salary", res);
+      console.log("resss", res);
 
       return res.data.data;
     } catch (error) {

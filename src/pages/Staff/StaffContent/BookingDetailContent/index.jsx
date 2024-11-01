@@ -32,6 +32,7 @@ function Content() {
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
   );
+  console.log("detailBoooking", detail);
 
   const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
@@ -235,7 +236,7 @@ function Content() {
                       <input
                         type="number"
                         name="originalPrice"
-                        value={originalPrice || 0}
+                        value={`${originalPrice} VND` || 0}
                         readOnly
                       />
                     </div>
@@ -244,7 +245,8 @@ function Content() {
                       <input
                         type="number"
                         name="discountPrice"
-                        value={price || 0}VND
+                        value={price || 0}
+                        VND
                         readOnly
                       />
                     </div>
@@ -255,7 +257,7 @@ function Content() {
                     <input
                       type="number"
                       name="originalPrice"
-                      value={originalPrice || 0}VND
+                      value={`${originalPrice} VND` || 0}
                       readOnly
                     />
                   </div>
@@ -263,7 +265,7 @@ function Content() {
 
                 <div className="form-group">
                   <strong>Status:</strong>
-                  <input name="status" value={status} readOnly/>
+                  <input name="status" value={status} readOnly />
                 </div>
                 {detail.payment?.status && (
                   <div className="form-group">

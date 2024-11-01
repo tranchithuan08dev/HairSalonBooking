@@ -4,7 +4,7 @@ import React from "react";
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const ChartComponent = ({ bookingData }) => {
-  const dataPoints = bookingData.map((booking) => ({
+  const dataPoints = bookingData?.map((booking) => ({
     x: new Date(booking.createdAt),
     y: parseFloat(booking.originalPrice) || 0,
   }));

@@ -9,7 +9,7 @@ const initialState = {
   message: null,
   showAlert: false,
   services: [],
-  link: ""
+  link: "",
 };
 
 const name = "booking";
@@ -37,14 +37,18 @@ export const fetchBookingDetail = createAsyncThunk(
       let stylistName = "";
       console.log("id", id);
       const response = await bookingService.getDetail(id);
-      const payment = await bookingService.getAllPayment();
+
       let data = response.data.booking[0];
+      console.log("dataBoooking", data);
+
       let customerPoint;
       if (data.customerID != null) {
         const customer = await bookingService.getCustomer(data.customerID);
         customerPoint = customer.data.data.customer.loyaltyPoints;
       }
       let detail = response.data.details;
+      console.log("Detail", detail);
+
       for (let index = 0; index < detail.length; index++) {
         const service = await bookingService.getServiceDetail(
           detail[index].serviceID
@@ -55,27 +59,13 @@ export const fetchBookingDetail = createAsyncThunk(
       const stylist = await bookingService.getStylistDetail(data.stylistID);
       let name = stylist.data.data.user.fullName;
       stylistName = name;
-      let paymentList = payment.data.paymentList;
-      const foundPayment = paymentList.find(
-        (paymentItem) => paymentItem.bookingID === id
-      );
       data.loyaltyPoints = customerPoint;
-      if(payment === null){
-        return {
-          ok: true,
-          data: data,
-          detail: detail,
-          servicesName: servicesNameArray,
-          stylistName: stylistName,
-        };
-      }
       return {
         ok: true,
         data: data,
         detail: detail,
         servicesName: servicesNameArray,
         stylistName: stylistName,
-        payment: foundPayment,
       };
     } catch (error) {
       console.log(error);
@@ -144,24 +134,24 @@ export const generateQR = createAsyncThunk(
   }
 );
 
-export const updatePayment = createAsyncThunk(
-  `${name}/updatePayment`,
-  async ({ id, data }) => {
-    try {
-      const response = await bookingService.updatePayment(id, data);
+export const createPayment = createAsyncThunk(
+  `${name}/createPayment`,
+  async (data) => {
+    try{
+      const response = await bookingService.createPayment(data);
       console.log(response.data);
       return {
         ok: true,
-        message: "Update payment successfully!",
+        message: "Created payment successfully!"
       };
-    } catch (error) {
+    }catch(error){
       return {
         ok: false,
-        error: "This booking was paid!",
+        error: "Cannot create!",
       };
     }
   }
-);
+)
 
 export const updateStatus = createAsyncThunk(
   `${name}/updateStatus`,
@@ -252,19 +242,13 @@ const bookingSlice = createSlice({
       .addCase(fetchBookingDetail.rejected, (state, action) => {
         state.error = action.payload.message;
       })
-      .addCase(updatePayment.pending, (state) => {
+      .addCase(createPayment.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updatePayment.fulfilled, (state, action) => {
+      .addCase(createPayment.fulfilled, (state) => {
         state.loading = false;
-        state.showAlert = true;
-        if (action.payload.ok) {
-          state.message = action.payload.message;
-        } else {
-          state.error = action.payload.error;
-        }
       })
-      .addCase(updatePayment.rejected, (state, action) => {
+      .addCase(createPayment.rejected, (state, action) => {
         state.error = action.payload.message;
       })
       .addCase(updateBooking.pending, (state) => {

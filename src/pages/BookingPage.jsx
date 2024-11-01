@@ -97,7 +97,7 @@ function BookingPage() {
       customerID: customerID,
       stylistID: selectedStylist,
       serviceID: serviceIDs,
-      originalPrice: totalPrice,
+      originalPrice: totalPrice.toString().replace(/,/g, ""),
       stylistWorkShiftID: selectStylistWorkShift,
     };
     console.log("Booking", booking);
@@ -133,17 +133,21 @@ function BookingPage() {
     .map((item) => JSON.parse(item))
     .reduce(
       (acc, service) => ({
-        totalPrice: formatPriceToUSD(
-          acc.totalPrice + parseFloat(service.price)
-        ),
+        totalPrice: acc.totalPrice + parseFloat(service.price),
         totalDuration: acc.totalDuration + service.duration,
       }),
       { totalPrice: 0, totalDuration: 0 }
     );
+
+  // Format total price to USD after calculating the total
+  const formattedTotalPrice = formatPriceToUSD(dataTotal.totalPrice);
+
   useEffect(() => {
-    setTotalPrice(dataTotal.totalPrice);
+    setTotalPrice(formattedTotalPrice);
     setTotalDuration(dataTotal.totalDuration);
   }, [selectedServices]);
+
+  console.log("total", totalPrice);
 
   const handleStylistChange = (event) => {
     const stylistId = event.target.value;
@@ -236,7 +240,7 @@ function BookingPage() {
     }
   };
   useEffect(() => {
-    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Friday" }));
   }, [selectedStylist, selectDay]);
 
   return (

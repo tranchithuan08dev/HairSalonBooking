@@ -11,7 +11,7 @@ const LoginPage = () => {
     dispatch(Login(values)).then((res) => {
       if (res.payload.ok) {
         console.log("ph", res.payload.data.currenInfor.record.role);
-        const role = (res.payload.data.currenInfor.record.role).toLowerCase();
+        const role = res.payload.data.currenInfor.record.role.toLowerCase();
         console.log("role", role);
         switch (role) {
           case "stylist":
@@ -128,12 +128,6 @@ const LoginPage = () => {
                             Register here
                           </Link>
                         </p>
-                        <a href="#!" className="small text-muted">
-                          Terms of use.
-                        </a>
-                        <a href="#!" className="small text-muted">
-                          Privacy policy
-                        </a>
                       </Form>
                     </div>
                   </div>
