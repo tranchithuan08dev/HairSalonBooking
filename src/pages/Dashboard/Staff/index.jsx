@@ -25,6 +25,7 @@ import {
   fetchUpdateStaff,
 } from "../../../store/dashbroadSlice";
 import CurrencyFormat from "react-currency-format";
+import Search from "antd/es/input/Search";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -43,6 +44,7 @@ const Staff = () => {
   const [isSpin, setIsSpin] = useState(false);
   const [form] = Form.useForm();
   const [userId, setUserId] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
   const dataStaff = useSelector((state) => state.DASHBOARD.postStaff);
   const dataStaffDetail = useSelector(
     (state) => state.DASHBOARD.postStaffDetailById
@@ -74,13 +76,12 @@ const Staff = () => {
         phoneNumber: dataStaffDetail.phoneNumber,
         email: dataStaffDetail.email,
         address: dataStaffDetail.address,
-        status: dataStaffDetail.deleted,
+        status: dataStaffDetail.StaffDeleted,
       });
       setAvatarUrl(dataStaffDetail.avatar || "");
       setUserId(dataStaffDetail.userID);
     }
   }, [dataStaffDetail, form, dataSalaryStaff]);
-  console.log("UsserID", userId);
 
   useEffect(() => {
     if (userId) {
@@ -189,7 +190,12 @@ const Staff = () => {
     },
   ];
 
-  const data = dataStaff.map((index, i) => ({
+  const hanldeSearch = (value) => {
+    const filteredData = dataStaff.filter((item) => item.phone.includes(value));
+    setFilteredData(filteredData.length ? filteredData : dataStaff);
+  };
+
+  const data = (filteredData || dataStaff).map((index, i) => ({
     key: index.id || `staff-${i}`,
     staffname: index.fullName,
     status: index.deleted ? "Inactive" : "Active",
@@ -199,7 +205,19 @@ const Staff = () => {
 
   return (
     <>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Space>
+          <Search
+            placeholder="Search by phone"
+            onSearch={hanldeSearch}
+            style={{
+              width: 200,
+            }}
+          />
+        </Space>
+      </div>
       <Table columns={columns} dataSource={data} />
+
       <Drawer
         title="Detail Staff"
         placement="right"
