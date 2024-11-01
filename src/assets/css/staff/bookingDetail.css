@@ -102,11 +102,11 @@
 }
 
 .checkboxPoints{
-  position: relative;
-  top: 450px;
+  position: fixed;
+  bottom: 230px;
   display: flex;
   justify-content: flex-start;
-  left: 25px
+  right: 430px;
 }
 
 .checkboxInput{
