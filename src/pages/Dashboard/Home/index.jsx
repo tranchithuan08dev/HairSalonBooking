@@ -4,8 +4,9 @@ import { fetchGetAllBooking } from "../../../store/dashbroadSlice";
 import ChartComponent from "./Canvans";
 
 function Home() {
-  const dataBooking = useSelector((state) => state.DASHBOARD.getAllBooking);
-  console.log("data", dataBooking);
+  const data = useSelector((state) => state.DASHBOARD.getAllBooking);
+  const dataBooking = data.filter((booking) => booking.status === "Completed");
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchGetAllBooking());
