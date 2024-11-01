@@ -41,11 +41,11 @@ const bookingService = {
       },
     });
   },
-  updatePayment: (id, data) => {
-    return API.call().patch(`api/v1/payment/update?id=${id}`, data, {
+  createPayment: (data) => {
+    return API.call().post(`api/v1/payment/create`, data, {
       headers: {
-        token: `Bearer ${token}`,
-      },
+          token: `Bearer ${token}`,
+      }
     });
   },
   updateStatus: (data) => {
