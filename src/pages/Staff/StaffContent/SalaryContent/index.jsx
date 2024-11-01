@@ -51,7 +51,7 @@ function Content() {
                 <div className="d-flex align-items-center">
                   <div>
                     <p className="mb-0 text-secondary">Total Revenue</p>
-                    <h2 className="my-1 text-danger">{data.salary.totalSalary}$</h2>
+                    <h2 className="my-1 text-danger">{data.salary.totalSalary}VND</h2>
                   </div>
                   <div className="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
                     <i className="fa fa-dollar"></i>

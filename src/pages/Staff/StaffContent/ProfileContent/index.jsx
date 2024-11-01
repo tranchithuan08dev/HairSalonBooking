@@ -67,9 +67,11 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!hasChanges){
-      alert("No changes to save!");
-    }
+    if (!hasChanges) {
+      dispatch(setShowAlert(true));
+      dispatch(setError("No changes to save!"));
+      return;
+  }
 
     const formData = new FormData();
     const dataToUpdate = {

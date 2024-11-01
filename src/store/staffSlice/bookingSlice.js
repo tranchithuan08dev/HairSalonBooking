@@ -60,6 +60,15 @@ export const fetchBookingDetail = createAsyncThunk(
         (paymentItem) => paymentItem.bookingID === id
       );
       data.loyaltyPoints = customerPoint;
+      if(payment === null){
+        return {
+          ok: true,
+          data: data,
+          detail: detail,
+          servicesName: servicesNameArray,
+          stylistName: stylistName,
+        };
+      }
       return {
         ok: true,
         data: data,
@@ -149,46 +158,6 @@ export const updatePayment = createAsyncThunk(
       return {
         ok: false,
         error: "This booking was paid!",
-      };
-    }
-  }
-);
-
-export const createPaymentUrl = createAsyncThunk(
-  `${name}/createPaymentUrl`,
-  async (data) => {
-    try {
-      const response = await bookingService.createPaymentUrl(data);
-      console.log(response.data.link);
-      return {
-        ok: true,
-        link: response.data.link
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        ok: false,
-        error: "Error",
-      };
-    }
-  }
-);
-
-export const vnpayReturnURL = createAsyncThunk(
-  `${name}/vnpayReturnURL`,
-  async (data) => {
-    try {
-      const response = await bookingService.vnpayReturnURL(data);
-      console.log(response.data);
-      return {
-        ok: true,
-        data: response.data
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        ok: false,
-        error: "Error",
       };
     }
   }
@@ -363,22 +332,6 @@ const bookingSlice = createSlice({
       .addCase(updateCustomer.rejected, (state, action) => {
         state.error = action.payload.message;
       })
-      .addCase(createPaymentUrl.fulfilled, (state, action) => {
-        if (action.payload.ok) {
-          state.link = action.payload.link;
-        }else{
-          state.showAlert = true;
-          state.error = action.payload.message;
-        }
-      })
-      .addCase(vnpayReturnURL.fulfilled, (state, action) => {
-        if (action.payload.ok) {
-          state.link = action.payload.data;
-        }else{
-          state.showAlert = true;
-          state.error = action.payload.message;
-        }
-      });
   },
 });
 
