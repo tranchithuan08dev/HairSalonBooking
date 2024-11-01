@@ -7,8 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 function NewBlog() {
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const dispatch = useDispatch();
-  const total = useSelector((state) => state.DASHBOARD.postNews);
-  const dataNews = useSelector((state) => state.HOME.news);
+  const totalNews = useSelector((state) => state.DASHBOARD.postNews);
+  const dataNewsFilter = useSelector((state) => state.HOME.news);
+
+  const total = totalNews.filter((news) => news.news === false);
+  const dataNews = dataNewsFilter.filter((news) => news.deleted === false);
   useEffect(() => {
     dispatch(fetchPostNews());
     dispatch(fetchHomeNews({ perpage: itemsPerPage }));

@@ -8,9 +8,15 @@ function Service() {
   const dispatch = useDispatch();
   const [itemsPerPage, setItemsPerPage] = useState(3);
 
-  const total = useSelector((state) => state.DASHBOARD.postService);
-  const dataService = useSelector((state) => state.HOME.service);
+  const totalService = useSelector((state) => state.DASHBOARD.postService);
+  const dataServiceFilter = useSelector((state) => state.HOME.service);
+
+  const total = totalService.filter((service) => service.deleted === false);
+  const dataService = dataServiceFilter.filter(
+    (service) => service.deleted === false
+  );
   console.log("dataService", dataService);
+  console.log("total", total);
   useEffect(() => {
     dispatch(fetchPostService());
     dispatch(fetchHomeService({ perpage: itemsPerPage }));

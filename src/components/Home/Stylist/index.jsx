@@ -8,10 +8,16 @@ import { fetchPostStylist } from "../../../store/dashbroadSlice";
 function Stylist() {
   const dispatch = useDispatch();
   const [itemsPerPage, setItemsPerPage] = useState(3);
-  const dataStylist = useSelector((state) => state.HOME.stylist);
-  console.log("dataStylist", dataStylist);
+  const dataStylistFilter = useSelector((state) => state.HOME.stylist);
+  const totalStylist = useSelector((state) => state.DASHBOARD.postStylist);
 
-  const total = useSelector((state) => state.DASHBOARD.postStylist);
+  const dataStylist = dataStylistFilter.filter(
+    (stylist) => stylist.deleted === false
+  );
+  const total = totalStylist.filter((stylist) => stylist.deleted === false);
+  console.log("dataStylist", dataStylist);
+  console.log("totalStylist", total);
+
   useEffect(() => {
     dispatch(fetchPostStylist());
     dispatch(fetchHomeStylist({ perpage: itemsPerPage }));
