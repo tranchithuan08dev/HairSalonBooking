@@ -9,8 +9,9 @@ import {
   InputNumber,
   message,
   DatePicker,
+  Spin,
 } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
@@ -25,6 +26,7 @@ function NewStylist() {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [form] = Form.useForm();
+  const [isSpin, setIsSpin] = useState(false);
   const fileInputRef = useRef(null);
   dayjs.extend(customParseFormat);
   const dateFormat = "YYYY/MM/DD";
@@ -44,6 +46,7 @@ function NewStylist() {
   };
 
   const onFinish = (values) => {
+    setIsSpin(true);
     const createStylist = {
       role: "Stylist",
       avatar: selectedFile,
@@ -60,9 +63,11 @@ function NewStylist() {
     dispatch(fetchCreate(createStylist))
       .then(() => {
         message.success("Create Stylist successfully!");
+        setIsSpin(false);
       })
       .catch((error) => {
         message.error(`Failed to create Stylist ${error}`);
+        setIsSpin(false);
       });
     form.resetFields();
     setAvatarUrl(null);
@@ -203,6 +208,12 @@ function NewStylist() {
 
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
+            {isSpin && (
+              <Spin
+                indicator={<LoadingOutlined spin style={{ color: "white" }} />}
+                size="small"
+              />
+            )}
             Create Stylist
           </Button>
         </Form.Item>
