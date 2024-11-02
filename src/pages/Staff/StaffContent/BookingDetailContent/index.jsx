@@ -199,14 +199,12 @@ function Content() {
                     readOnly
                   />
                 </div>
-                {status !== "Completed" && (
                   <ListServices
                     detail={detail}
                     services={services}
                     addService={addService}
                     setListServices={setListServices}
                   />
-                )}
                 <div className="form-group">
                   <strong>FullName:</strong>
                   <input
