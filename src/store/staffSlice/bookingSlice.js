@@ -147,7 +147,7 @@ export const createPayment = createAsyncThunk(
     }catch(error){
       return {
         ok: false,
-        error: "Cannot create!",
+        error: "Payment was created!",
       };
     }
   }
@@ -260,12 +260,6 @@ const bookingSlice = createSlice({
       .addCase(updateBooking.fulfilled, (state, action) => {
         state.loading = false;
         state.showAlert = true;
-        console.log(action.payload); 
-        // if (action.payload.ok) {
-        //   state.message = "Booking updated successfully!";
-        // } else {
-        //   state.error = action.payload.message;
-        // }
       })
       .addCase(generateQR.pending, (state) => {
         state.loading = true;
@@ -276,7 +270,6 @@ const bookingSlice = createSlice({
         state.showAlert = true;
         if (action.payload.ok) {
           state.qrCode = action.payload.data.qrCode;
-          state.message = "QR generated successfully!";
         } else {
           state.error = action.payload.message;
         }
@@ -289,11 +282,11 @@ const bookingSlice = createSlice({
         state.loading = false;
         state.showAlert = true;
         console.log(action.payload); 
-        // if (action.payload.ok) {
-        //   state.message = action.payload.success;
-        // } else {
-        //   state.error = action.payload.message;
-        // }
+        if (action.payload.ok) {
+          state.message = action.payload.success;
+        } else {
+          state.error = action.payload.message;
+        }
       })
       .addCase(fetchServices.fulfilled, (state, action) => {
         state.loading = false;
