@@ -88,6 +88,7 @@ const Staff = () => {
       dispatch(fetchSalaryStaff(userId));
     }
   }, [userId, dispatch, form, dataStaffDetail]);
+
   const showLargeDrawer = (staffId) => {
     setSelectedStylist(staffId);
     dispatch(fetchPostStaffDetailById(staffId));

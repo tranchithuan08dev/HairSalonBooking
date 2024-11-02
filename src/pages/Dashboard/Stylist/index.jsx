@@ -48,6 +48,7 @@ const Stylist = () => {
   const [isSpin, setIsSpin] = useState(false);
   const fileInputRef = useRef(null);
   const [filteredData, setFilteredData] = useState(null);
+  const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   useEffect(() => {
@@ -83,15 +84,21 @@ const Stylist = () => {
         level: dataStylistById.level,
         status: dataStylistById.StylistDeleted,
       });
-      setAvatarUrl(dataStylistById.avatar);
+      setAvatarUrl(dataStylistById.avatar || "");
+      setUserId(dataStylistById.userID);
     }
   }, [dataStylistById, form, dataSalaryStylist]);
   console.log(dataStylistById);
 
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchSalary(userId));
+    }
+  }, [userId, dispatch, form, dataStylistById]);
+
   const showLargeDrawer = (stylist) => {
     setSelectedStylist(stylist);
     dispatch(fetchPostStylistDetailById(stylist));
-    dispatch(fetchSalary(stylist));
     setOpen(true);
   };
 
@@ -134,6 +141,7 @@ const Stylist = () => {
       deleted: values.status,
       userID: dataStylistById?.userID || null,
     };
+    console.log("updatedData", updatedData);
 
     dispatch(fetchUpdateStylist(updatedData));
     dispatch(fetchUpdateSalary(updatedSalary))
