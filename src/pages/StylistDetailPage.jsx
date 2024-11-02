@@ -75,8 +75,7 @@ function StylistDetailPage() {
           </h1>
           <div className="d-flex justify-content-center">
             <img
-              src="https://images.unsplash.com/photo-1584445584400-1a7cc5de77ae?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGNlcnRpZmljYXRlfGVufDB8fDB8fHww"
-              alt="Certificate"
+              src={dataStylistById.certificateURL}
               style={{
                 maxWidth: "100%",
                 height: "auto",

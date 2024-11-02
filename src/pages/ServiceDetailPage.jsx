@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPostServiceById } from "../store/dashbroadSlice";
+import { formatPriceToUSD } from "../helpers";
 
 function ServiceDetailPage() {
   const dataServiceDetail = useSelector(
@@ -25,7 +26,7 @@ function ServiceDetailPage() {
           <div className="row g-0">
             <div className="col-md-6">
               <img
-                src="https://images.unsplash.com/photo-1616367122346-335fcf806c76?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDB8fGJhYmVyfGVufDB8fDB8fHww"
+                src={dataServiceDetail.img}
                 alt="Service Image"
                 className="img-fluid w-100 h-100 object-fit-cover"
               />
@@ -36,10 +37,10 @@ function ServiceDetailPage() {
                   {dataServiceDetail.serviceName}
                 </h2>
                 <p className="text-success fs-4 fw-semibold mb-3">
-                  Giá: {dataServiceDetail.price} VND
+                  Price: {formatPriceToUSD(dataServiceDetail.price)} VND
                 </p>
                 <p className="text-muted fs-5 mb-4">
-                  Thời gian: {dataServiceDetail.duration} phút
+                  Time: {dataServiceDetail.duration} phút
                 </p>
                 <hr />
                 <p className="card-text fs-6">
