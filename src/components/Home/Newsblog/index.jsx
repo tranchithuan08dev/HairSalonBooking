@@ -10,7 +10,7 @@ function NewBlog() {
   const totalNews = useSelector((state) => state.DASHBOARD.postNews);
   const dataNewsFilter = useSelector((state) => state.HOME.news);
 
-  const total = totalNews.filter((news) => news.news === false);
+  const total = totalNews.filter((news) => news.deleted === false);
   const dataNews = dataNewsFilter.filter((news) => news.deleted === false);
   useEffect(() => {
     dispatch(fetchPostNews());
