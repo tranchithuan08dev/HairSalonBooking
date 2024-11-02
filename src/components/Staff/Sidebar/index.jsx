@@ -40,7 +40,7 @@ function Sidebar() {
             </li>
           </ul>
           <div className="sidebar__menu--logout">
-            <NavLink to="/" className={navLinkActive} onClick={handleLogout}>
+            <NavLink to="/login" className={navLinkActive} onClick={handleLogout}>
               Logout
             </NavLink>
           </div>

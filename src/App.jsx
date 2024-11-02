@@ -46,8 +46,8 @@ import FeedbackPage from "./pages/FeedbackPage";
 import ContactPage from "./pages/ContactPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
-import FeedBack from "./pages/FeedBack";
-
+import FeedBack from "./pages/FeedbackPage";
+import SendFeedback from "./pages/Staff/Feedback";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -117,6 +117,7 @@ function App() {
               path="removeStylistWorkshift"
               element={<RemoveStylistWorkshift />}
             />
+            <Route path="sendFeedback" element={<SendFeedback />} />
           </Route>
         </Route>
         <Route path="*" element={<NotFoundPage />} />

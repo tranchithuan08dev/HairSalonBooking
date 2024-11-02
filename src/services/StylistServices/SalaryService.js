@@ -2,8 +2,8 @@ import API from "../api";
 const token = localStorage.getItem("ACCESS_TOKKEN");
 
 const salaryStaffService = {
-  getTotalSalaryUntilNow: (id, date) => {
-    return API.call().get(`api/v1/salary/monthlySalary?id=${id}&date=${date}`, {
+  getTotalSalaryUntilNow: (id) => {
+    return API.call().get(`api/v1/salary/generalMonthlySalary?id=${id}`, {
       headers: {
         token: `Bearer ${token}`,
       },

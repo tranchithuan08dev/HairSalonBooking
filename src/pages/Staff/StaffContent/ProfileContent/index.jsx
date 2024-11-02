@@ -67,9 +67,11 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!hasChanges){
-      alert("No changes to save!");
-    }
+    if (!hasChanges) {
+      dispatch(setShowAlert(true));
+      dispatch(setError("No changes to save!"));
+      return;
+  }
 
     const formData = new FormData();
     const dataToUpdate = {
@@ -102,11 +104,11 @@ function Content() {
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
-        dispatch(setShowAlert());
+        dispatch(setShowAlert(false));
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [showAlert, dispatch]);
+  }, [showAlert]);
 
   if (loading) {
     return <div>Loading...</div>;

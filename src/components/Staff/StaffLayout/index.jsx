@@ -4,7 +4,7 @@ import Sidebar from '../Sidebar';
 function Layout() {
     return (
         <>
-            <div className="layout-default" style={{display: "flex"}}>
+            <div className="layout-default" style={{display: "flex", overflowY: "hidden"}}>
                 <div className="layout-default__sidebar" style={{width: "280px"}}>
                     <Sidebar/> 
                 </div>

@@ -1,14 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../../../../assets/css/stylist/workshift.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAll } from "../../../../store/stylistSlice/WorkShiftSlice";
+import { getAll, setError, setShowAlert } from "../../../../store/stylistSlice/WorkShiftSlice";
 import { useNavigate } from "react-router-dom";
 
 function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading } = useSelector((state) => state.STYLIST?.workshift);
+  const { data, loading, showAlert, error } = useSelector((state) => state.STYLIST?.workshift);
   const stylistID = currentUser.actorByRole.stylistID;
 
   useEffect(() => {
@@ -26,16 +26,16 @@ function Content() {
     if (shift) {
       console.log("Shift data:", shift);
       console.log("Booking ID:", shift.bookingID);
-
-      if (shift.bookingID && shift.bookingID.trim() !== "") {
-        navigate(`bookingDetail?id=${shift.bookingID}`);
-      } else {
-        alert("This slot is not booked yet");
-      }
-    } else {
-      console.error("Shift is undefined or null");
     }
-  };
+      if (shift.bookingID && shift.bookingID) {
+        if(shift.bookingID.trim() !== ""){
+        navigate(`bookingDetail?id=${shift.bookingID}`);
+        }
+      } else {
+        dispatch(setError("This slot haven't booked yet"));
+        dispatch(setShowAlert(true));
+      }
+    }
 
   const timeSlots = [
     "08:00 - 09:00",
@@ -101,8 +101,16 @@ function Content() {
 
   const currentDay = getCurrentDay();
   const disabledDays = disableSlots(currentDay);
-//   const mockCurrentDay = 3; // 2 đại diện cho thứ Ba
-// const disabledDays = disableSlots(mockCurrentDay);
+
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        dispatch(setShowAlert(false));
+        dispatch(setError(null));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -110,6 +118,14 @@ function Content() {
 
   return (
     <>
+    {showAlert && (
+        <div
+          className={`alert ${error ? "alert-danger" : ""} mt-3`}
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
       <h2 className="header-cus">WorkShift</h2>
       <div className="container customContainer">
         <div className="calendar-view">
@@ -170,7 +186,7 @@ function Content() {
             <td className="booked-slot sign"></td>
             <td className="contentSpan">Slot has a booking</td>
             <td className="schedule-slot sign"></td>
-            <td className="contentSpan">Slot not booked yet</td>
+            <td className="contentSpan">Slot havent't booked yet</td>
           </tr>
           <tr>
             <td className="notInSchedule-slot sign"></td>

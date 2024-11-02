@@ -11,17 +11,17 @@ const name = "salary";
 
 export const fetchData = createAsyncThunk(
   `${name}/fetchData`,
-  async ({id, date}) => {
+  async (id) => {
     try {
-      console.log("day", date);
       console.log("id", id);
-      const responseSalary = await salaryService.getTotalSalary(id, date);
-      console.log(responseSalary);
+      const responseSalary = await salaryService.getTotalSalary(id);
+      console.log("return", responseSalary.data.salary[0]);
       return {
         ok: true,
-        salary: responseSalary.data.data,
+        salary: responseSalary.data.salary[0],
       };
     } catch (error) {
+      console.log(error);
       return {
         ok: false,
         message: "Fetch data error!",
@@ -49,9 +49,7 @@ const salarySlice = createSlice({
       .addCase(fetchData.fulfilled, (state, action) => {
         state.loading = false;
         if (action.payload.ok) {
-          state.data = {
-            salary: action.payload.salary,
-          };
+          state.data = action.payload.salary;
         } else {
           state.error = action.payload.message;
         }

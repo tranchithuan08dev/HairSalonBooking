@@ -21,7 +21,11 @@ const bookingService = {
     });
   },
   generateQR: (data) => {
-    return API.call().post(`api/v1/payment/generateQR`, data);
+    return API.call().post(`api/v1/payment/generateQR`, data, {
+      headers: {
+        token: `Bearer ${token}`,
+      },
+    });
   },
   getServiceDetail: (id) => {
     return API.call().get(`api/v1/service/detail?id=${id}`, {
@@ -37,11 +41,11 @@ const bookingService = {
       },
     });
   },
-  updatePayment: (id, data) => {
-    return API.call().patch(`api/v1/payment/update?id=${id}`, data, {
+  createPayment: (data) => {
+    return API.call().post(`api/v1/payment/create`, data, {
       headers: {
-        token: `Bearer ${token}`,
-      },
+          token: `Bearer ${token}`,
+      }
     });
   },
   updateStatus: (data) => {
@@ -68,24 +72,6 @@ const bookingService = {
         "Content-Type": "multipart/form-data",
       },
     });
-  },
-  createPaymentUrl: (data) => {
-    const params = new URLSearchParams();
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        params.append(key, data[key]);
-      }
-    }
-    return API.call().post(
-      "api/v1/payment/create_payment_url",
-      params.toString(),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          token: `Bearer ${token}`,
-        },
-      }
-    );
-  },
+  }
 };
 export default bookingService;

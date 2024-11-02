@@ -4,7 +4,6 @@ import {
   fetchBookingDetail,
   updateStatus,
   setShowAlert,
-  createPayment
 } from "../../../../store/stylistSlice/BookingDetailSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -40,16 +39,9 @@ function Content() {
     };
     const result = await dispatch(updateStatus(form));
     if (result.payload.ok) {
-      const dataCreate = {
-        bookingID: data.data?.bookingID || "",
-      };
-
-      const resultCreate = await dispatch(createPayment(dataCreate));
-      if(resultCreate){
-        setIsDone(true);
-        fetch();
-      }
+      fetch();
       setShowModal(false);
+      setIsDone(true);
     }
   };
 
@@ -61,7 +53,7 @@ function Content() {
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
-        dispatch(setShowAlert());
+        dispatch(setShowAlert(false));
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -124,7 +116,7 @@ function Content() {
                       readOnly
                     />
                   </div>
-                    <div className="form-group form-groupTest">
+                  <div className="form-group form-groupTest">
                     <strong>Services:</strong>
                     <textarea
                       name="servicesName"
@@ -171,7 +163,8 @@ function Content() {
                     <input
                       type="number"
                       name="originalPrice"
-                      value={data.data?.originalPrice || 0}VND
+                      value={data.data?.originalPrice || 0}
+                      VND
                       readOnly
                     />
                   </div>
@@ -185,7 +178,7 @@ function Content() {
                     />
                   </div>
                 </div>
-                {(data.data?.status === "In-progress") && (
+                {data.data?.status === "In-progress" && (
                   <button
                     type="button"
                     onClick={handleUpdate}

@@ -5,26 +5,21 @@ import { fetchData } from "../../../../store/staffSlice/salarySlice";
 
 function Content() {
   const dispatch = useDispatch();
-  const {data, loading, error} = useSelector((state) => state.STAFF.salary);
+  const {data, loading} = useSelector((state) => state.STAFF.salary);
 
-  const { currentUser } = useSelector((state) => state.AUTH);
+  const { token, currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
+  console.log("crre", userID);
+
 
   useEffect(() => {
     const fetch = async () => {
-      await dispatch(fetchData({id: userID, date: getCurrentDate()}));
+      console.log(userID);
+      await dispatch(fetchData(userID));
     }
     fetch();
   }, [dispatch, userID])
 
-  const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); 
-    const day = String(today.getDate()).padStart(2, '0'); 
-    const date = `${year}-${month}-${day}`;
-    return date;
-  };
 
   const changeDate = (date) => {
     if (!date) return "";
@@ -37,9 +32,6 @@ function Content() {
   if (loading) {
     return <div>Loading...</div>;
   }
-  if(error){
-    return <div>Error...</div>;
-  }
 
   return (
     <>
@@ -51,7 +43,7 @@ function Content() {
                 <div className="d-flex align-items-center">
                   <div>
                     <p className="mb-0 text-secondary">Total Revenue</p>
-                    <h2 className="my-1 text-danger">{data.salary.totalSalary}$</h2>
+                    <h2 className="my-1 text-danger">{data.totalSalary}VND</h2>
                   </div>
                   <div className="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
                     <i className="fa fa-dollar"></i>
@@ -79,7 +71,7 @@ function Content() {
                     className="my-1 text-warning"
                     style={{ fontSize: "2rem" }}
                   >
-                    {changeDate(data.salary.receivedDate) || ""}
+                    {changeDate(data.receivedDate) || "None"}
                   </h2>
                 </div>
               </div>

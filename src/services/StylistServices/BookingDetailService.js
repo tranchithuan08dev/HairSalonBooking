@@ -26,13 +26,6 @@ const bookingDetailService = {
       }
     });
   },
-  createPayment: (data) => {
-    return API.call().post(`api/v1/payment/create`, data, {
-      headers: {
-          token: `Bearer ${token}`,
-      }
-    });
-  },
 };
 
 export default bookingDetailService;

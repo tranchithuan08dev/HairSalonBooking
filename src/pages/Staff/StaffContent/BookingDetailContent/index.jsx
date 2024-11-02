@@ -1,24 +1,25 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../../../assets/css/staff/bookingDetail.css";
 import { useEffect, useState } from "react";
 import {
-  updatePayment,
+  createPayment,
   fetchBookingDetail,
-  createPaymentUrl,
+  generateQR,
   setShowAlert,
   updateBooking,
   fetchServices,
   updateCustomer,
-  setError,
-  setMessage,
 } from "../../../../store/staffSlice/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CheckboxLoyaltyPoints from "../../../../components/Staff/CheckboxLoyaltyPoint";
 import ListServices from "../../../../components/Staff/ListServices";
-import BankSelect from "../../../../components/Staff/BankSelect";
+import { getAllFeedback } from "../../../../store/staffSlice/feedbackSlice";
+
+
 function Content() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const bookingID = queryParams.get("bookingID");
   const [status, setStatus] = useState("");
@@ -29,37 +30,30 @@ function Content() {
   const [getListServices, setListServices] = useState([]);
   const [checked, setChecked] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
-  const [bank, setBank] = useState("");
+  const [qr, setQr] = useState(null);
+  const [hasFeedback, setHasFeedback] = useState(true);
 
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
   );
-  console.log("detailBoooking", detail);
 
   const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
 
-  console.log(bookingID);
+  const handleFeedbackClick = () => {
+    navigate(`/staff/sendFeedback?bookingID=${bookingID}`);
+  };
 
   const fetchData = async () => {
     await dispatch(fetchBookingDetail(bookingID));
     await dispatch(fetchServices());
-    sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    const url = `${window.location.origin}/staff/bookingDetail?bookingID=${bookingID}`;
-    const isRedirect = sessionStorage.getItem("isRedirect") === "true";
-    if (isRedirect) {
-      const vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
-      if (vnp_ResponseCode === "00") {
-        await dispatch(setMessage("Transaction success!"));
-        await dispatch(setShowAlert(true));
-      } else {
-        await dispatch(setError("Transaction failed!"));
-        await dispatch(setShowAlert(true));
-      }
-      window.history.replaceState({}, document.title, url);
-      sessionStorage.setItem("isRedirect", "false");
-    }
+    if(detail.data?.customerID != null){
+      const feedbackExists = await dispatch(getAllFeedback());
+      const feedbackList = feedbackExists.payload.data.feedbacks;
+      const found = feedbackList.some(feedback => feedback.bookingID === bookingID);
+      setHasFeedback(found);
+    } 
   };
 
   useEffect(() => {
@@ -72,7 +66,7 @@ function Content() {
       setOriginalPrice(detail.data?.originalPrice || 0);
       setPrice(detail.data?.discountPrice || 0);
     }
-    const isPaid = detail.payment?.status === "paid";
+    console.log(isPaid);
     setIsPaid(isPaid);
   }, [detail]);
 
@@ -89,6 +83,7 @@ function Content() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const form = {
       bookingID: detail.data?.bookingID,
       stylistID: detail.data?.stylistID,
@@ -96,7 +91,7 @@ function Content() {
       originalPrice: originalPrice || 0,
       discountPrice: price || 0,
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
-      status: "Completed",
+      status: status === "Done" ? "Completed" : status !== "Done" ? status : "",
     };
     console.log(form);
     const resultUpdate = await dispatch(updateBooking(form));
@@ -106,32 +101,25 @@ function Content() {
         userID: userID,
         loyaltyPoints: 0,
       };
+
       for (const key in dataToUpdate) {
         formData.append(key, dataToUpdate[key]);
       }
-      await dispatch(updateCustomer(userID, form));
+      await dispatch(updateCustomer(userID, formData));
       fetchData();
     }
   };
+
   const handleGenerate = async () => {
-    if (bank === "") {
-      alert("Please choose bank!");
-      return;
-    }
-    const object = {
-      amount: price,
-      bankCode: bank,
-      language: "vn",
-      orderDescription: "Paid services hair harmony",
-      orderType: "other",
-      returnURL: window.location.href,
+    console.log("pushed");
+    const value = {
+      Amount: price || 0,
+      Description: "Payment for services at HairSalon",
     };
 
-    const result = await dispatch(createPaymentUrl(object));
-    if (result.payload.ok) {
-      sessionStorage.setItem("isRedirect", true);
-      const link = result.payload.link;
-      window.location.href = link;
+    const result = await dispatch(generateQR(value));
+    if (result.payload) {
+      setQr(result.payload.data.qrCode);
     }
   };
 
@@ -149,15 +137,14 @@ function Content() {
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
-    const dataUpdate = {
+    const dataCreate = {
+      bookingID: detail.data?.bookingID || "",
       method: paymentMethod,
       status: "paid",
     };
 
-    const result = await dispatch(
-      updatePayment({ id: detail.payment?.paymentID, data: dataUpdate })
-    );
-    if (result.payload.ok) {
+    const resultCreate = await dispatch(createPayment(dataCreate));
+    if (resultCreate.payload.ok) {
       fetchData();
       setShowForm(false);
     }
@@ -212,13 +199,14 @@ function Content() {
                     readOnly
                   />
                 </div>
-                <ListServices
-                  detail={detail}
-                  services={services}
-                  addService={addService}
-                  isPaid={isPaid}
-                  setListServices={setListServices}
-                />
+                {status !== "Completed" && (
+                  <ListServices
+                    detail={detail}
+                    services={services}
+                    addService={addService}
+                    setListServices={setListServices}
+                  />
+                )}
                 <div className="form-group">
                   <strong>FullName:</strong>
                   <input
@@ -265,7 +253,6 @@ function Content() {
                         type="number"
                         name="originalPrice"
                         value={originalPrice || 0}
-                        VND
                         readOnly
                       />
                     </div>
@@ -286,7 +273,7 @@ function Content() {
                     <input
                       type="number"
                       name="originalPrice"
-                      value={price || 0}
+                      value={originalPrice || 0}
                       readOnly
                     />
                   </div>
@@ -308,7 +295,7 @@ function Content() {
                   </div>
                 )}
               </div>
-              {isPaid || status === "Cancelled" ? (
+              {status === "Cancelled" || status === "Completed" ? (
                 <></>
               ) : status === "In-progress" ? (
                 <button
@@ -325,7 +312,7 @@ function Content() {
                     onClick={handleGenerate}
                     className="generateQR button-cus"
                   >
-                    Pay by internet banking or bank
+                    Generate QR
                   </button>
                   <button
                     type="submit"
@@ -340,7 +327,7 @@ function Content() {
                       onClick={handleClickCreate}
                       className="buttonCreatePayment button-cus"
                     >
-                      Update payment
+                      Pay
                     </button>
                   )}
                 </>
@@ -383,14 +370,34 @@ function Content() {
               </div>
             )}
             <div className="col-md-6 QR">
-              <BankSelect isPaid={isPaid} setBank={setBank} />
-              <CheckboxLoyaltyPoints
-                loyaltyPoints={detail.data?.loyaltyPoints || 0}
-                originalPrice={originalPrice}
-                setDiscountPrice={setPrice}
-                setChecked={setChecked}
-                isPaid={isPaid}
-              />
+              {status === "Completed" && hasFeedback === false && (
+                <button
+                  onClick={handleFeedbackClick}
+                  className="feedback-button"
+                >
+                  Feedback
+                </button>
+              )}
+              {qr && (
+                <div className="Image justify-content align-items">
+                  <div className="imageContainer">
+                    <img
+                      style={{ width: "400px", height: "400px" }}
+                      src={qr}
+                      alt="QR Code"
+                    />
+                  </div>
+                </div>
+              )}
+              {status !== "Completed" && (
+                <CheckboxLoyaltyPoints
+                  loyaltyPoints={detail.data?.loyaltyPoints || 0}
+                  originalPrice={originalPrice}
+                  setDiscountPrice={setPrice}
+                  setChecked={setChecked}
+                  isPaid={isPaid}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -134,64 +134,24 @@ export const generateQR = createAsyncThunk(
   }
 );
 
-export const updatePayment = createAsyncThunk(
-  `${name}/updatePayment`,
-  async ({ id, data }) => {
-    try {
-      const response = await bookingService.updatePayment(id, data);
+export const createPayment = createAsyncThunk(
+  `${name}/createPayment`,
+  async (data) => {
+    try{
+      const response = await bookingService.createPayment(data);
       console.log(response.data);
       return {
         ok: true,
-        message: "Update payment successfully!",
+        message: "Created payment successfully!"
       };
-    } catch (error) {
+    }catch(error){
       return {
         ok: false,
-        error: "This booking was paid!",
+        error: "Cannot create!",
       };
     }
   }
-);
-
-export const createPaymentUrl = createAsyncThunk(
-  `${name}/createPaymentUrl`,
-  async (data) => {
-    try {
-      const response = await bookingService.createPaymentUrl(data);
-      console.log(response.data.link);
-      return {
-        ok: true,
-        link: response.data.link,
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        ok: false,
-        error: "Error",
-      };
-    }
-  }
-);
-
-export const vnpayReturnURL = createAsyncThunk(
-  `${name}/vnpayReturnURL`,
-  async (data) => {
-    try {
-      const response = await bookingService.vnpayReturnURL(data);
-      console.log(response.data);
-      return {
-        ok: true,
-        data: response.data,
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        ok: false,
-        error: "Error",
-      };
-    }
-  }
-);
+)
 
 export const updateStatus = createAsyncThunk(
   `${name}/updateStatus`,
@@ -282,20 +242,20 @@ const bookingSlice = createSlice({
       .addCase(fetchBookingDetail.rejected, (state, action) => {
         state.error = action.payload.message;
       })
-      .addCase(updatePayment.pending, (state) => {
+      .addCase(createPayment.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updatePayment.fulfilled, (state, action) => {
+      .addCase(createPayment.fulfilled, (state, action) => {
         state.loading = false;
         state.showAlert = true;
-        if (action.payload.ok) {
+        if(action.payload.ok){
           state.message = action.payload.message;
-        } else {
+        }else{
           state.error = action.payload.error;
         }
       })
-      .addCase(updatePayment.rejected, (state, action) => {
-        state.error = action.payload.message;
+      .addCase(createPayment.rejected, (state, action) => {
+        state.error = action.payload.error;
       })
       .addCase(updateBooking.pending, (state) => {
         state.loading = true;
@@ -362,22 +322,6 @@ const bookingSlice = createSlice({
       .addCase(updateCustomer.rejected, (state, action) => {
         state.error = action.payload.message;
       })
-      .addCase(createPaymentUrl.fulfilled, (state, action) => {
-        if (action.payload.ok) {
-          state.link = action.payload.link;
-        } else {
-          state.showAlert = true;
-          state.error = action.payload.message;
-        }
-      })
-      .addCase(vnpayReturnURL.fulfilled, (state, action) => {
-        if (action.payload.ok) {
-          state.link = action.payload.data;
-        } else {
-          state.showAlert = true;
-          state.error = action.payload.message;
-        }
-      });
   },
 });
 

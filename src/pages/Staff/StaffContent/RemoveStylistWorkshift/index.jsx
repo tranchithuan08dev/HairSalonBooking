@@ -30,7 +30,7 @@ function Content() {
                     acc[item.shiftDay] = [timeRange];
                 }
             }
-            return acc; // Đảm bảo luôn trả về acc
+            return acc;
         }, {});
 
         const arrayWorkshift = Object.entries(groupedWorkShifts).map(
@@ -107,11 +107,11 @@ function Content() {
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
-        dispatch(setShowAlert());
+        dispatch(setShowAlert(false));
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [showAlert, dispatch]);
+  }, [showAlert]);
 
   return (
     <div className="container mt-4">

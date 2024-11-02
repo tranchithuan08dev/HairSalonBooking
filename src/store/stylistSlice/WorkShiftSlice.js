@@ -6,21 +6,17 @@ const initialState = {
   duplicated: [],
   loading: true,
   error: null,
+  showAlert: false
 };
 
 const name = "workshift";
 
 export const getAll = createAsyncThunk(`${name}/getAll`, async (id) => {
   try {
-    console.log("Fetching workshift details...");
     const response = await workshiftService.getAllDetailByID(id);
     const responseData = response.data.data;
-    console.log("Response Data:", responseData);
-
-    console.log("Fetching bookings...");
     const bookingResponse = await workshiftService.getAllBooking();
     const bookings = bookingResponse.data.bookings;
-    console.log("Bookings:", bookings);
 
     const mergedData = responseData.map((shift) => {
       const matchingBooking = bookings.find(
@@ -30,10 +26,6 @@ export const getAll = createAsyncThunk(`${name}/getAll`, async (id) => {
         ? { ...shift, bookingID: matchingBooking.bookingID }
         : shift;
     });
-
-    console.log("Merged Data:", mergedData);
-
-    console.log("Fetching schedule...");
     const scheduleWorkshift = await workshiftService.getAllByStylistID(id);
     const schedule = scheduleWorkshift.data.data;
 
@@ -106,13 +98,18 @@ export const createStylistWorkshift = createAsyncThunk(`${name}/create`, async (
   }
 });
 
-
 const stylistWorkshiftSlice = createSlice({
   name,
   initialState,
   reducers: {
     setLoading: (state, action) => {
       state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setShowAlert: (state) => {
+      state.showAlert = !state.showAlert;
     },
   },
   extraReducers: (builder) => {
@@ -172,4 +169,9 @@ const stylistWorkshiftSlice = createSlice({
   },
 });
 
+
+export const {
+  setError,
+  setShowAlert,
+} = stylistWorkshiftSlice.actions;
 export default stylistWorkshiftSlice.reducer;

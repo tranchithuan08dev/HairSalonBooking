@@ -40,11 +40,29 @@
 .show-more:hover {
     text-decoration: none;
 }
-
-.feedback .services {
-    font-size: 14px;
-    color: #ffffff;
-}
+.services {
+    margin-top: 10px; 
+  }
+  
+  .services h6 {
+    margin-bottom: 10px; 
+  }
+  
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap; 
+  }
+  
+  .service-tag {
+    background-color: #007bff; 
+    color: #ffffff; 
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    margin-right: 5px; 
+    margin-bottom: 5px; 
+    font-size: 14px; 
+  }
+  
 
 .pagination {
     display: flex;

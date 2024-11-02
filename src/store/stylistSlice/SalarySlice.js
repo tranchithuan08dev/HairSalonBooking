@@ -11,18 +11,18 @@ const name = "salary";
 
 export const fetchData = createAsyncThunk(
   `${name}/fetchData`, 
-  async ({id, date}) => {
+  async ({userID, stylistID}) => {
       try {
           const responseBooking = await salaryService.countBookings();
           const matchingBookings = responseBooking.data.bookings.filter(
-            (booking) => booking.stylistID === id
+            (booking) => booking.stylistID === stylistID
           )
-          const responseSalary = await salaryService.getTotalSalaryUntilNow(id, date);
+          const responseSalary = await salaryService.getTotalSalaryUntilNow(userID);
 
           return {
               ok: true,
               count: matchingBookings.length,
-              salary: responseSalary.data.data
+              salary: responseSalary.data.salary[0]
           };
       } catch (error) {
           return {
