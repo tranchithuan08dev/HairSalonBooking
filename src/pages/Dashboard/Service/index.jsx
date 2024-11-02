@@ -263,8 +263,8 @@ const Service = () => {
             rules={[{ required: true, message: "Please select a type" }]}
           >
             <Radio.Group>
-              <Radio value={"single"}>Single</Radio>
-              <Radio value={"combo"}>Combo</Radio>
+              <Radio value={"Single"}>Single</Radio>
+              <Radio value={"Combo"}>Combo</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item
