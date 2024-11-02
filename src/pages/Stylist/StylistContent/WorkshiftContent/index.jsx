@@ -95,9 +95,27 @@ function Content() {
       "Sunday",
     ];
 
-    const disableCount = currentDay === 0 ? 6 : currentDay - 1; 
+    if (currentDay === 0) {
+      return []; 
+    }
+
+    const disableCount = currentDay === 0 ? 6 : currentDay - 1;
     return days.slice(0, disableCount);
   };
+
+  const getDaysOfWeek = () => {
+    const days = [];
+    const today = new Date();
+    
+    // Tạo danh sách các ngày bắt đầu từ hôm nay
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(today);
+      day.setDate(today.getDate() + i); // Thêm i ngày vào hôm nay
+      days.push(day.toLocaleDateString('en-US', { weekday: 'long' })); // Lấy tên ngày
+    }
+    return days;
+  };
+  
 
   const currentDay = getCurrentDay();
   const disabledDays = disableSlots(currentDay);

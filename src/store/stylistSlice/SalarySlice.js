@@ -15,8 +15,8 @@ export const fetchData = createAsyncThunk(
       try {
           const responseBooking = await salaryService.countBookings();
           const matchingBookings = responseBooking.data.bookings.filter(
-            (booking) => booking.stylistID === stylistID
-          )
+            (booking) => booking.stylistID === stylistID && booking.status === "Completed"
+          );          
           const responseSalary = await salaryService.getTotalSalaryUntilNow(userID);
           return {
               ok: true,

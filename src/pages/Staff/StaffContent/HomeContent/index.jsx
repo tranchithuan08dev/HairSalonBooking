@@ -131,7 +131,7 @@ function Content() {
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [showAlert]);
+  }, [showAlert, dispatch]);
 
   if (loading) {
     return <>Loading...</>;
@@ -139,14 +139,15 @@ function Content() {
 
   return (
     <>
-      {showAlert && (
-        <div
-          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
-          role="alert"
-        >
-          {message || error || ""}
-        </div>
-      )}
+      {showAlert && (message || error) && (
+  <div
+    className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+    role="alert"
+  >
+    {message || error}
+  </div>
+)}
+
       <div className="container">
         <div className="card mb-3 card-custom">
           <div className="card-header">Filter & Search</div>

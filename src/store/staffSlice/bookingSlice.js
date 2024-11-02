@@ -160,7 +160,8 @@ export const updateStatus = createAsyncThunk(
       const response = await bookingService.updateStatus(data);
       console.log("Data update: ", response);
       return {
-        ok: true
+        ok: true,
+        message: "Update status successfully!"
       };
     } catch (error) {
       return {
@@ -223,15 +224,13 @@ const bookingSlice = createSlice({
           state.data = { ...state.data, ...action.payload.data };
         }
       })
-      .addCase(fetchBookings.rejected, (state) => {
-        state.loading = false;
-      })
       .addCase(fetchBookingDetail.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchBookingDetail.fulfilled, (state, action) => {
         state.loading = false;
+        state.showAlert = true;
         if (action.payload.ok) {
           state.detail = action.payload;
         } else {
@@ -247,14 +246,12 @@ const bookingSlice = createSlice({
       .addCase(createPayment.fulfilled, (state, action) => {
         state.loading = false;
         state.showAlert = true;
+        console.log("payment", action.payload); 
         if(action.payload.ok){
           state.message = action.payload.message;
         }else{
           state.error = action.payload.error;
         }
-      })
-      .addCase(createPayment.rejected, (state, action) => {
-        state.error = action.payload.error;
       })
       .addCase(updateBooking.pending, (state) => {
         state.loading = true;
@@ -263,14 +260,12 @@ const bookingSlice = createSlice({
       .addCase(updateBooking.fulfilled, (state, action) => {
         state.loading = false;
         state.showAlert = true;
-        if (action.payload.ok) {
-          state.message = "Booking updated successfully!";
-        } else {
-          state.error = action.payload.message;
-        }
-      })
-      .addCase(updateBooking.rejected, (state, action) => {
-        state.error = action.payload.message;
+        console.log(action.payload); 
+        // if (action.payload.ok) {
+        //   state.message = "Booking updated successfully!";
+        // } else {
+        //   state.error = action.payload.message;
+        // }
       })
       .addCase(generateQR.pending, (state) => {
         state.loading = true;
@@ -286,9 +281,6 @@ const bookingSlice = createSlice({
           state.error = action.payload.message;
         }
       })
-      .addCase(generateQR.rejected, (state, action) => {
-        state.error = action.payload.message;
-      })
       .addCase(updateStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -296,15 +288,12 @@ const bookingSlice = createSlice({
       .addCase(updateStatus.fulfilled, (state, action) => {
         state.loading = false;
         state.showAlert = true;
-        if (action.payload.ok) {
-          state.message = action.payload.success;
-        } else {
-          state.error = action.payload.message;
-        }
-      })
-      .addCase(updateStatus.rejected, (state, action) => {
-        state.showAlert = true;
-        state.error = action.payload.message;
+        console.log(action.payload); 
+        // if (action.payload.ok) {
+        //   state.message = action.payload.success;
+        // } else {
+        //   state.error = action.payload.message;
+        // }
       })
       .addCase(fetchServices.fulfilled, (state, action) => {
         state.loading = false;
@@ -316,9 +305,6 @@ const bookingSlice = createSlice({
         if (action.payload.ok) {
           state.message = action.payload.success;
         }
-      })
-      .addCase(updateCustomer.rejected, (state, action) => {
-        state.error = action.payload.message;
       })
   },
 });
