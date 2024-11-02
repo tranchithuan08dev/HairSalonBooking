@@ -41,7 +41,7 @@ function AboutUsPage() {
             committed to making you look and feel your best.
           </p>
         </div>
-        <div className="row">
+        <div className=" row">
           {/* Main Image */}
           <div className="col-md-8">
             <img
@@ -55,7 +55,7 @@ function AboutUsPage() {
             <div className="row mb-4">
               <div className="col-12">
                 <img
-                  src={`https://images.unsplash.com/photo-1521490683712-35a1cb235d1c?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`}
+                  src={`https://images.unsplash.com/photo-1521490214993-bfb6f7dc096d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDZ8fGJhcmJlcnNob3B8ZW58MHx8MHx8fDA%3D`}
                   alt="Service 1"
                   className="img-fluid rounded"
                 />
