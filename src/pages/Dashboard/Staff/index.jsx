@@ -294,10 +294,11 @@ const Staff = () => {
               decimalScale={0}
               fixedDecimalScale={false}
               allowNegative={false}
+              suffix="VND"
             />
           </Form.Item>
           <Form.Item name="totalsalary" label="Salary">
-            <Input addonAfter="USD" disabled />
+            <Input addonAfter="VND" disabled />
           </Form.Item>
           <Form.Item
             label="Phone"
