@@ -43,7 +43,7 @@ const dashboardService = {
     });
   },
   getSalary: (id) => {
-    return API.call().get(`/api/v1/salary/monthlySalary?id=${id}`, {
+    return API.call().get(`/api/v1/salary/generalMonthlySalary?id=${id}`, {
       headers: {
         token: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
