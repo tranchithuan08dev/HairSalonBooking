@@ -102,10 +102,10 @@ export const updateBooking = createAsyncThunk(
     try {
       console.log("send", data);
       const response = await bookingService.updateBooking(data);
-      console.log("Data update: ", response);
+      console.log("Data update booking: ", response.data);
       return {
         ok: true,
-        data: response.data.data,
+        data: response.data,
       };
     } catch (error) {
       return {
@@ -160,8 +160,7 @@ export const updateStatus = createAsyncThunk(
       const response = await bookingService.updateStatus(data);
       console.log("Data update: ", response);
       return {
-        ok: true,
-        success: "Updated status successfullly!",
+        ok: true
       };
     } catch (error) {
       return {
@@ -184,7 +183,7 @@ export const updateCustomer = createAsyncThunk(
     } catch (error) {
       return {
         ok: false,
-        message: "Cannot update cusomer!",
+        message: "Cannot update customer!",
       };
     }
   }
@@ -265,7 +264,6 @@ const bookingSlice = createSlice({
         state.loading = false;
         state.showAlert = true;
         if (action.payload.ok) {
-          state.data = { ...state.data, ...action.payload.data };
           state.message = "Booking updated successfully!";
         } else {
           state.error = action.payload.message;

@@ -9,12 +9,14 @@ import {
   updateBooking,
   fetchServices,
   updateCustomer,
+  updateStatus,
+  setMessage,
+  setError,
 } from "../../../../store/staffSlice/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CheckboxLoyaltyPoints from "../../../../components/Staff/CheckboxLoyaltyPoint";
 import ListServices from "../../../../components/Staff/ListServices";
 import { getAllFeedback } from "../../../../store/staffSlice/feedbackSlice";
-
 
 function Content() {
   const dispatch = useDispatch();
@@ -32,11 +34,11 @@ function Content() {
   const [isPaid, setIsPaid] = useState(false);
   const [qr, setQr] = useState(null);
   const [hasFeedback, setHasFeedback] = useState(true);
+  const [qrGenerated, setQrGenerated] = useState(false);
 
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
   );
-
   const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
 
@@ -47,13 +49,17 @@ function Content() {
   const fetchData = async () => {
     await dispatch(fetchBookingDetail(bookingID));
     await dispatch(fetchServices());
+    dispatch(setMessage(null));
+    dispatch(setError(null));
 
-    if(detail.data?.customerID != null){
+    if (detail.data?.customerID != null) {
       const feedbackExists = await dispatch(getAllFeedback());
       const feedbackList = feedbackExists.payload.data.feedbacks;
-      const found = feedbackList.some(feedback => feedback.bookingID === bookingID);
+      const found = feedbackList.some(
+        (feedback) => feedback.bookingID === bookingID
+      );
       setHasFeedback(found);
-    } 
+    }
   };
 
   useEffect(() => {
@@ -81,9 +87,15 @@ function Content() {
     console.log("Original Price:", totalPrice);
   };
 
+  useEffect(() => {
+    const serviceIDs = detail.detail
+      .filter((item) => !item.deleted)
+      .map((item) => item.serviceID);
+    setListServices(serviceIDs);
+  }, [detail.detail]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const form = {
       bookingID: detail.data?.bookingID,
       stylistID: detail.data?.stylistID,
@@ -91,23 +103,30 @@ function Content() {
       originalPrice: originalPrice || 0,
       discountPrice: price || 0,
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
-      status: status === "Done" ? "Completed" : status !== "Done" ? status : "",
     };
     console.log(form);
-    const resultUpdate = await dispatch(updateBooking(form));
-    if (resultUpdate.payload.ok) {
-      const formData = new FormData();
-      const dataToUpdate = {
-        userID: userID,
-        loyaltyPoints: 0,
-      };
-
-      for (const key in dataToUpdate) {
-        formData.append(key, dataToUpdate[key]);
+      const resultUpdate = await dispatch(updateBooking(form));
+      if (resultUpdate.payload.ok) {
+        const formUpdate = {
+          bookingID: detail.data?.bookingID,
+          status: "Completed",
+        };
+        const resultUpdateStatus = await dispatch(updateStatus(formUpdate));
+        if (resultUpdateStatus.payload.ok) {
+          const formData = new FormData();
+          const dataToUpdate = {
+            userID: userID,
+            loyaltyPoints: 0,
+          };
+          for (const key in dataToUpdate) {
+            formData.append(key, dataToUpdate[key]);
+          }
+          await dispatch(updateCustomer(userID, formData));
+          fetchData();
+        }
       }
-      await dispatch(updateCustomer(userID, formData));
-      fetchData();
-    }
+      dispatch(setMessage("Update booking successfully!"));
+      dispatch(setShowAlert(true));
   };
 
   const handleGenerate = async () => {
@@ -120,6 +139,7 @@ function Content() {
     const result = await dispatch(generateQR(value));
     if (result.payload) {
       setQr(result.payload.data.qrCode);
+      setQrGenerated(true);
     }
   };
 
@@ -153,10 +173,13 @@ function Content() {
     if (showAlert) {
       const timer = setTimeout(() => {
         dispatch(setShowAlert(false));
+        dispatch(setMessage(null)); // Reset message
+        dispatch(setError(null)); // Reset error
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [showAlert]);
+  }, [showAlert, dispatch]);
+  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -199,12 +222,12 @@ function Content() {
                     readOnly
                   />
                 </div>
-                  <ListServices
-                    detail={detail}
-                    services={services}
-                    addService={addService}
-                    setListServices={setListServices}
-                  />
+                <ListServices
+                  detail={detail}
+                  services={services}
+                  addService={addService}
+                  setListServices={setListServices}
+                />
                 <div className="form-group">
                   <strong>FullName:</strong>
                   <input
@@ -331,7 +354,7 @@ function Content() {
                 </>
               )}
 
-              {showAlert && (
+              {showAlert && qrGenerated && (
                 <div
                   className={`alert ${
                     message ? "alert-success" : "alert-danger"
