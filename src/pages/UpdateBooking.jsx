@@ -41,7 +41,7 @@ function UpdateBooking() {
 
   // console.log("dataService", dataService);
   // console.log("dataStylist", dataStylist);
-  // console.log("dataStylistById", dataStylistById);
+  console.log("dataStylistById", dataStylistById);
   // console.log("dataWorkShift", dataWorkShift);
   console.log("tokennnn", auth);
   console.log("Guest", guest);
@@ -66,9 +66,10 @@ function UpdateBooking() {
   const [todayDayOfWeek, setTodayDayOfWeek] = useState("");
   const [tomorrowDayOfWeek, setTomorrowDayOfWeek] = useState("");
   const [selectDay, setSelectDay] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber || guest?.guest?.phoneNumber);
-    setName(auth?.record?.fullName || guest?.guest?.fullName);
+    setName(auth?.actorByRole?.fullName || guest?.guest?.fullName);
     setCustomerID(auth?.actorByRole?.customerID || null);
     setGuestID(guest.guest?.guestIDv || null);
     setbookingID(booking?.newBooking?.bookingID);
@@ -224,7 +225,7 @@ function UpdateBooking() {
     // Get today's date
     const today = new Date();
     const dayToday = String(today.getDate()).padStart(2, "0");
-    const monthToday = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const monthToday = String(today.getMonth() + 1).padStart(2, "0");
     const yearToday = today.getFullYear();
     const todayDay = daysOfWeek[today.getDay()];
     setTodayDayOfWeek(todayDay);
@@ -246,19 +247,27 @@ function UpdateBooking() {
     console.log("value", value);
     if (value === "1") {
       setSelectDay(todayDayOfWeek);
-      // dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Monday" }));
+      setSelectedDate(selectedToday);
     } else {
       setSelectDay(tomorrowDayOfWeek);
-      // dispatch(
-      //   fetchWorkShift({ id: selectedStylist, shiftDate: tomorrowDayOfWeek })
-      // );
+      setSelectedDate(selectedTomorrow);
     }
   };
 
   useEffect(() => {
-    dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: "Friday" }));
+    if (selectedStylist != null && selectDay != null) {
+      dispatch(fetchWorkShift({ id: selectedStylist, shiftDate: selectDay }));
+    }
   }, [selectedStylist, selectDay]);
 
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split("/").map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  const isToday =
+    selectedDate &&
+    parseDate(selectedDate).toDateString() === new Date().toDateString();
   return (
     <>
       <div className="container-fluid bg-dark">
@@ -367,7 +376,14 @@ function UpdateBooking() {
                           <div>
                             <h5 className="mb-0">{dataStylistById.fullName}</h5>
                             <p className="mb-0">
-                              <i className="bi bi-star-fill text-warning" />
+                              {[
+                                ...Array(Math.min(dataStylistById.level, 5)),
+                              ].map((_, index) => (
+                                <i
+                                  key={index}
+                                  className="bi bi-star-fill text-warning"
+                                />
+                              ))}
                             </p>
                           </div>
                         </div>
@@ -393,7 +409,7 @@ function UpdateBooking() {
                     {dataService.map((item) => (
                       <option key={item.id} value={JSON.stringify(item)}>
                         {item.serviceName} -{" "}
-                        {formatPriceToUSD(item.price.toLocaleString())} USD
+                        {formatPriceToUSD(item.price.toLocaleString())} VND
                       </option>
                     ))}
                   </select>
@@ -421,7 +437,7 @@ function UpdateBooking() {
               <div className="col-md-6 text-white">
                 <p>
                   <strong>Total: </strong>
-                  {totalPrice} USD
+                  {totalPrice} VND
                 </p>
               </div>
               <div className="col-md-6 text-white">
@@ -488,12 +504,14 @@ function UpdateBooking() {
                   style={{
                     pointerEvents:
                       slot.status === "Inactive" ||
-                      formatTimeToHHmm(slot.startTime) <= currentHour
+                      (isToday &&
+                        formatTimeToHHmm(slot.startTime) <= currentHour)
                         ? "none"
                         : "auto", // Disable if status is active or time is in the past
                     backgroundColor:
                       slot.status === "Inactive" ||
-                      formatTimeToHHmm(slot.startTime) <= currentHour
+                      (isToday &&
+                        formatTimeToHHmm(slot.startTime) <= currentHour)
                         ? "#e0e0e0"
                         : selectedTime === formatTimeToHHmm(slot.startTime)
                         ? "#4caf50"
@@ -508,7 +526,8 @@ function UpdateBooking() {
                         : "#ced4da", // Border color
                     cursor:
                       slot.status === "Inactive" ||
-                      formatTimeToHHmm(slot.startTime) <= currentHour
+                      (isToday &&
+                        formatTimeToHHmm(slot.startTime) <= currentHour)
                         ? "not-allowed"
                         : "pointer",
                   }}
