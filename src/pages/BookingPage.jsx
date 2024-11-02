@@ -62,8 +62,8 @@ function BookingPage() {
   const [tomorrowDayOfWeek, setTomorrowDayOfWeek] = useState("");
   const [selectDay, setSelectDay] = useState(null);
   useEffect(() => {
-    setPhone(auth?.record?.phoneNumber);
-    setName(auth?.record?.email);
+    setPhone(auth?.record?.phoneNumber || guest?.guest?.phoneNumber);
+    setName(auth?.record?.fullName || guest?.guest?.fullName);
     setCustomerID(auth?.actorByRole?.customerID || null);
     setGuestID(guest.guest?.guestID);
   }, [auth]);
