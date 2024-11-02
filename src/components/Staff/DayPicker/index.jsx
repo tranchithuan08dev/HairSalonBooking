@@ -4,19 +4,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useSearchParams } from "react-router-dom";
 
 function DayPicker() {
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmitDate = () => {
     if (date) {
-        const dateValue = date.toLocaleDateString("en-GB"); 
-        console.log(dateValue);
-        const params = new URLSearchParams(searchParams);
-        params.set("appointmentAt", dateValue); 
-        setSearchParams(params);
+      const dateValue = date.toLocaleDateString("en-GB");
+      console.log(dateValue);
+      const params = new URLSearchParams(searchParams);
+      params.set("appointmentAt", dateValue);
+      setSearchParams(params);
     }
-};
-
+  };
 
   const handleDateChange = (selectedDate) => {
     setDate(selectedDate);
@@ -24,9 +23,9 @@ function DayPicker() {
 
   return (
     <>
-      <div style={{display: 'flex', flexDirection: 'column'}}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div>
-          <label htmlFor="appoinmentAt">Search by appoinment date</label>
+          <label htmlFor="appointmentAt">Search by appointment date</label>
         </div>
         <div>
           <form
@@ -41,7 +40,7 @@ function DayPicker() {
               placeholderText="DD-MM-YYYY"
               className="form-control-Date"
               dateFormat="dd-MM-yyyy"
-              id="appoinmentAt"
+              id="appointmentAt"
             />
             <button type="submit" className="dateFind">
               Find

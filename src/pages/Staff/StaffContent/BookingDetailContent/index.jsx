@@ -47,14 +47,16 @@ function Content() {
   };
 
   const fetchData = async () => {
-    await dispatch(fetchBookingDetail(bookingID));
-    await dispatch(fetchServices());
-    dispatch(setMessage(null));
-    dispatch(setError(null));
+    // Fetch booking detail and services in parallel
+    const [bookingDetailResponse, servicesResponse] = await Promise.all([
+      dispatch(fetchBookingDetail(bookingID)),
+      dispatch(fetchServices()),
+    ]);
 
-    if (detail.data?.customerID != null) {
-      const feedbackExists = await dispatch(getAllFeedback());
-      const feedbackList = feedbackExists.payload.data.feedbacks;
+    const bookingDetail = bookingDetailResponse.payload.data;
+    if (bookingDetail?.customerID != null) {
+      const feedbackResponse = await dispatch(getAllFeedback());
+      const feedbackList = feedbackResponse.payload.data.feedbacks;
       const found = feedbackList.some(
         (feedback) => feedback.bookingID === bookingID
       );
@@ -72,9 +74,13 @@ function Content() {
       setOriginalPrice(detail.data?.originalPrice || 0);
       setPrice(detail.data?.discountPrice || 0);
     }
-    console.log(isPaid);
-    setIsPaid(isPaid);
   }, [detail]);
+
+  useEffect(() => {
+    if (detail.payment?.status === "paid") {
+      setIsPaid(true);
+    }
+  }, [detail?.payment]);
 
   const addService = (newService) => {
     const serviceIDs = newService.slice(0, -1);
@@ -89,16 +95,14 @@ function Content() {
 
   useEffect(() => {
     if (Array.isArray(detail.detail) && detail.detail.length > 0) {
-        const serviceIDs = detail.detail
-          .filter((item) => !item.deleted)
-          .map((item) => item.serviceID);
-        setListServices(serviceIDs);
+      const serviceIDs = detail.detail
+        .filter((item) => !item.deleted)
+        .map((item) => item.serviceID);
+      setListServices(serviceIDs);
     } else {
-        console.warn("detail.detail là rỗng hoặc không phải là một mảng.");
-        setListServices([]); 
+      setListServices([]);
     }
-}, [detail.detail]);
-
+  }, [detail.detail]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,28 +115,28 @@ function Content() {
       stylistWorkShiftID: detail.data?.stylistWorkShiftID,
     };
     console.log(form);
-      const resultUpdate = await dispatch(updateBooking(form));
-      if (resultUpdate.payload.ok) {
-        const formUpdate = {
-          bookingID: detail.data?.bookingID,
-          status: "Completed",
+    const resultUpdate = await dispatch(updateBooking(form));
+    if (resultUpdate.payload.ok) {
+      const formUpdate = {
+        bookingID: detail.data?.bookingID,
+        status: "Completed",
+      };
+      const resultUpdateStatus = await dispatch(updateStatus(formUpdate));
+      if (resultUpdateStatus.payload.ok) {
+        const formData = new FormData();
+        const dataToUpdate = {
+          userID: userID,
+          loyaltyPoints: 0,
         };
-        const resultUpdateStatus = await dispatch(updateStatus(formUpdate));
-        if (resultUpdateStatus.payload.ok) {
-          const formData = new FormData();
-          const dataToUpdate = {
-            userID: userID,
-            loyaltyPoints: 0,
-          };
-          for (const key in dataToUpdate) {
-            formData.append(key, dataToUpdate[key]);
-          }
-          await dispatch(updateCustomer(userID, formData));
-          fetchData();
+        for (const key in dataToUpdate) {
+          formData.append(key, dataToUpdate[key]);
         }
+        await dispatch(updateCustomer(userID, formData));
+        fetchData();
       }
-      dispatch(setMessage("Update booking successfully!"));
-      dispatch(setShowAlert(true));
+    }
+    await dispatch(setMessage("Booking updated successfully!"));
+    await dispatch(setShowAlert(true));
   };
 
   const handleGenerate = async () => {
@@ -179,13 +183,10 @@ function Content() {
     if (showAlert) {
       const timer = setTimeout(() => {
         dispatch(setShowAlert(false));
-        dispatch(setMessage(null)); // Reset message
-        dispatch(setError(null)); // Reset error
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [showAlert, dispatch]);
-  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -360,7 +361,7 @@ function Content() {
                 </>
               )}
 
-              {showAlert && qrGenerated && (
+              {showAlert && (message || error) && (
                 <div
                   className={`alert ${
                     message ? "alert-success" : "alert-danger"
@@ -405,7 +406,7 @@ function Content() {
                   Feedback
                 </button>
               )}
-              {qr && (
+              {qr && !qrGenerated && (
                 <div className="Image justify-content align-items">
                   <div className="imageContainer">
                     <img

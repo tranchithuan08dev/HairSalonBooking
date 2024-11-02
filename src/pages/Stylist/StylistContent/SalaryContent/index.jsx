@@ -40,7 +40,7 @@ function Content() {
                 <div className="d-flex align-items-center">
                   <div>
                     <p className="mb-0 text-secondary">Total Appoinment</p>
-                    <h2 className="my-1 text-danger">{data.count}</h2>
+                    <h2 className="my-1 text-danger">{data.count || 0}</h2>
                   </div>
                   <div className="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
                     <i className="fa fa-dollar"></i>
