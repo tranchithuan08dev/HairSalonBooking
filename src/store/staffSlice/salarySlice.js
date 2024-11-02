@@ -13,6 +13,7 @@ export const fetchData = createAsyncThunk(
   `${name}/fetchData`,
   async (id) => {
     try {
+      console.log("id", id);
       const responseSalary = await salaryService.getTotalSalary(id);
       console.log("return", responseSalary.data.salary[0]);
       return {
@@ -20,6 +21,7 @@ export const fetchData = createAsyncThunk(
         salary: responseSalary.data.salary[0],
       };
     } catch (error) {
+      console.log(error);
       return {
         ok: false,
         message: "Fetch data error!",

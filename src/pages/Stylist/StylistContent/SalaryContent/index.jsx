@@ -7,13 +7,13 @@ function Content() {
   const dispatch = useDispatch();
   const {data, loading} = useSelector((state) => state.STYLIST.salary);
 
-  const { currentUser } = useSelector((state) => state.AUTH);
+  const { currentUser, token } = useSelector((state) => state.AUTH);
   const stylistID = currentUser?.actorByRole.stylistID;
   const userID = currentUser?.record.userID;
 
   useEffect(() => {
     const fetch = async () => {
-      await dispatch(fetchData({userID: userID ,stylistID: stylistID}));
+      await dispatch(fetchData({userID: userID ,stylistID: stylistID, token: token}));
     }
     fetch();
   }, [dispatch, stylistID])

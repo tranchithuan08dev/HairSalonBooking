@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../../../assets/css/staff/bookingDetail.css";
 import { useEffect, useState } from "react";
 import {
@@ -13,10 +13,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import CheckboxLoyaltyPoints from "../../../../components/Staff/CheckboxLoyaltyPoint";
 import ListServices from "../../../../components/Staff/ListServices";
+import { getAllFeedback } from "../../../../store/staffSlice/feedbackSlice";
+
 
 function Content() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const bookingID = queryParams.get("bookingID");
   const [status, setStatus] = useState("");
@@ -28,6 +31,7 @@ function Content() {
   const [checked, setChecked] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [qr, setQr] = useState(null);
+  const [hasFeedback, setHasFeedback] = useState(true);
 
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
@@ -36,9 +40,20 @@ function Content() {
   const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
 
+  const handleFeedbackClick = () => {
+    navigate(`/staff/sendFeedback?bookingID=${bookingID}`);
+  };
+
   const fetchData = async () => {
     await dispatch(fetchBookingDetail(bookingID));
     await dispatch(fetchServices());
+
+    if(detail.data?.customerID != null){
+      const feedbackExists = await dispatch(getAllFeedback());
+      const feedbackList = feedbackExists.payload.data.feedbacks;
+      const found = feedbackList.some(feedback => feedback.bookingID === bookingID);
+      setHasFeedback(found);
+    } 
   };
 
   useEffect(() => {
@@ -123,9 +138,9 @@ function Content() {
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     const dataCreate = {
-      bookingID: data.data?.bookingID || "",
+      bookingID: detail.data?.bookingID || "",
       method: paymentMethod,
-      status: "paid"
+      status: "paid",
     };
 
     const resultCreate = await dispatch(createPayment(dataCreate));
@@ -184,13 +199,14 @@ function Content() {
                     readOnly
                   />
                 </div>
-                <ListServices
-                  detail={detail}
-                  services={services}
-                  addService={addService}
-                  isPaid={isPaid}
-                  setListServices={setListServices}
-                />
+                {status !== "Completed" && (
+                  <ListServices
+                    detail={detail}
+                    services={services}
+                    addService={addService}
+                    setListServices={setListServices}
+                  />
+                )}
                 <div className="form-group">
                   <strong>FullName:</strong>
                   <input
@@ -279,7 +295,7 @@ function Content() {
                   </div>
                 )}
               </div>
-              {isPaid || status === "Cancelled" || status === "Completed" ? (
+              {status === "Cancelled" || status === "Completed" ? (
                 <></>
               ) : status === "In-progress" ? (
                 <button
@@ -354,6 +370,14 @@ function Content() {
               </div>
             )}
             <div className="col-md-6 QR">
+              {status === "Completed" && hasFeedback === false && (
+                <button
+                  onClick={handleFeedbackClick}
+                  className="feedback-button"
+                >
+                  Feedback
+                </button>
+              )}
               {qr && (
                 <div className="Image justify-content align-items">
                   <div className="imageContainer">
@@ -365,13 +389,15 @@ function Content() {
                   </div>
                 </div>
               )}
-              <CheckboxLoyaltyPoints
-                loyaltyPoints={detail.data?.loyaltyPoints || 0}
-                originalPrice={originalPrice}
-                setDiscountPrice={setPrice}
-                setChecked={setChecked}
-                isPaid={isPaid}
-              />
+              {status !== "Completed" && (
+                <CheckboxLoyaltyPoints
+                  loyaltyPoints={detail.data?.loyaltyPoints || 0}
+                  originalPrice={originalPrice}
+                  setDiscountPrice={setPrice}
+                  setChecked={setChecked}
+                  isPaid={isPaid}
+                />
+              )}
             </div>
           </div>
         </div>

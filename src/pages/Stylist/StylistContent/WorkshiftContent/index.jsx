@@ -100,8 +100,7 @@ function Content() {
   };
 
   const currentDay = getCurrentDay();
-  // const disabledDays = disableSlots(currentDay);
-  const disabledDays = disableSlots(2);
+  const disabledDays = disableSlots(currentDay);
 
   useEffect(() => {
     if (showAlert) {

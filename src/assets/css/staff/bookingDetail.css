@@ -192,4 +192,17 @@
   margin-right: 10px;
 }
 
+.feedback-button {
+  padding: 20px 40px;
+  background-color: rgb(29, 169, 29); 
+  color: white; 
+  border: none; 
+  border-radius: 5px;
+  min-width: 240px;
+}
+
+.feedback-button:hover {
+  background-color: blueviolet;
+}
+
 

@@ -245,11 +245,17 @@ const bookingSlice = createSlice({
       .addCase(createPayment.pending, (state) => {
         state.loading = true;
       })
-      .addCase(createPayment.fulfilled, (state) => {
+      .addCase(createPayment.fulfilled, (state, action) => {
         state.loading = false;
+        state.showAlert = true;
+        if(action.payload.ok){
+          state.message = action.payload.message;
+        }else{
+          state.error = action.payload.error;
+        }
       })
       .addCase(createPayment.rejected, (state, action) => {
-        state.error = action.payload.message;
+        state.error = action.payload.error;
       })
       .addCase(updateBooking.pending, (state) => {
         state.loading = true;

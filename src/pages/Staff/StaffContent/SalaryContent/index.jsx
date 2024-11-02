@@ -5,10 +5,12 @@ import { fetchData } from "../../../../store/staffSlice/salarySlice";
 
 function Content() {
   const dispatch = useDispatch();
-  const {data, loading, error} = useSelector((state) => state.STAFF.salary);
+  const {data, loading} = useSelector((state) => state.STAFF.salary);
 
-  const { currentUser } = useSelector((state) => state.AUTH);
+  const { token, currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
+  console.log("crre", userID);
+
 
   useEffect(() => {
     const fetch = async () => {
@@ -17,8 +19,6 @@ function Content() {
     }
     fetch();
   }, [dispatch, userID])
-
-  console.log("data ne", data);
 
 
   const changeDate = (date) => {
@@ -31,9 +31,6 @@ function Content() {
 
   if (loading) {
     return <div>Loading...</div>;
-  }
-  if(error){
-    return <div>Error...</div>;
   }
 
   return (

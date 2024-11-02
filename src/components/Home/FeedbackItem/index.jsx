@@ -11,7 +11,7 @@ const FeedbackItem = (props) => {
   };
 
   if (!feedbackData) {
-    return <div>Nothing</div>;
+    return <div>Not found</div>;
   } else {
     console.log("db", feedbackData);
   }
@@ -19,13 +19,19 @@ const FeedbackItem = (props) => {
 
   return (
     <div className="feedback">
-      <h4 className="feedbackCusName">{feedbackData.customerName || feedbackData.guestID}</h4>
       <span className="date">{formattedDate}</span>
       <div className="rating">
         {"★".repeat(Math.round(feedbackData.rating))}
         {"☆".repeat(5 - Math.round(feedbackData.rating))}
       </div>
-      <div className="services">Service: {feedbackData.services.join(", ")}</div>
+      <div className="services">
+        <h6>Services</h6>
+        {feedbackData.services.map((service, index) => (
+          <span key={index} className="service-tag">
+            {service}
+          </span>
+        ))}
+      </div>
       <p className="comment">
         {isExpanded || feedbackData.comment.length <= 100
           ? feedbackData.comment

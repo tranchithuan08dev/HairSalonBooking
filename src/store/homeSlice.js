@@ -51,12 +51,7 @@ export const fetchAllFeedback = createAsyncThunk(
       const bookingPromises = feedbacks.map(async (feedback) => {
         const bookingResponse = await dashboardService.getBookingDetail(feedback.bookingID);
         const bookingArray = bookingResponse.data.booking[0];
-        const {customerID, guestID} = bookingArray;
-        let customerName;
-        if(customerID != null){
-          const customer = await dashboardService.getDetailCustomerById(customerID);
-          customerName = customer.data.data.customer.fullName;
-        }
+        const {guestID} = bookingArray;
         const details = bookingResponse.data.details;
         const servicesNameArray = await Promise.all(
           details
@@ -68,9 +63,7 @@ export const fetchAllFeedback = createAsyncThunk(
         );
         return {
           ...feedback,
-          customerID: customerID,
           guestID: guestID,
-          customerName: customerName || "",
           services: servicesNameArray,
         };
       });
