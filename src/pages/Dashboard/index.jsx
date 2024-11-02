@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChartOutlined,
   ContactsOutlined,
@@ -13,12 +13,20 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Space, theme } from "antd";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
 const DashBroad = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showDropDown, setShowDropDown] = useState(false);
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.AUTH.currentUser);
+  useEffect(() => {
+    if (auth?.record.role !== "Manager") {
+      navigate("/");
+    }
+  }, [auth, navigate]);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
