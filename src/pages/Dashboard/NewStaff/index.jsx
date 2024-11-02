@@ -120,13 +120,23 @@ function NewStaff() {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Gender" name="gender">
+        <Form.Item
+          label="Gender"
+          name="gender"
+          rules={[{ required: true, message: "Please select your gender" }]}
+        >
           <Radio.Group>
             <Radio value="Male">Male</Radio>
             <Radio value="Female">Female</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="yob" label="Date of birth">
+        <Form.Item
+          name="yob"
+          label="Date of birth"
+          rules={[
+            { required: true, message: "Please select your date of birth" },
+          ]}
+        >
           <DatePicker format={dateFormat} />
         </Form.Item>
         <Form.Item
@@ -150,6 +160,7 @@ function NewStaff() {
           name="email"
           rules={[
             {
+              required: true,
               message: "Please input your email!",
             },
             {
@@ -161,7 +172,14 @@ function NewStaff() {
           <Input type="email" placeholder="Email" />
         </Form.Item>
 
-        <Form.Item name="address" label="Address">
+        <Form.Item
+          name="address"
+          label="Address"
+          rules={[
+            { required: true, message: "Please enter your address" },
+            { max: 250, message: "Address cannot exceed 250 characters" },
+          ]}
+        >
           <Input.TextArea />
         </Form.Item>
 
