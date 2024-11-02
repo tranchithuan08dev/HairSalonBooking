@@ -11,12 +11,10 @@ import {
   updateCustomer,
   updateStatus,
   setMessage,
-  setError,
 } from "../../../../store/staffSlice/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CheckboxLoyaltyPoints from "../../../../components/Staff/CheckboxLoyaltyPoint";
 import ListServices from "../../../../components/Staff/ListServices";
-import { getAllFeedback } from "../../../../store/staffSlice/feedbackSlice";
 
 function Content() {
   const dispatch = useDispatch();
@@ -33,7 +31,6 @@ function Content() {
   const [checked, setChecked] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [qr, setQr] = useState(null);
-  const [hasFeedback, setHasFeedback] = useState(true);
   const [qrGenerated, setQrGenerated] = useState(false);
 
   const { detail, loading, message, error, showAlert, services } = useSelector(
@@ -51,16 +48,6 @@ function Content() {
       dispatch(fetchBookingDetail(bookingID)),
       dispatch(fetchServices()),
     ]);
-
-    const bookingDetail = bookingDetailResponse.payload.data;
-    if (bookingDetail?.customerID != null) {
-      const feedbackResponse = await dispatch(getAllFeedback());
-      const feedbackList = feedbackResponse.payload.data.feedbacks;
-      const found = feedbackList.some(
-        (feedback) => feedback.bookingID === bookingID
-      );
-      setHasFeedback(found);
-    }
   };
 
   useEffect(() => {
@@ -397,7 +384,7 @@ function Content() {
               </div>
             )}
             <div className="col-md-6 QR">
-              {status === "Completed" && hasFeedback === false && (
+              {status === "Completed" && (
                 <button
                   onClick={handleFeedbackClick}
                   className="feedback-button"

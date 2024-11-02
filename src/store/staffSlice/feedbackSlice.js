@@ -15,13 +15,26 @@ export const getAllFeedback = createAsyncThunk(
   `${name}/getAllFeedback`,
   async () => {
     try {
-      const responese = await feedbackServices.getAllFeedback();
-      console.log("return", responese.data);
+      const response = await feedbackServices.getAllFeedback();
+      console.log("return", response.data);
+      if (!response) {
+        return {
+          ok: true,
+          data: [],
+        };
+      }
       return {
         ok: true,
-        data: responese.data,
+        data: response.data,
       };
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.warn("Feedback not found, returning empty array.");
+        return {
+          ok: true,
+          data: [],
+        };
+      }
       return {
         ok: false,
         message: "Fetch data error!",
@@ -34,8 +47,8 @@ export const createFeedback = createAsyncThunk(
   `${name}/createFeedback`,
   async (data) => {
     try {
-      const responese = await feedbackServices.createFeedback(data);
-      console.log("return", responese.data);
+      const response = await feedbackServices.createFeedback(data);
+      console.log("return", response.data);
       return {
         ok: true,
         message: "Send Feedback successfully!",
