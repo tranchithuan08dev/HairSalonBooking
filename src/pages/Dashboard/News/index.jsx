@@ -215,7 +215,7 @@ function News() {
           >
             <Radio.Group>
               <Radio value="Store News">Store News</Radio>
-              <Radio value="combo">Combo</Radio>
+              <Radio value="New Offers">New Offers</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item
