@@ -4,14 +4,17 @@ import { Link } from "react-router-dom";
 function Item({ data, slug }) {
   if (!data) return <></>;
   if (!slug) return <></>;
-  const { fullName, serviceName, id, title, newsID } = data;
+  const { fullName, serviceName, id, title, newsID, avatar, serviceImg, img } =
+    data;
 
   return (
     <>
       <div className="col-md-4 d-flex justify-content-center mb-4">
         <div className="card card-booking">
           <img
-            src="../assets/image/logo_booking.jpg"
+            src={
+              avatar || serviceImg || img || `../assets/image/logo_booking.jpg`
+            }
             className="card-img-top"
             alt="Stylist Trần Chí Thuận"
             style={{ height: 240, objectFit: "cover" }}
