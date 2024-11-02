@@ -22,8 +22,15 @@ function NewsDetail() {
       <div className="center mb-4">
         <div className="frame-container">
           <img
-            src="https://images.unsplash.com/photo-1593702295094-aea22597af65?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGJhcmJlcnxlbnwwfHwwfHx8MA%3D%3D"
+            src={dataDetailNews?.img}
             alt="Image Description"
+            style={{
+              width: "50%", // Adjust this percentage or use a fixed value like '300px'
+              height: "auto",
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              marginBottom: "12px",
+            }}
           />
           <div className="image-title">{dataDetailNews?.title}</div>
           <div className="image-type">Type: {dataDetailNews?.type}</div>
