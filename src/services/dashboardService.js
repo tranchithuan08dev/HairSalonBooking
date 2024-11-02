@@ -35,12 +35,7 @@ const dashboardService = {
   },
   //Create  Stylist and Staff and Update salary
   createStaff: (data) => {
-    return API.call().post(`/api/v1/auth/register`, data, {
-      headers: {
-        token: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return API.call().post(`/api/v1/auth/register`, data);
   },
   getSalary: (id) => {
     return API.call().get(`/api/v1/salary/generalMonthlySalary?id=${id}`, {
@@ -96,9 +91,8 @@ const dashboardService = {
   },
 
   updateCustomer: (inputParam = {}) => {
-    const { customerID, token } = inputParam;
     return API.call().patch(
-      `/api/v1/customer/update?id=${customerID}`,
+      `/api/v1/customer/update?id=${inputParam.customerID}`,
       inputParam,
       {
         headers: {
