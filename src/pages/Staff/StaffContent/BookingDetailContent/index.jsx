@@ -47,7 +47,6 @@ function Content() {
   };
 
   const fetchData = async () => {
-    // Fetch booking detail and services in parallel
     const [bookingDetailResponse, servicesResponse] = await Promise.all([
       dispatch(fetchBookingDetail(bookingID)),
       dispatch(fetchServices()),
