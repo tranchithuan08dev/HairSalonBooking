@@ -134,7 +134,7 @@ function NewService() {
             },
           ]}
         >
-          <InputNumber addonAfter="USD" style={{ width: "100%" }} />
+          <InputNumber addonAfter="VND" style={{ width: "100%" }} />
         </Form.Item>
 
         <Form.Item
