@@ -33,8 +33,6 @@ function NewService() {
     if (file) {
       setSelectedFile(file);
       const imageUrl = URL.createObjectURL(file);
-      console.log("img", imageUrl);
-
       setAvatarUrl(imageUrl); // Set the avatar preview
     }
   };
