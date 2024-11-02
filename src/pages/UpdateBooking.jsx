@@ -18,8 +18,16 @@ function UpdateBooking() {
   const nagative = useNavigate();
   const dispatch = useDispatch();
   // Call Data
-  const dataService = useSelector((state) => state.DASHBOARD.postService);
-  const dataStylist = useSelector((state) => state.DASHBOARD.postStylist);
+  const dataServiceFilter = useSelector((state) => state.DASHBOARD.postService);
+  const dataStylistFilter = useSelector((state) => state.DASHBOARD.postStylist);
+
+  const dataService = dataServiceFilter.filter(
+    (service) => service.deleted === false
+  );
+  const dataStylist = dataStylistFilter.filter(
+    (stylist) => stylist.deleted === false
+  );
+
   const dataStylistById = useSelector(
     (state) => state.DASHBOARD.postStylistDetailById
   );
