@@ -20,6 +20,7 @@ const Feedback = () => {
   }, [dispatch]);
 
   let feedbacks = data;
+  console.log(feedbacks);
 
   if (!Array.isArray(data)) {
     feedbacks = [];
@@ -111,8 +112,8 @@ const Feedback = () => {
           {loading ? (
             <p>Loading...</p>
           ) : (
-            currentFeedbacks.map((feedback) => (
-              <FeedbackItem key={feedback.id} feedbackData={feedback} />
+            currentFeedbacks.map((feedback, index) => (
+              <FeedbackItem key={index} feedbackData={feedback} />
             ))
           )}
           <div className="pagination">

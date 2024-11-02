@@ -48,6 +48,7 @@ export const fetchAllFeedback = createAsyncThunk(
     try {
       const response = await dashboardService.getAllFeedback();
       const feedbacks = response.data.feedbacks;
+      console.log(feedbacks);
       const bookingPromises = feedbacks.map(async (feedback) => {
         const bookingResponse = await dashboardService.getBookingDetail(feedback.bookingID);
         const bookingArray = bookingResponse.data.booking[0];

@@ -10,6 +10,8 @@ const FeedbackItem = (props) => {
     setIsExpanded(!isExpanded);
   };
 
+  console.log(feedbackData);
+
   if (!feedbackData) {
     return <div>Not found</div>;
   } else {
@@ -19,6 +21,7 @@ const FeedbackItem = (props) => {
 
   return (
     <div className="feedback">
+      <h4>{feedbackData.fullName}</h4>
       <span className="date">{formattedDate}</span>
       <div className="rating">
         {"★".repeat(Math.round(feedbackData.rating))}
