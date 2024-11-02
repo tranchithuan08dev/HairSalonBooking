@@ -31,7 +31,6 @@ function Content() {
   const [checked, setChecked] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [qr, setQr] = useState(null);
-  const [qrGenerated, setQrGenerated] = useState(false);
 
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
@@ -51,6 +50,7 @@ function Content() {
   };
 
   useEffect(() => {
+    dispatch(setShowAlert(false));
     fetchData();
   }, [dispatch, bookingID]);
 
@@ -129,13 +129,13 @@ function Content() {
     console.log("pushed");
     const value = {
       Amount: price || 0,
-      Description: "Payment for services at HairSalon",
+      Description: "Checkout-Service-HairHairmony",
     };
 
     const result = await dispatch(generateQR(value));
-    if (result.payload) {
+    if (result.payload.ok) {
       setQr(result.payload.data.qrCode);
-      setQrGenerated(true);
+      setQRActive(true);
     }
   };
 
@@ -392,7 +392,7 @@ function Content() {
                   Feedback
                 </button>
               )}
-              {qr && !qrGenerated && (
+              {qr && (
                 <div className="Image justify-content align-items">
                   <div className="imageContainer">
                     <img
@@ -403,6 +403,7 @@ function Content() {
                   </div>
                 </div>
               )}
+
               {status !== "Completed" && (
                 <CheckboxLoyaltyPoints
                   loyaltyPoints={detail.data?.loyaltyPoints || 0}
