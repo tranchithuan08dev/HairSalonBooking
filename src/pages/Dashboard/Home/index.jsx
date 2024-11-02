@@ -5,7 +5,7 @@ import ChartComponent from "./Canvans";
 
 function Home() {
   const data = useSelector((state) => state.DASHBOARD.getAllBooking);
-  const dataBooking = data.filter((booking) => booking.status === "Completed");
+  const dataBooking = data?.filter((booking) => booking.status === "Completed");
 
   const dispatch = useDispatch();
   useEffect(() => {
