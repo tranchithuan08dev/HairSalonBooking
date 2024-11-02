@@ -62,6 +62,7 @@ function BookingPage() {
   const [tomorrowDayOfWeek, setTomorrowDayOfWeek] = useState("");
   const [selectDay, setSelectDay] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [note, setNote] = useState("");
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber || guest?.guest?.phoneNumber);
     setName(auth?.actorByRole?.fullName || guest?.guest?.fullName);
@@ -96,7 +97,9 @@ function BookingPage() {
 
     return isValid; // Returns true if the form is valid
   };
-
+  const handleChangeNote = (event) => {
+    setNote(event.target.value);
+  };
   // console.log("selectedServices", selectedServices);
   const HandleBooking = (e) => {
     e.preventDefault();
@@ -108,6 +111,7 @@ function BookingPage() {
       serviceID: serviceIDs,
       originalPrice: totalPrice.toString().replace(/,/g, ""),
       stylistWorkShiftID: selectStylistWorkShift,
+      note: note,
     };
     console.log("Booking", booking);
 
@@ -547,6 +551,7 @@ function BookingPage() {
               rows={5}
               id="comment"
               placeholder="Note"
+              onChange={handleChangeNote}
             />
             {/* NOTE END */}
             <button
