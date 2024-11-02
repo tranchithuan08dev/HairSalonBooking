@@ -18,11 +18,10 @@ export const fetchData = createAsyncThunk(
             (booking) => booking.stylistID === stylistID
           )
           const responseSalary = await salaryService.getTotalSalaryUntilNow(userID);
-
           return {
               ok: true,
               count: matchingBookings.length,
-              salary: responseSalary.data.salary[0]
+              salary: responseSalary.data.data
           };
       } catch (error) {
           return {
