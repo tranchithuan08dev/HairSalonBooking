@@ -88,11 +88,17 @@ function Content() {
   };
 
   useEffect(() => {
-    const serviceIDs = detail.detail
-      .filter((item) => !item.deleted)
-      .map((item) => item.serviceID);
-    setListServices(serviceIDs);
-  }, [detail.detail]);
+    if (Array.isArray(detail.detail) && detail.detail.length > 0) {
+        const serviceIDs = detail.detail
+          .filter((item) => !item.deleted)
+          .map((item) => item.serviceID);
+        setListServices(serviceIDs);
+    } else {
+        console.warn("detail.detail là rỗng hoặc không phải là một mảng.");
+        setListServices([]); 
+    }
+}, [detail.detail]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
