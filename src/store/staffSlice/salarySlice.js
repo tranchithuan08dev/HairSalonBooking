@@ -15,10 +15,9 @@ export const fetchData = createAsyncThunk(
     try {
       console.log("id", id);
       const responseSalary = await salaryService.getTotalSalary(id);
-      console.log("return", responseSalary.data.salary[0]);
       return {
         ok: true,
-        salary: responseSalary.data.salary[0],
+        salary: responseSalary.data.data,
       };
     } catch (error) {
       console.log(error);

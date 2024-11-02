@@ -7,9 +7,8 @@ function Content() {
   const dispatch = useDispatch();
   const {data, loading} = useSelector((state) => state.STAFF.salary);
 
-  const { token, currentUser } = useSelector((state) => state.AUTH);
+  const { currentUser } = useSelector((state) => state.AUTH);
   const userID = currentUser?.record.userID;
-  console.log("crre", userID);
 
 
   useEffect(() => {

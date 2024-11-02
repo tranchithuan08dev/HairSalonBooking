@@ -169,6 +169,16 @@ function Content() {
                     />
                   </div>
                   <div className="form-group form-groupTest">
+                    <strong>Note:</strong>
+                    <textarea
+                      name="note"
+                      defaultValue={data.data?.note || ""}
+                      readOnly
+                      rows={4}
+                      className="form-control text"
+                    />
+                  </div>
+                  <div className="form-group form-groupTest">
                     <strong>Status:</strong>
                     <input
                       type="text"
