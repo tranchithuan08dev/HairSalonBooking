@@ -363,7 +363,7 @@ function BookingPage() {
                         <div className="d-flex align-items-center">
                           {/* Stylist Profile */}
                           <img
-                            src=" ../public/assets/image/avatar.jpg"
+                            src={dataStylistById.avatar}
                             alt={`${dataStylistById.fullName}'s Image`}
                             className="rounded-circle me-3"
                             style={{
