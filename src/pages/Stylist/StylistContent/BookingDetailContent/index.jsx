@@ -39,9 +39,9 @@ function Content() {
     };
     const result = await dispatch(updateStatus(form));
     if (result.payload.ok) {
-      setIsDone(true);
       fetch();
       setShowModal(false);
+      setIsDone(true);
     }
   };
 

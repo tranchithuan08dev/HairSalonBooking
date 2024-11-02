@@ -4,32 +4,43 @@ import "../../../../assets/css/stylist/workshift.css";
 import {
   createStylistWorkshift,
   fetchAllWorkshift,
+  setError,
+  setShowAlert,
 } from "../../../../store/stylistSlice/WorkShiftSlice";
 
 function Content() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, duplicated } = useSelector(
+  const { data, loading, duplicated, error, showAlert } = useSelector(
     (state) => state.STYLIST.workshift
   );
   const stylistID = currentUser.actorByRole.stylistID;
   const [modal, setModal] = useState(false);
-  const [uiState, setUiState] = useState({
-    showAlert: false,
-    message: null,
-    error: null,
-  });
+  const [message, setMessage] = useState(false);
   const [bookedShifts, setBookedShifts] = useState([]);
 
   const timeSlots = [
-    "08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00",
-    "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00",
-    "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00",
-    "17:00 - 18:00", "18:00 - 19:00",
+    "08:00 - 09:00",
+    "09:00 - 10:00",
+    "10:00 - 11:00",
+    "11:00 - 12:00",
+    "12:00 - 13:00",
+    "13:00 - 14:00",
+    "14:00 - 15:00",
+    "15:00 - 16:00",
+    "16:00 - 17:00",
+    "17:00 - 18:00",
+    "18:00 - 19:00",
   ];
 
   const daysOfWeek = [
-    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
   ];
 
   const formatTime = (time) => time.substring(0, 5);
@@ -47,20 +58,23 @@ function Content() {
 
   const confirmUpdate = async () => {
     const bookedWorkShiftIDs = bookedShifts.map((shift) => shift.workShiftID);
-    const result = await dispatch(createStylistWorkshift({
-      stylistID, workShiftID: bookedWorkShiftIDs,
-    }));
+    const result = await dispatch(
+      createStylistWorkshift({
+        stylistID,
+        workShiftID: bookedWorkShiftIDs,
+      })
+    );
     console.log(bookedWorkShiftIDs);
+    dispatch(setShowAlert(true));
     if (result.payload.ok) {
       await dispatch(fetchAllWorkshift(stylistID));
-      setUiState({ showAlert: true, message: "Chose workshift successfully!"});
+      setMessage("Chose workshift successfully!");
     } else {
-      setUiState({ showAlert: true, error: "Failed to choose workshift!" });
+      dispatch(setError("Failed to choose workshift!"));
     }
     setModal(false);
     setBookedShifts([]);
   };
-  
 
   const handleClick = (shift) => {
     if (!shift) return;
@@ -75,8 +89,6 @@ function Content() {
     console.log(bookedShifts);
     if (bookedShifts.length > 0) {
       setModal(true);
-    } else {
-      setUiState({ ...uiState, showAlert: true, error: "Please choose at least 1 slot!" });
     }
   };
 
@@ -85,24 +97,35 @@ function Content() {
   }, [dispatch, stylistID]);
 
   useEffect(() => {
-    if (uiState.showAlert) {
-      const timer = setTimeout(() => setUiState({ ...uiState, showAlert: false }), 3000);
+    if (showAlert) {
+      const timer = setTimeout(() => dispatch(setShowAlert(false)), 3000);
       return () => clearTimeout(timer);
     }
-  }, [uiState.showAlert]);
+  }, [showAlert]);
 
   const disabledDays = (() => {
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    return days.slice(0, new Date().getDay() || 7); 
+    const days = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+    return days.slice(0, new Date().getDay() || 7);
   })();
 
   if (loading) return <p>Loading...</p>;
 
   return (
     <>
-      {uiState.showAlert && (
-        <div className={`alert ${uiState.message ? "alert-success" : "alert-danger"} mt-3`} role="alert">
-          {uiState.message || uiState.error}
+      {showAlert && (
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error}
         </div>
       )}
       <h2 className="header-cus">Create Workshift</h2>
@@ -111,9 +134,16 @@ function Content() {
           <table className="table table-bordered customTable">
             <thead>
               <tr className="calendar-month-row dayWeek">
-                <td className="calendar-prior-months-date dayWeek-date-not">Time</td>
+                <td className="calendar-prior-months-date dayWeek-date-not">
+                  Time
+                </td>
                 {daysOfWeek.map((day, index) => (
-                  <td key={index} className="calendar-prior-months-date dayWeek-date">{day}</td>
+                  <td
+                    key={index}
+                    className="calendar-prior-months-date dayWeek-date"
+                  >
+                    {day}
+                  </td>
                 ))}
               </tr>
             </thead>
@@ -123,20 +153,31 @@ function Content() {
                   <td className="slotTime">{slot}</td>
                   {daysOfWeek.map((day, colIndex) => {
                     const shift = getWorkshiftData(day, slot);
-                    const isBooked = bookedShifts.some((s) => s.workShiftID === shift?.workShiftID);
-                    const isDisabled = shift && duplicated.includes(shift.workShiftID);
+                    const isBooked = bookedShifts.some(
+                      (s) => s.workShiftID === shift?.workShiftID
+                    );
+                    const isDisabled =
+                      shift && duplicated.includes(shift.workShiftID);
                     const isDisabledSlotChoose = disabledDays.includes(day);
 
                     return (
                       <td
                         key={colIndex}
                         onClick={() => !isDisabled && handleClick(shift)}
-                        className={`slotCell-choose ${isBooked ? "booked" : ""} ${
-                          isDisabled ? "disabled" : `${isDisabledSlotChoose ? "disabled-slot" : ""}`
+                        className={`slotCell-choose ${
+                          isBooked ? "booked" : ""
+                        } ${
+                          isDisabled
+                            ? "disabled"
+                            : `${isDisabledSlotChoose ? "disabled-slot" : ""}`
                         }`}
-                        style={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
+                        style={{
+                          cursor: isDisabled ? "not-allowed" : "pointer",
+                        }}
                       >
-                        {isDisabled && <span className="disabled-overlay"></span>}
+                        {isDisabled && (
+                          <span className="disabled-overlay"></span>
+                        )}
                       </td>
                     );
                   })}
@@ -145,28 +186,70 @@ function Content() {
             </tbody>
           </table>
         </div>
-        <button onClick={handleChoose} className="btn btn-primary mt-3">Choose</button>
+        <button onClick={handleChoose} className="btn btn-primary mt-3">
+          Choose
+        </button>
       </div>
 
-      {uiState.showModal && (
-        <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" role="dialog">
+      {modal && (
+        <div
+          className="modal fade show"
+          style={{ display: "block" }}
+          tabIndex="-1"
+          role="dialog"
+        >
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Confirm Update</h5>
-                <button type="button" className="close" onClick={() => setUiState({ ...uiState, showModal: false })}>
+                <button
+                  type="button"
+                  className="close"
+                  onClick={() => setModal(true)}
+                >
                   <span>&times;</span>
                 </button>
               </div>
-              <div className="modal-body"><p>Do you really want to choose these workshifts?</p></div>
+              <div className="modal-body">
+                <p>Do you really want to choose these workshifts?</p>
+              </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setUiState({ ...uiState, showModal: false })}>Cancel</button>
-                <button type="button" className="btn btn-primary" onClick={confirmUpdate}>Confirm</button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={confirmUpdate}
+                >
+                  Confirm
+                </button>
               </div>
             </div>
           </div>
         </div>
       )}
+      <h4 style={{ marginLeft: "600px" }}>Sign</h4>
+      <table className="slot-legend-table" style={{ marginLeft: "600px" }}>
+        <tbody className="table-sign-body">
+          <tr className="sign-1">
+            <td className="booked-slot sign"></td>
+            <td className="contentSpan">Currently selected slot</td>
+            <td className="notInSchedule-slot sign"></td>
+            <td className="contentSpan">Out of schedule</td>
+          </tr>
+          <tr>
+            <td className="disabled-slot sign"></td>
+            <td className="contentSpan">Slot is disabled</td>
+            <td className="disabled sign"></td>
+            <td className="contentSpan">Chosen slot</td>
+          </tr>
+        </tbody>
+      </table>
     </>
   );
 }

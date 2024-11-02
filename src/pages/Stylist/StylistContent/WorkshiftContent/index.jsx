@@ -8,7 +8,7 @@ function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, showAlert } = useSelector((state) => state.STYLIST?.workshift);
+  const { data, loading, showAlert, error } = useSelector((state) => state.STYLIST?.workshift);
   const stylistID = currentUser.actorByRole.stylistID;
 
   useEffect(() => {
@@ -26,17 +26,16 @@ function Content() {
     if (shift) {
       console.log("Shift data:", shift);
       console.log("Booking ID:", shift.bookingID);
-
-      if (shift.bookingID && shift.bookingID.trim() !== "") {
+    }
+      if (shift.bookingID && shift.bookingID) {
+        if(shift.bookingID.trim() !== ""){
         navigate(`bookingDetail?id=${shift.bookingID}`);
+        }
       } else {
         dispatch(setError("This slot haven't booked yet"));
         dispatch(setShowAlert(true));
       }
-    } else {
-      console.error("Shift is undefined or null");
     }
-  };
 
   const timeSlots = [
     "08:00 - 09:00",
@@ -101,13 +100,14 @@ function Content() {
   };
 
   const currentDay = getCurrentDay();
-  const disabledDays = disableSlots(currentDay);
+  // const disabledDays = disableSlots(currentDay);
+  const disabledDays = disableSlots(2);
 
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
-        setShowAlert(false);
-        setError(null)
+        dispatch(setShowAlert(false));
+        dispatch(setError(null));
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -121,7 +121,7 @@ function Content() {
     <>
     {showAlert && (
         <div
-          className={`alert ${error} "alert-danger"} mt-3`}
+          className={`alert ${error ? "alert-danger" : ""} mt-3`}
           role="alert"
         >
           {error}
@@ -187,7 +187,7 @@ function Content() {
             <td className="booked-slot sign"></td>
             <td className="contentSpan">Slot has a booking</td>
             <td className="schedule-slot sign"></td>
-            <td className="contentSpan">Slot not booked yet</td>
+            <td className="contentSpan">Slot havent't booked yet</td>
           </tr>
           <tr>
             <td className="notInSchedule-slot sign"></td>
