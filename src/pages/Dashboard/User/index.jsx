@@ -42,6 +42,8 @@ const User = () => {
   const dataCustomerDetail = useSelector(
     (state) => state.DASHBOARD.postCustomerById
   );
+  console.log("dataCustomer", dataCustomer);
+
   console.log("dataCustomerDetail", dataCustomerDetail);
 
   console.log(dataCustomerDetail);
@@ -144,7 +146,7 @@ const User = () => {
   const data = dataCustomer.map((index) => ({
     key: index.id,
     name: index.customerName,
-    status: index.deleted ? "Active" : "UnActive",
+    status: index.deleted ? "InActive" : "Active",
     phone: index.phone,
     point: index.loyaltyPoints,
     createAt: dayjs(index.createdAt).format(dateFormat),
@@ -206,8 +208,8 @@ const User = () => {
 
           <Form.Item name="status" label="Status">
             <Radio.Group>
-              <Radio value={true}>True</Radio>
-              <Radio value={false}>False</Radio>
+              <Radio value={true}>Inactive</Radio>
+              <Radio value={false}>Active</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item
