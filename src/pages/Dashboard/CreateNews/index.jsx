@@ -41,6 +41,7 @@ function CreateNews() {
       });
     form.resetFields();
     setAvatarUrl(null);
+    setContent("");
   };
 
   const handleImageUpload = (event) => {
@@ -103,7 +104,7 @@ function CreateNews() {
       >
         <Radio.Group>
           <Radio value="Store News">Store News</Radio>
-          <Radio value="combo">Combo</Radio>
+          <Radio value="New Offers">New Offers</Radio>
         </Radio.Group>
       </Form.Item>
       <Form.Item label="Content">
