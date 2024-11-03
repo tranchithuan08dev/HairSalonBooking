@@ -6,20 +6,23 @@ import Search from "../../../../components/Staff/Search";
 import DayPicker from "../../../../components/Staff/DayPicker";
 import { searchFilter } from "../../../../helpers/searchFilter";
 import { useDispatch, useSelector } from "react-redux";
+import { getBadgeClass } from "../../../../helpers/getBadgeClass";
 import {
   fetchBookings,
   updateStatus,
   setShowAlert,
+  setMessage,
 } from "../../../../store/staffSlice/bookingSlice";
 import { Pagination } from "antd";
-import StatusDropdown from "../../../../components/Staff/Statusdropdown";
 
 function Content() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const { data, loading, showAlert, error, message } = useSelector((state) => state.STAFF.booking);
+  const { data, loading, showAlert, error, message } = useSelector(
+    (state) => state.STAFF.booking
+  );
   const [total, setTotal] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,9 +36,7 @@ function Content() {
     const fetch = async () => {
       console.log("currentPage", currentPage);
 
-      await dispatch(
-        fetchBookings()
-      );
+      await dispatch(fetchBookings());
     };
     fetch();
   }, [dispatch, currentPage]);
@@ -54,30 +55,34 @@ function Content() {
   useEffect(() => {
     if (data.bookings) {
       let updatedBookings = [...data.bookings];
-  
+
       const key = decodeURIComponent(searchParams.get("key") || "");
       const status = searchParams.get("status") || "All";
       const appointmentAt = searchParams.get("appointmentAt");
-  
+
       // Lọc theo trạng thái
       if (status !== "All") {
-        updatedBookings = updatedBookings.filter((item) => item.status === status);
+        updatedBookings = updatedBookings.filter(
+          (item) => item.status === status
+        );
       }
-  
+
       // Lọc theo từ khóa tìm kiếm
       if (key) {
         const { filtered } = searchFilter(updatedBookings, key);
         updatedBookings = Array.isArray(filtered) ? filtered : updatedBookings;
       }
-  
+
       // Lọc theo ngày hẹn
       if (appointmentAt) {
         updatedBookings = updatedBookings.filter((item) => {
-          const itemDate = new Date(item.appointmentAt).toLocaleDateString("en-GB");
+          const itemDate = new Date(item.appointmentAt).toLocaleDateString(
+            "en-GB"
+          );
           return itemDate === appointmentAt;
         });
       }
-  
+
       // Cập nhật state cho total và filteredBookings
       setTotal(updatedBookings.length);
       const startIndex = (currentPage - 1) * itemsPerPage;
@@ -87,7 +92,6 @@ function Content() {
       setFilteredBookings(paginatedBookings);
     }
   }, [searchParams, data, currentPage]);
-  
 
   function formatDateTime(dateTimeString) {
     const date = new Date(dateTimeString);
@@ -128,6 +132,7 @@ function Content() {
     if (showAlert) {
       const timer = setTimeout(() => {
         dispatch(setShowAlert(false));
+        dispatch(setMessage(null));
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -140,13 +145,13 @@ function Content() {
   return (
     <>
       {showAlert && (message || error) && (
-  <div
-    className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
-    role="alert"
-  >
-    {message || error}
-  </div>
-)}
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error}
+        </div>
+      )}
 
       <div className="container">
         <div className="card mb-3 card-custom">
@@ -211,12 +216,11 @@ function Content() {
                       </div>
                       <div className="Status">
                         <h6>Status</h6>
-                        <StatusDropdown
-                          currentStatus={item.status}
-                          onStatusChange={(newStatus) =>
-                            handleStatusChange(item.bookingID, newStatus)
-                          }
-                        />
+                        <span
+                          className={`badge ${getBadgeClass(item.status)}`}
+                        >
+                          {item.status}
+                        </span>
                       </div>
                     </div>
                     <div className="col-md-2 detailSee">
