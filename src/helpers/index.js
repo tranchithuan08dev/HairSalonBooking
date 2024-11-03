@@ -11,7 +11,7 @@ export function mappingStylist(item) {
     level: item.level,
     certificateURL: item.certificateURL,
     hireDate: item.hireDate,
-    deleted: item.deleted,
+    deleted: item.StylistDeleted,
     role: item.role,
     userId: item.userID,
   };
@@ -28,7 +28,7 @@ export function mappingStaff(item) {
     hireDate: item.hireDate,
     gender: item.gender,
     address: item.address,
-    deleted: item.deleted,
+    deleted: item.StaffDeleted,
     role: item.role,
     userId: item.userID,
   };

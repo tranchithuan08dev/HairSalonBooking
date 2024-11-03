@@ -26,6 +26,7 @@ import {
   fetchUpdateStylist,
 } from "../../../store/dashbroadSlice";
 import CurrencyFormat from "react-currency-format";
+import Search from "antd/es/input/Search";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY/MM/DD";
@@ -46,6 +47,8 @@ const Stylist = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSpin, setIsSpin] = useState(false);
   const fileInputRef = useRef(null);
+  const [filteredData, setFilteredData] = useState(null);
+  const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   useEffect(() => {
@@ -79,17 +82,23 @@ const Stylist = () => {
         email: dataStylistById.email,
         address: dataStylistById.address,
         level: dataStylistById.level,
-        status: dataStylistById.deleted,
+        status: dataStylistById.StylistDeleted,
       });
-      setAvatarUrl(dataStylistById.avatar);
+      setAvatarUrl(dataStylistById.avatar || "");
+      setUserId(dataStylistById.userID);
     }
   }, [dataStylistById, form, dataSalaryStylist]);
   console.log(dataStylistById);
 
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchSalary(userId));
+    }
+  }, [userId, dispatch, form, dataStylistById]);
+
   const showLargeDrawer = (stylist) => {
     setSelectedStylist(stylist);
     dispatch(fetchPostStylistDetailById(stylist));
-    dispatch(fetchSalary(stylist));
     setOpen(true);
   };
 
@@ -132,6 +141,7 @@ const Stylist = () => {
       deleted: values.status,
       userID: dataStylistById?.userID || null,
     };
+    console.log("updatedData", updatedData);
 
     dispatch(fetchUpdateStylist(updatedData));
     dispatch(fetchUpdateSalary(updatedSalary))
@@ -189,7 +199,14 @@ const Stylist = () => {
     },
   ];
 
-  const data = dataStylist.map((index) => ({
+  const hanldeSearch = (value) => {
+    const filteredData = dataStylist.filter((item) =>
+      item.phone.includes(value)
+    );
+    setFilteredData(filteredData.length ? filteredData : dataStaff);
+  };
+
+  const data = (filteredData || dataStylist).map((index) => ({
     key: index.id,
     stylistname: index.fullName,
     status: index.deleted ? "Inactive" : "Active",
@@ -199,6 +216,17 @@ const Stylist = () => {
 
   return (
     <>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Space>
+          <Search
+            placeholder="Search by phone"
+            onSearch={hanldeSearch}
+            style={{
+              width: 200,
+            }}
+          />
+        </Space>
+      </div>
       <Table columns={columns} dataSource={data} />
       <Drawer
         title="Detail Stylist"
@@ -280,10 +308,11 @@ const Stylist = () => {
               decimalScale={0}
               fixedDecimalScale={false}
               allowNegative={false}
+              suffix="VND"
             />
           </Form.Item>
           <Form.Item name="totalsalary" label="Salary">
-            <Input addonAfter="USD" disabled />
+            <Input addonAfter="VND" disabled />
           </Form.Item>
           <Form.Item
             name="yob"

@@ -27,7 +27,7 @@ function Booking() {
     console.log("valuse", value);
 
     const createGuest = {
-      phone: value.phoneNumber,
+      phoneNumber: value.phoneNumber,
       fullName: value.fullName,
     };
     dispatch(fetchGuest(createGuest));

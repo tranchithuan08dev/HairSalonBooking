@@ -79,7 +79,8 @@ const User = () => {
 
   const onFinish = (values) => {
     const updateCustomer = {
-      customerID: selectedCustomer,
+      customerID: dataCustomerDetail?.customer.customerID,
+      userID: dataCustomerDetail?.user?.userID,
       loyaltyPoints: values.point,
       deleted: values.status,
     };

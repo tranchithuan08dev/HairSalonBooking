@@ -70,6 +70,7 @@ function Profile() {
   const onFinish = (values) => {
     const updateManager = {
       managerID: dataManagerDetail.manager.managerID,
+      fullName: values.fullName,
       email: values.email,
       userID: dataManagerDetail.user.userID,
       avatar: selectedFile,

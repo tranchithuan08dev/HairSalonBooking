@@ -158,7 +158,7 @@ const authSlice = createSlice({
   reducers: {
     setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(Login.fulfilled, (state, action) => {
