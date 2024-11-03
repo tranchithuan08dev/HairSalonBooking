@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const ListServices = (props) => {
-  const { detail, services, addService, setListServices } = props;
+  const { detail, isPaid, services, addService, setListServices } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedServices, setSelectedServices] = useState(
     detail.servicesName || []
@@ -84,10 +84,11 @@ const ListServices = (props) => {
             className="form-control text"
             onChange={() => {}}
           />
-
-          <label className="add-more-label" onClick={handleServicesOpen}>
+          {isPaid===false && (
+            <label className="add-more-label" onClick={handleServicesOpen}>
             Add or Remove Services
           </label>
+          )}
 
           {isModalOpen && (
             <div className="custom-modal-overlay">
