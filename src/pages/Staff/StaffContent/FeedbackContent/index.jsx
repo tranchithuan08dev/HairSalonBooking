@@ -1,8 +1,10 @@
-import { Rate, Input } from "antd";
+import { Rate } from "antd";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { createFeedback, setShowAlert} from "../../../../store/staffSlice/feedbackSlice";
+import { createFeedback, setShowAlert } from "../../../../store/staffSlice/feedbackSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { Editor } from '@tinymce/tinymce-react';
+
 function FeedBack() {
   const dispatch = useDispatch();
   const [rating, setRating] = useState(1);
@@ -12,7 +14,7 @@ function FeedBack() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const bookingID = queryParams.get("bookingID");
-  const {showAlert, message, error } = useSelector((state) => state.STAFF.feedback);
+  const { showAlert, message, error } = useSelector((state) => state.STAFF.feedback);
 
   const today = new Date();
   const formattedDate = today.toISOString().split('T')[0];
@@ -45,38 +47,45 @@ function FeedBack() {
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
+
   return (
     <>
-    {showAlert && (
-      <div
-        className={`alert ${
-          message ? "alert-success" : "alert-danger"
-        } mt-3`}
-        role="alert"
-      >
-        {message || error}
-      </div>
-    )}
-    <div style={styles.container}>
-    <button 
+      {showAlert && (
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error}
+        </div>
+      )}
+      <div style={styles.container}>
+        <button 
           className="btn btn-secondary mb-3" 
           onClick={handleBack} 
           style={{ position: "absolute", top: 20, left: 20 }}
         >
           Turn back
         </button>
-      <div style={styles.innerContainer}>
-        <h2 style={styles.heading}>Rate our Service</h2>
-        {!isSubmitted ? (
+        <div style={styles.innerContainer}>
+          <h2 style={styles.heading}>Rate our Service</h2>
+          {!isSubmitted ? (
             <>
               <div style={styles.rateContainer}>
                 <Rate style={styles.rate} defaultValue={1} onChange={setRating} />
               </div>
-              <Input.TextArea
-                style={styles.textArea}
-                rows={4}
-                placeholder="Leave your feedback here..."
-                onChange={(e) => setFeedback(e.target.value)}
+              <Editor
+                initialValue="<p>Leave your feedback here...</p>"
+                init={{
+                  height: 300,
+                  menubar: false,
+                  plugins: [
+                    'link image code',
+                  ],
+                  toolbar: 'undo redo | styleselect | bold italic | link image',
+                  placeholder: "Nhập phản hồi của bạn tại đây...",
+                }}
+                onEditorChange={(content) => setFeedback(content)} // Cập nhật giá trị phản hồi
+                style={styles.textArea} // Sử dụng styles từ biến styles
               />
               <button
                 type="submit"
@@ -91,8 +100,8 @@ function FeedBack() {
               Thank you for your feedback!
             </p>
           )}
+        </div>
       </div>
-    </div>
     </>
   );
 }
@@ -105,15 +114,14 @@ const styles = {
     justifyContent: "center",
     height: "100vh",
     padding: "20px",
-    backgroundImage:
-      "url('https://images.unsplash.com/photo-1529445654487-3bde9b55e0b2?q=80&w=1989&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+    backgroundImage: "url('https://images.unsplash.com/photo-1529445654487-3bde9b55e0b2?q=80&w=1989&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     backdropFilter: "blur(5px)",
   },
   innerContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Darker semi-transparent background for focus
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     borderRadius: "12px",
     padding: "30px",
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
@@ -128,12 +136,12 @@ const styles = {
     fontWeight: "bold",
   },
   rateContainer: {
-    backgroundColor: "white", // Light overlay background for the rating
+    backgroundColor: "white",
     padding: "10px 20px",
     borderRadius: "8px",
     display: "inline-block",
     marginBottom: "16px",
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)", // Slight shadow to lift the rating area
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
   },
   rate: {
     fontSize: "40px",
