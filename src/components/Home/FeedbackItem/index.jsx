@@ -10,14 +10,12 @@ const FeedbackItem = (props) => {
     setIsExpanded(!isExpanded);
   };
 
-  console.log(feedbackData);
-
   if (!feedbackData) {
     return <div>Not found</div>;
-  } else {
-    console.log("db", feedbackData);
   }
+
   const formattedDate = dayjs(feedbackData.feedbackDate).format("DD-MM-YYYY");
+  const hasMoreThan50Chars = feedbackData.comment.length > 50;
 
   return (
     <div className="feedback">
@@ -36,12 +34,19 @@ const FeedbackItem = (props) => {
         ))}
       </div>
       <p className="comment">
-        {isExpanded || feedbackData.comment.length <= 100
-          ? feedbackData.comment
-          : feedbackData.comment.substring(0, 100) + "... "}
-        {feedbackData.comment.length > 100 && (
+        {isExpanded || !hasMoreThan50Chars ? (
+          <span dangerouslySetInnerHTML={{ __html: feedbackData.comment }} />
+        ) : (
+          <span>
+            {feedbackData.comment.substring(0, 50) + "... "}
+            <span className="show-more" onClick={handleToggleExpand}>
+              See more
+            </span>
+          </span>
+        )}
+        {hasMoreThan50Chars && isExpanded && (
           <span className="show-more" onClick={handleToggleExpand}>
-            {isExpanded ? "See less" : "See more"}
+            See less
           </span>
         )}
       </p>

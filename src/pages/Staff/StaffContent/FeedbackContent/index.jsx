@@ -1,9 +1,13 @@
 import { Rate } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
-import { createFeedback, setShowAlert } from "../../../../store/staffSlice/feedbackSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  createFeedback,
+  setShowAlert,
+  setError
+} from "../../../../store/staffSlice/feedbackSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Editor } from '@tinymce/tinymce-react';
+import { Editor } from "@tinymce/tinymce-react";
 
 function FeedBack() {
   const dispatch = useDispatch();
@@ -14,25 +18,24 @@ function FeedBack() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const bookingID = queryParams.get("bookingID");
-  const { showAlert, message, error } = useSelector((state) => state.STAFF.feedback);
+  const { showAlert, message, error } = useSelector(
+    (state) => state.STAFF.feedback
+  );
 
   const today = new Date();
-  const formattedDate = today.toISOString().split('T')[0];
+  const formattedDate = today.toISOString().split("T")[0];
 
   const handleBack = () => {
-    navigate(-1); 
+    navigate(-1);
   };
 
   const handleSubmit = async () => {
-    console.log("Rating:", rating);
-    console.log("Feedback:", feedback);
-    console.log(bookingID);
     const objectCreate = {
-        bookingID: bookingID,
-        rating: rating,
-        comment: feedback,
-        feedbackDate: formattedDate 
-    }
+      bookingID: bookingID,
+      rating: rating,
+      comment: feedback,
+      feedbackDate: formattedDate,
+    };
     const result = await dispatch(createFeedback(objectCreate));
     if (result.payload.ok) {
       setIsSubmitted(true);
@@ -43,6 +46,7 @@ function FeedBack() {
     if (showAlert) {
       const timer = setTimeout(() => {
         dispatch(setShowAlert(false));
+        dispatch(setError(null));
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -59,9 +63,9 @@ function FeedBack() {
         </div>
       )}
       <div style={styles.container}>
-        <button 
-          className="btn btn-secondary mb-3" 
-          onClick={handleBack} 
+        <button
+          className="btn btn-secondary mb-3"
+          onClick={handleBack}
           style={{ position: "absolute", top: 20, left: 20 }}
         >
           Turn back
@@ -71,21 +75,90 @@ function FeedBack() {
           {!isSubmitted ? (
             <>
               <div style={styles.rateContainer}>
-                <Rate style={styles.rate} defaultValue={1} onChange={setRating} />
+                <Rate
+                  style={styles.rate}
+                  defaultValue={1}
+                  onChange={setRating}
+                />
               </div>
               <Editor
-                initialValue="<p>Leave your feedback here...</p>"
+                onEditorChange={(content) => setFeedback(content)}
+                apiKey="g78f7q7nisjzjjlapkhzc7a4d8sqlc88uhr237r6dj4yvifj"
                 init={{
-                  height: 300,
-                  menubar: false,
                   plugins: [
-                    'link image code',
+                    "anchor",
+                    "autolink",
+                    "charmap",
+                    "codesample",
+                    "emoticons",
+                    "image",
+                    "link",
+                    "lists",
+                    "media",
+                    "searchreplace",
+                    "table",
+                    "visualblocks",
+                    "wordcount",
+                    "checklist",
+                    "mediaembed",
+                    "casechange",
+                    "export",
+                    "formatpainter",
+                    "pageembed",
+                    "a11ychecker",
+                    "tinymcespellchecker",
+                    "permanentpen",
+                    "powerpaste",
+                    "advtable",
+                    "advcode",
+                    "editimage",
+                    "advtemplate",
+                    "ai",
+                    "mentions",
+                    "tinycomments",
+                    "tableofcontents",
+                    "footnotes",
+                    "mergetags",
+                    "autocorrect",
+                    "typography",
+                    "inlinecss",
+                    "markdown",
+                    "importword",
+                    "exportword",
+                    "exportpdf",
                   ],
-                  toolbar: 'undo redo | styleselect | bold italic | link image',
-                  placeholder: "Nhập phản hồi của bạn tại đây...",
+                  placeholder: "Leave your feedback here...",
+                  toolbar:
+                    "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                  tinycomments_mode: "embedded",
+                  tinycomments_author: "Author name",
+                  mergetags_list: [
+                    { value: "First.Name", title: "First Name" },
+                    { value: "Email", title: "Email" },
+                  ],
+                  ai_request: (request, respondWith) =>
+                    respondWith.string(() =>
+                      Promise.reject("See docs to implement AI Assistant")
+                    ),
+                  exportpdf_converter_options: {
+                    format: "Letter",
+                    margin_top: "1in",
+                    margin_right: "1in",
+                    margin_bottom: "1in",
+                    margin_left: "1in",
+                  },
+                  exportword_converter_options: {
+                    document: { size: "Letter" },
+                  },
+                  importword_converter_options: {
+                    formatting: {
+                      styles: "inline",
+                      resets: "inline",
+                      defaults: "inline",
+                    },
+                  },
                 }}
-                onEditorChange={(content) => setFeedback(content)} // Cập nhật giá trị phản hồi
-                style={styles.textArea} // Sử dụng styles từ biến styles
+                initialValue=""
               />
               <button
                 type="submit"
@@ -95,7 +168,7 @@ function FeedBack() {
                 Submit
               </button>
             </>
-          ) : ( 
+          ) : (
             <p style={{ color: "#fff", fontSize: "18px", marginTop: "20px" }}>
               Thank you for your feedback!
             </p>
@@ -114,7 +187,8 @@ const styles = {
     justifyContent: "center",
     height: "100vh",
     padding: "20px",
-    backgroundImage: "url('https://images.unsplash.com/photo-1529445654487-3bde9b55e0b2?q=80&w=1989&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+    backgroundImage:
+      "url('https://images.unsplash.com/photo-1529445654487-3bde9b55e0b2?q=80&w=1989&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",

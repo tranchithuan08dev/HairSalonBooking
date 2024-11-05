@@ -10,23 +10,19 @@ function Footer() {
           <div className="row">
             {/*Grid column*/}
             <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
-              <h5 className="text-uppercase">Footer text</h5>
+              <h5 className="text-uppercase">Contact Us</h5>
               <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste
-                atque ea quis molestias. Fugiat pariatur maxime quis culpa
-                corporis vitae repudiandae aliquam voluptatem veniam, est atque
-                cumque eum delectus sint!
+                - Phone: 0123-456-789 <br />
+                - Email: harmonyhairsalon2024@gmail.com <br />- Address: Fpt
+                University
               </p>
             </div>
             {/*Grid column*/}
             {/*Grid column*/}
             <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
-              <h5 className="text-uppercase">Footer text</h5>
+              <h5 className="text-uppercase">Follow Us</h5>
               <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste
-                atque ea quis molestias. Fugiat pariatur maxime quis culpa
-                corporis vitae repudiandae aliquam voluptatem veniam, est atque
-                cumque eum delectus sint!
+                - Github: https://github.com/tranchithuan08dev/HairSalonBooking <br />
               </p>
             </div>
             {/*Grid column*/}
@@ -39,7 +35,7 @@ function Footer() {
           className="text-center p-3"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
         >
-          © 2020 Copyright: &gt;
+          <i>Quality service is our top priority!</i>
         </div>
         {/* Copyright */}
       </footer>
