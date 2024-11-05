@@ -52,6 +52,20 @@ function Content() {
     setCurrentPage(newPage);
   };
 
+  const formatSalary = (salary) => {
+    if(salary === null) return "";
+    const salaryString = salary.toString();
+    let formattedSalary = '';
+    const length = salaryString.length;
+    for (let i = 0; i < length; i++) {
+      formattedSalary = salaryString[length - 1 - i] + formattedSalary;
+      if ((i + 1) % 3 === 0 && (i + 1) < length) {
+        formattedSalary = ',' + formattedSalary;
+      }
+    }
+    return formattedSalary;
+  };
+
   useEffect(() => {
     if (data.bookings) {
       let updatedBookings = [...data.bookings];
@@ -161,7 +175,7 @@ function Content() {
               <FilterStatus />
             </div>
             <div className="col-md-6">
-              <Search bookings={data.bookings} />
+              <Search bookings={data?.bookings} />
             </div>
           </div>
         </div>
@@ -211,7 +225,7 @@ function Content() {
                       <div className="TotalPrice">
                         <h6>Total Price</h6>
                         <span className="block-span-edit">
-                          {item.discountPrice}VND
+                          {formatSalary(item?.discountPrice)}VND
                         </span>
                       </div>
                       <div className="Status">

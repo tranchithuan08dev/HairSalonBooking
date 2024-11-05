@@ -54,6 +54,11 @@ function Content() {
   };
 
   useEffect(() => {
+    dispatch(setShowAlert(false));
+    fetchData();
+  }, [dispatch, bookingID]);
+
+  useEffect(() => {
     if (loading) return;
     if (detail.data) {
       const serviceIDs = detail.detail
@@ -61,20 +66,12 @@ function Content() {
         .map((item) => item.serviceID);
       setListServices(serviceIDs);
     }
-  }, [detail, loading]);
-
-  useEffect(() => {
-    dispatch(setShowAlert(false));
-    fetchData();
-  }, [dispatch, bookingID]);
-
-  useEffect(() => {
     if (detail.data) {
       setStatus(detail.data?.status || "");
       setOriginalPrice(detail.data?.originalPrice || 0);
       setPrice(detail.data?.discountPrice || 0);
     }
-  }, [detail]);
+  }, [detail, loading]);
 
   useEffect(() => {
     console.log(detail.data?.status);
@@ -163,9 +160,27 @@ function Content() {
     };
 
     const result = await dispatch(generateQR(value));
-    if (result.payload.ok) {
-      setQr(result.payload.data.qrCode);
+    if(result.payload.data.code === "00"){
+      const link = result.payload.data.data.qrDataURL;
+      setQr(link);
+      dispatch(setMessage("Generate QR successfully!"));
+      dispatch(setShowAlert(true));
+      fetchData();
     }
+  };
+  
+  const formatSalary = (salary) => {
+    if(salary === null) return "";
+    const salaryString = salary.toString();
+    let formattedSalary = '';
+    const length = salaryString.length;
+    for (let i = 0; i < length; i++) {
+      formattedSalary = salaryString[length - 1 - i] + formattedSalary;
+      if ((i + 1) % 3 === 0 && (i + 1) < length) {
+        formattedSalary = ',' + formattedSalary;
+      }
+    }
+    return formattedSalary;
   };
 
   const changeDate = (date) => {
@@ -256,6 +271,7 @@ function Content() {
                   services={services}
                   addService={addService}
                   setListServices={setListServices}
+                  status={status}
                 />
                 <div className="form-group">
                   <strong>FullName:</strong>
@@ -300,19 +316,18 @@ function Content() {
                     <div className="form-group">
                       <strong>Original price:</strong>
                       <input
-                        type="number"
+                        type="text"
                         name="originalPrice"
-                        value={originalPrice || 0}
+                        value={formatSalary(originalPrice) || ""}
                         readOnly
                       />
                     </div>
                     <div className="form-group">
                       <strong>Discount price:</strong>
                       <input
-                        type="number"
+                        type="text"
                         name="discountPrice"
-                        value={price || 0}
-                        VND
+                        value={formatSalary(price) || ""}
                         readOnly
                       />
                     </div>
@@ -321,9 +336,9 @@ function Content() {
                   <div className="form-group">
                     <strong>Total price:</strong>
                     <input
-                      type="number"
+                      type="text"
                       name="originalPrice"
-                      value={originalPrice || 0}
+                      value={formatSalary(originalPrice) || 0}
                       readOnly
                     />
                   </div>
@@ -414,7 +429,7 @@ function Content() {
                   </div>
                 )}
 
-                {status !== "Completed" && detail.data?.customerID != null && (
+                {status === "Done" && detail.data?.customerID != null && (
                   <div className="checkbox-container">
                     <CheckboxLoyaltyPoints
                       loyaltyPoints={detail.data?.loyaltyPoints || 0}

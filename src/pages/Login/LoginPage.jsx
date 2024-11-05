@@ -128,6 +128,8 @@ const LoginPage = () => {
                             Register here
                           </Link>
                         </p>
+                        <Link to="/"style={{display: 'flex', justifyContent: "end"}}>Back to homepage
+                        </Link>
                       </Form>
                     </div>
                   </div>
