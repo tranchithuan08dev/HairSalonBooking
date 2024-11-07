@@ -1,47 +1,49 @@
 import React from "react";
-
+import {
+  DiscordFilled,
+  FacebookFilled,
+  InstagramFilled,
+} from "@ant-design/icons";
+import "./footer.css";
 function Footer() {
   return (
     <>
-      <footer className="bg-black text-center text-lg-start text-white">
-        {/* Grid container */}
-        <div className="container p-4 mx-auto" style={{ marginTop: "-20px" }}>
-          {/*Grid row*/}
-          <div className="row">
-            {/*Grid column*/}
-            <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
-              <h5 className="text-uppercase">Footer text</h5>
-              <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste
-                atque ea quis molestias. Fugiat pariatur maxime quis culpa
-                corporis vitae repudiandae aliquam voluptatem veniam, est atque
-                cumque eum delectus sint!
-              </p>
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-section about">
+            <h2>HairHarmony Salon</h2>
+            <p>
+              Your one-stop destination for all your hairstyling needs. We offer
+              personalized services by professional stylists.
+            </p>
+            <div className="socials">
+              <a href="#">
+                <FacebookFilled />
+              </a>
+              <a href="#">
+                <InstagramFilled />
+              </a>
+              <a href="#">
+                <DiscordFilled />
+              </a>
             </div>
-            {/*Grid column*/}
-            {/*Grid column*/}
-            <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
-              <h5 className="text-uppercase">Footer text</h5>
-              <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste
-                atque ea quis molestias. Fugiat pariatur maxime quis culpa
-                corporis vitae repudiandae aliquam voluptatem veniam, est atque
-                cumque eum delectus sint!
-              </p>
-            </div>
-            {/*Grid column*/}
           </div>
-          {/*Grid row*/}
+
+          <div className="footer-section contact">
+            <h3>Contact Us</h3>
+            <p>
+              <i className="fas fa-map-marker-alt" /> 123 Salon Street, Your
+              City
+            </p>
+            <p>
+              <i className="fas fa-phone" /> +1 (123) 456-7890
+            </p>
+            <p>
+              <i className="fas fa-envelope" /> info@hairharmony.com
+            </p>
+          </div>
         </div>
-        {/* Grid container */}
-        {/* Copyright */}
-        <div
-          className="text-center p-3"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
-        >
-          © 2020 Copyright: &gt;
-        </div>
-        {/* Copyright */}
+        <div className="footer-bottom">© 2024 HairHarmony</div>
       </footer>
     </>
   );
