@@ -294,7 +294,7 @@ const Staff = () => {
               decimalScale={0}
               fixedDecimalScale={false}
               allowNegative={false}
-              suffix="VND"
+              suffix=""
             />
           </Form.Item>
           <Form.Item name="totalsalary" label="Salary">
