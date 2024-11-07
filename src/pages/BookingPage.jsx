@@ -40,7 +40,7 @@ function BookingPage() {
   console.log("dataStylistById", dataStylistById);
   // console.log("dataWorkShift", dataWorkShift);
   console.log("tokennnn", auth);
-  console.log("Guest", guest.length);
+  console.log("Guest", guest);
 
   // USE State AND GET ALL DATA
   const [phone, setPhone] = useState(null);
@@ -64,11 +64,11 @@ function BookingPage() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [note, setNote] = useState("");
 
-  useEffect(() => {
-    if (customerID == null && guestID == null) {
-      nagative("/");
-    }
-  }, [guestID, guestID]);
+  // useEffect(() => {
+  //   if (customerID == null && guestID == null) {
+  //     nagative("/");
+  //   }
+  // }, [guestID, guestID]);
 
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber || guest?.guest?.phoneNumber);
