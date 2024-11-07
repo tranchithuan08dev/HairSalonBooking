@@ -34,7 +34,10 @@ function NewsDetail() {
           />
           <div className="image-title">{dataDetailNews?.title}</div>
           <div className="image-type">Type: {dataDetailNews?.type}</div>
-          <div className="image-content">{dataDetailNews?.content}</div>
+          <div
+            className="image-content"
+            dangerouslySetInnerHTML={{ __html: dataDetailNews?.content }}
+          ></div>
         </div>
       </div>
 
