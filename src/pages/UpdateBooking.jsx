@@ -69,11 +69,11 @@ function UpdateBooking() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [note, setNote] = useState("");
 
-  useEffect(() => {
-    if (customerID == null && guestID == null && bookingID == null) {
-      nagative("/");
-    }
-  }, [guestID, guestID]);
+  // useEffect(() => {
+  //   if (customerID == null && guestID == null && bookingID == null) {
+  //     nagative("/");
+  //   }
+  // }, [guestID, guestID]);
 
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber || guest?.guest?.phoneNumber);
