@@ -161,12 +161,12 @@ export const updateStatus = createAsyncThunk(
       console.log("Data update: ", response);
       return {
         ok: true,
-        message: "Update status successfully!"
+        message: "Updated successfully!"
       };
     } catch (error) {
       return {
         ok: false,
-        message: "Cannot update status!",
+        error: "Cannot update status!",
       };
     }
   }
@@ -280,12 +280,10 @@ const bookingSlice = createSlice({
       })
       .addCase(updateStatus.fulfilled, (state, action) => {
         state.loading = false;
-        state.showAlert = true;
-        console.log(action.payload); 
         if (action.payload.ok) {
-          state.message = action.payload.success;
+          state.message = action.payload.message;
         } else {
-          state.error = action.payload.message;
+          state.error = action.payload.error;
         }
       })
       .addCase(fetchServices.fulfilled, (state, action) => {

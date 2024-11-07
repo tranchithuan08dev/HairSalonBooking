@@ -64,10 +64,10 @@ function ForgotPassword() {
             </Form.Item>
           </Form>
           <div className="d-flex justify-content-between">
-            <a href="#" className="text-decoration-none">
+            <a href="/login" className="text-decoration-none">
               Login
             </a>
-            <a href="#" className="text-decoration-none">
+            <a href="/register" className="text-decoration-none">
               Register
             </a>
           </div>

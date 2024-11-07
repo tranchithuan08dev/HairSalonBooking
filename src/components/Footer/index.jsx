@@ -1,52 +1,38 @@
-import React from "react";
-import {
-  DiscordFilled,
-  FacebookFilled,
-  InstagramFilled,
-} from "@ant-design/icons";
-import "./footer.css";
-function Footer() {
-  return (
-    <>
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-section about">
-            <h2>HairHarmony Salon</h2>
-            <p>
-              Your one-stop destination for all your hairstyling needs. We offer
-              personalized services by professional stylists.
-            </p>
-            <div className="socials">
-              <a href="#">
-                <FacebookFilled />
-              </a>
-              <a href="#">
-                <InstagramFilled />
-              </a>
-              <a href="#">
-                <DiscordFilled />
-              </a>
-            </div>
-          </div>
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section about">
+      <h2>HairHarmony Salon</h2>
+      <p>
+        Your one-stop destination for all your hairstyling needs. We offer
+        personalized services by professional stylists.
+      </p>
+      <div class="socials">
+        <a href="#">
+          <i class="fab fa-facebook"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </div>
+    </div>
 
-          <div className="footer-section contact">
-            <h3>Contact Us</h3>
-            <p>
-              <i className="fas fa-map-marker-alt" /> 123 Salon Street, Your
-              City
-            </p>
-            <p>
-              <i className="fas fa-phone" /> +1 (123) 456-7890
-            </p>
-            <p>
-              <i className="fas fa-envelope" /> info@hairharmony.com
-            </p>
-          </div>
-        </div>
-        <div className="footer-bottom">© 2024 HairHarmony</div>
-      </footer>
-    </>
-  );
-}
-
-export default Footer;
+    <div class="footer-section contact">
+      <h3>Contact Us</h3>
+      <p>
+        <i class="fas fa-map-marker-alt"></i> 123 Salon Street, Your City
+      </p>
+      <p>
+        <i class="fas fa-phone"></i> +1 (123) 456-7890
+      </p>
+      <p>
+        <i class="fas fa-envelope"></i> info@hairharmony.com
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2024 HairHarmony | Designed by Your Name
+  </div>
+</footer>;

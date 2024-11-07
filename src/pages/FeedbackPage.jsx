@@ -72,7 +72,7 @@ const Feedback = () => {
         <div className="feedback-container">
           <div className="filter-search d-flex flex-column align-items-start mb-4">
             <div className="d-flex flex-wrap mb-2">
-              <h6 className="text-light">Filter by Rating: </h6>
+              <h5 className="text-light">Filter by Rating: </h5>
               {uniqueRatings.map((rating) => (
                 <span
                   key={rating}
@@ -89,7 +89,7 @@ const Feedback = () => {
               ))}
             </div>
             <div className="d-flex flex-wrap">
-              <h6 className="text-light">Filter by Services:</h6>
+              <h5 className="text-light">Filter by Services:</h5>
               <div className="service-container">
                 {uniqueServices.map((service, index) => (
                   <span
@@ -109,8 +109,10 @@ const Feedback = () => {
             </div>
           </div>
 
-          {loading ? (
-            <p>Loading...</p>
+          {loading || currentFeedbacks.length === 0 || feedbacks.length === 0 ? (
+            <div style={{ height: "276px", width: "100%" }} className="d-flex justify-content-center align-items-center">
+              <p className="text-light">No feedback available.</p>
+            </div>
           ) : (
             currentFeedbacks.map((feedback, index) => (
               <FeedbackItem key={index} feedbackData={feedback} />

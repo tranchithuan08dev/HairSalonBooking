@@ -11,6 +11,20 @@ function Content() {
   const stylistID = currentUser?.actorByRole.stylistID;
   const userID = currentUser?.record.userID;
 
+  const formatSalary = (salary) => {
+    if(salary === null) return "";
+    const salaryString = salary.toString();
+    let formattedSalary = '';
+    const length = salaryString.length;
+    for (let i = 0; i < length; i++) {
+      formattedSalary = salaryString[length - 1 - i] + formattedSalary;
+      if ((i + 1) % 3 === 0 && (i + 1) < length) {
+        formattedSalary = ',' + formattedSalary;
+      }
+    }
+    return formattedSalary;
+  };
+
   useEffect(() => {
     const fetch = async () => {
       await dispatch(fetchData({userID: userID ,stylistID: stylistID, token: token}));
@@ -55,8 +69,8 @@ function Content() {
               <div className="card-body testcard-body">
                 <div className="d-flex align-items-center">
                   <div>
-                    <p className="mb-0 text-secondary">Total Revenue</p>
-                    <h2 className="my-1 text-danger">{data.salary?.totalSalary || ""}VND</h2>
+                    <p className="mb-0 text-secondary">Total Revenue of this month</p>
+                    <h2 className="my-1 text-danger">{formatSalary(data.salary?.totalSalary) || ""}VND</h2>
                   </div>
                   <div className="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
                     <i className="fa fa-dollar"></i>

@@ -24,9 +24,6 @@ function Content() {
 
   const handleClick = (shift) => {
     if (shift) {
-      console.log("Shift data:", shift);
-      console.log("Booking ID:", shift.bookingID);
-    }
       if (shift.bookingID && shift.bookingID) {
         if(shift.bookingID.trim() !== ""){
         navigate(`bookingDetail?id=${shift.bookingID}`);
@@ -36,6 +33,7 @@ function Content() {
         dispatch(setShowAlert(true));
       }
     }
+  }
 
   const timeSlots = [
     "08:00 - 09:00",
@@ -96,26 +94,12 @@ function Content() {
     ];
 
     if (currentDay === 0) {
-      return []; 
+      return days.slice(1, 6);
     }
 
     const disableCount = currentDay === 0 ? 6 : currentDay - 1;
     return days.slice(0, disableCount);
   };
-
-  const getDaysOfWeek = () => {
-    const days = [];
-    const today = new Date();
-    
-    // Tạo danh sách các ngày bắt đầu từ hôm nay
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(today);
-      day.setDate(today.getDate() + i); // Thêm i ngày vào hôm nay
-      days.push(day.toLocaleDateString('en-US', { weekday: 'long' })); // Lấy tên ngày
-    }
-    return days;
-  };
-  
 
   const currentDay = getCurrentDay();
   const disabledDays = disableSlots(currentDay);
@@ -169,8 +153,8 @@ function Content() {
                   <td className="slotTime">{slot}</td>
                   {daysOfWeek.map((day, colIndex) => {
                     const shift = getWorkshiftData(day, slot);
+                    console.log(shift);
                     const isDisabled = disabledDays.includes(day);
-
                     return (
                       <td
                         onClick={() => !isDisabled && handleClick(shift)}
@@ -202,9 +186,9 @@ function Content() {
         <tbody className="table-sign-body">
           <tr className="sign-1">
             <td className="booked-slot sign"></td>
-            <td className="contentSpan">Slot has a booking</td>
+            <td className="contentSpan">Booked slot</td>
             <td className="schedule-slot sign"></td>
-            <td className="contentSpan">Slot havent't booked yet</td>
+            <td className="contentSpan">Available slot</td>
           </tr>
           <tr>
             <td className="notInSchedule-slot sign"></td>

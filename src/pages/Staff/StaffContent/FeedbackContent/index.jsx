@@ -1,8 +1,14 @@
-import { Rate, Input } from "antd";
+import { Rate } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
-import { createFeedback, setShowAlert} from "../../../../store/staffSlice/feedbackSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  createFeedback,
+  setShowAlert,
+  setError
+} from "../../../../store/staffSlice/feedbackSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { Editor } from "@tinymce/tinymce-react";
+
 function FeedBack() {
   const dispatch = useDispatch();
   const [rating, setRating] = useState(1);
@@ -12,25 +18,24 @@ function FeedBack() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const bookingID = queryParams.get("bookingID");
-  const {showAlert, message, error } = useSelector((state) => state.STAFF.feedback);
+  const { showAlert, message, error } = useSelector(
+    (state) => state.STAFF.feedback
+  );
 
   const today = new Date();
-  const formattedDate = today.toISOString().split('T')[0];
+  const formattedDate = today.toISOString().split("T")[0];
 
   const handleBack = () => {
-    navigate(-1); 
+    navigate(-1);
   };
 
   const handleSubmit = async () => {
-    console.log("Rating:", rating);
-    console.log("Feedback:", feedback);
-    console.log(bookingID);
     const objectCreate = {
-        bookingID: bookingID,
-        rating: rating,
-        comment: feedback,
-        feedbackDate: formattedDate 
-    }
+      bookingID: bookingID,
+      rating: rating,
+      comment: feedback,
+      feedbackDate: formattedDate,
+    };
     const result = await dispatch(createFeedback(objectCreate));
     if (result.payload.ok) {
       setIsSubmitted(true);
@@ -41,42 +46,119 @@ function FeedBack() {
     if (showAlert) {
       const timer = setTimeout(() => {
         dispatch(setShowAlert(false));
+        dispatch(setError(null));
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
+
   return (
     <>
-    {showAlert && (
-      <div
-        className={`alert ${
-          message ? "alert-success" : "alert-danger"
-        } mt-3`}
-        role="alert"
-      >
-        {message || error}
-      </div>
-    )}
-    <div style={styles.container}>
-    <button 
-          className="btn btn-secondary mb-3" 
-          onClick={handleBack} 
+      {showAlert && (
+        <div
+          className={`alert ${message ? "alert-success" : "alert-danger"} mt-3`}
+          role="alert"
+        >
+          {message || error}
+        </div>
+      )}
+      <div style={styles.container}>
+        <button
+          className="btn btn-secondary mb-3"
+          onClick={handleBack}
           style={{ position: "absolute", top: 20, left: 20 }}
         >
           Turn back
         </button>
-      <div style={styles.innerContainer}>
-        <h2 style={styles.heading}>Rate our Service</h2>
-        {!isSubmitted ? (
+        <div style={styles.innerContainer}>
+          <h2 style={styles.heading}>Rate our Service</h2>
+          {!isSubmitted ? (
             <>
               <div style={styles.rateContainer}>
-                <Rate style={styles.rate} defaultValue={1} onChange={setRating} />
+                <Rate
+                  style={styles.rate}
+                  defaultValue={1}
+                  onChange={setRating}
+                />
               </div>
-              <Input.TextArea
-                style={styles.textArea}
-                rows={4}
-                placeholder="Leave your feedback here..."
-                onChange={(e) => setFeedback(e.target.value)}
+              <Editor
+                onEditorChange={(content) => setFeedback(content)}
+                apiKey="g78f7q7nisjzjjlapkhzc7a4d8sqlc88uhr237r6dj4yvifj"
+                init={{
+                  plugins: [
+                    "anchor",
+                    "autolink",
+                    "charmap",
+                    "codesample",
+                    "emoticons",
+                    "image",
+                    "link",
+                    "lists",
+                    "media",
+                    "searchreplace",
+                    "table",
+                    "visualblocks",
+                    "wordcount",
+                    "checklist",
+                    "mediaembed",
+                    "casechange",
+                    "export",
+                    "formatpainter",
+                    "pageembed",
+                    "a11ychecker",
+                    "tinymcespellchecker",
+                    "permanentpen",
+                    "powerpaste",
+                    "advtable",
+                    "advcode",
+                    "editimage",
+                    "advtemplate",
+                    "ai",
+                    "mentions",
+                    "tinycomments",
+                    "tableofcontents",
+                    "footnotes",
+                    "mergetags",
+                    "autocorrect",
+                    "typography",
+                    "inlinecss",
+                    "markdown",
+                    "importword",
+                    "exportword",
+                    "exportpdf",
+                  ],
+                  placeholder: "Leave your feedback here...",
+                  toolbar:
+                    "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                  tinycomments_mode: "embedded",
+                  tinycomments_author: "Author name",
+                  mergetags_list: [
+                    { value: "First.Name", title: "First Name" },
+                    { value: "Email", title: "Email" },
+                  ],
+                  ai_request: (request, respondWith) =>
+                    respondWith.string(() =>
+                      Promise.reject("See docs to implement AI Assistant")
+                    ),
+                  exportpdf_converter_options: {
+                    format: "Letter",
+                    margin_top: "1in",
+                    margin_right: "1in",
+                    margin_bottom: "1in",
+                    margin_left: "1in",
+                  },
+                  exportword_converter_options: {
+                    document: { size: "Letter" },
+                  },
+                  importword_converter_options: {
+                    formatting: {
+                      styles: "inline",
+                      resets: "inline",
+                      defaults: "inline",
+                    },
+                  },
+                }}
+                initialValue=""
               />
               <button
                 type="submit"
@@ -86,13 +168,13 @@ function FeedBack() {
                 Submit
               </button>
             </>
-          ) : ( 
+          ) : (
             <p style={{ color: "#fff", fontSize: "18px", marginTop: "20px" }}>
               Thank you for your feedback!
             </p>
           )}
+        </div>
       </div>
-    </div>
     </>
   );
 }
@@ -113,7 +195,7 @@ const styles = {
     backdropFilter: "blur(5px)",
   },
   innerContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Darker semi-transparent background for focus
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     borderRadius: "12px",
     padding: "30px",
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
@@ -128,12 +210,12 @@ const styles = {
     fontWeight: "bold",
   },
   rateContainer: {
-    backgroundColor: "white", // Light overlay background for the rating
+    backgroundColor: "white",
     padding: "10px 20px",
     borderRadius: "8px",
     display: "inline-block",
     marginBottom: "16px",
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)", // Slight shadow to lift the rating area
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
   },
   rate: {
     fontSize: "40px",

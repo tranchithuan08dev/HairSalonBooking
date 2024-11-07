@@ -11,10 +11,13 @@ import {
   updateCustomer,
   updateStatus,
   setMessage,
+  setError,
 } from "../../../../store/staffSlice/bookingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CheckboxLoyaltyPoints from "../../../../components/Staff/CheckboxLoyaltyPoint";
 import ListServices from "../../../../components/Staff/ListServices";
+import Payment from "../../../../components/Staff/Payment";
+import ConfirmModal from "../../../../components/Staff/ConfirmModal";
 
 function Content() {
   const dispatch = useDispatch();
@@ -31,6 +34,7 @@ function Content() {
   const [checked, setChecked] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [qr, setQr] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const { detail, loading, message, error, showAlert, services } = useSelector(
     (state) => state.STAFF.booking
@@ -43,7 +47,7 @@ function Content() {
   };
 
   const fetchData = async () => {
-    const [bookingDetailResponse, servicesResponse] = await Promise.all([
+    await Promise.all([
       dispatch(fetchBookingDetail(bookingID)),
       dispatch(fetchServices()),
     ]);
@@ -55,18 +59,26 @@ function Content() {
   }, [dispatch, bookingID]);
 
   useEffect(() => {
+    if (loading) return;
+    if (detail.data) {
+      const serviceIDs = detail.detail
+        .filter((item) => !item.deleted)
+        .map((item) => item.serviceID);
+      setListServices(serviceIDs);
+    }
     if (detail.data) {
       setStatus(detail.data?.status || "");
       setOriginalPrice(detail.data?.originalPrice || 0);
       setPrice(detail.data?.discountPrice || 0);
     }
-  }, [detail]);
+  }, [detail, loading]);
 
   useEffect(() => {
-    if (detail.payment?.status === "paid") {
+    console.log(detail.data?.status);
+    if (detail.data?.status === "Completed") {
       setIsPaid(true);
     }
-  }, [detail?.payment]);
+  }, [detail?.data]);
 
   const addService = (newService) => {
     const serviceIDs = newService.slice(0, -1);
@@ -90,7 +102,7 @@ function Content() {
     }
   }, [detail.detail]);
 
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     const form = {
       bookingID: detail.data?.bookingID,
@@ -103,26 +115,41 @@ function Content() {
     console.log(form);
     const resultUpdate = await dispatch(updateBooking(form));
     if (resultUpdate.payload.ok) {
-      const formUpdate = {
-        bookingID: detail.data?.bookingID,
-        status: "Completed",
-      };
-      const resultUpdateStatus = await dispatch(updateStatus(formUpdate));
-      if (resultUpdateStatus.payload.ok) {
-        const formData = new FormData();
-        const dataToUpdate = {
-          userID: userID,
-          loyaltyPoints: 0,
-        };
-        for (const key in dataToUpdate) {
-          formData.append(key, dataToUpdate[key]);
-        }
-        await dispatch(updateCustomer(userID, formData));
+      fetchData();
+      await dispatch(setMessage("Update status successfully!"));
+      await dispatch(setShowAlert(true));
+    }
+  };
+  const handleSubmit = async () => {
+    const form = {
+      bookingID: detail.data?.bookingID,
+      stylistID: detail.data?.stylistID,
+      serviceID: getListServices,
+      originalPrice: originalPrice || 0,
+      discountPrice: price || 0,
+      stylistWorkShiftID: detail.data?.stylistWorkShiftID,
+    };
+    console.log(form);
+    const resultUpdate = await dispatch(updateBooking(form));
+    if (resultUpdate.payload.ok) {
+      const statusUpdate = await dispatch(
+        updateStatus({
+          bookingID: detail.data?.bookingID,
+          status: "Completed",
+        })
+      );
+      if (statusUpdate.payload.ok) {
+        await dispatch(updateCustomer(userID, { loyaltyPoints: 0 }));
+        setQr("");
+        await dispatch(setMessage("Transaction Complete!"));
+        await dispatch(setShowAlert(true));
+        const serviceIDs = detail.detail
+          .filter((item) => !item.deleted)
+          .map((item) => item.serviceID);
+        setListServices(serviceIDs);
         fetchData();
       }
     }
-    await dispatch(setMessage("Booking updated successfully!"));
-    await dispatch(setShowAlert(true));
   };
 
   const handleGenerate = async () => {
@@ -133,10 +160,27 @@ function Content() {
     };
 
     const result = await dispatch(generateQR(value));
-    if (result.payload.ok) {
-      setQr(result.payload.data.qrCode);
-      setQRActive(true);
+    if(result.payload.data.code === "00"){
+      const link = result.payload.data.data.qrDataURL;
+      setQr(link);
+      dispatch(setMessage("Generate QR successfully!"));
+      dispatch(setShowAlert(true));
+      fetchData();
     }
+  };
+  
+  const formatSalary = (salary) => {
+    if(salary === null) return "";
+    const salaryString = salary.toString();
+    let formattedSalary = '';
+    const length = salaryString.length;
+    for (let i = 0; i < length; i++) {
+      formattedSalary = salaryString[length - 1 - i] + formattedSalary;
+      if ((i + 1) % 3 === 0 && (i + 1) < length) {
+        formattedSalary = ',' + formattedSalary;
+      }
+    }
+    return formattedSalary;
   };
 
   const changeDate = (date) => {
@@ -153,6 +197,10 @@ function Content() {
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
+    setShowConfirm(true);
+  };
+  const handleConfirmPayment = async () => {
+    setShowConfirm(false);
     const dataCreate = {
       bookingID: detail.data?.bookingID || "",
       method: paymentMethod,
@@ -161,6 +209,7 @@ function Content() {
 
     const resultCreate = await dispatch(createPayment(dataCreate));
     if (resultCreate.payload.ok) {
+      handleSubmit();
       fetchData();
       setShowForm(false);
     }
@@ -169,6 +218,7 @@ function Content() {
     if (showAlert) {
       const timer = setTimeout(() => {
         dispatch(setShowAlert(false));
+        dispatch(setMessage(null));
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -217,9 +267,11 @@ function Content() {
                 </div>
                 <ListServices
                   detail={detail}
+                  isPaid={isPaid}
                   services={services}
                   addService={addService}
                   setListServices={setListServices}
+                  status={status}
                 />
                 <div className="form-group">
                   <strong>FullName:</strong>
@@ -264,19 +316,18 @@ function Content() {
                     <div className="form-group">
                       <strong>Original price:</strong>
                       <input
-                        type="number"
+                        type="text"
                         name="originalPrice"
-                        value={originalPrice || 0}
+                        value={formatSalary(originalPrice) || ""}
                         readOnly
                       />
                     </div>
                     <div className="form-group">
                       <strong>Discount price:</strong>
                       <input
-                        type="number"
+                        type="text"
                         name="discountPrice"
-                        value={price || 0}
-                        VND
+                        value={formatSalary(price) || ""}
                         readOnly
                       />
                     </div>
@@ -285,9 +336,9 @@ function Content() {
                   <div className="form-group">
                     <strong>Total price:</strong>
                     <input
-                      type="number"
+                      type="text"
                       name="originalPrice"
-                      value={originalPrice || 0}
+                      value={formatSalary(originalPrice) || 0}
                       readOnly
                     />
                   </div>
@@ -297,24 +348,13 @@ function Content() {
                   <strong>Status:</strong>
                   <input name="status" value={status} readOnly />
                 </div>
-                {detail.payment?.status && (
-                  <div className="form-group">
-                    <strong>Payment Status:</strong>
-                    <input
-                      type="text"
-                      name="paymentStatus"
-                      value={detail.payment?.status || ""}
-                      readOnly
-                    />
-                  </div>
-                )}
               </div>
               {status === "Cancelled" || status === "Completed" ? (
                 <></>
               ) : status === "In-progress" ? (
                 <button
                   type="submit"
-                  onClick={handleSubmit}
+                  onClick={handleUpdate}
                   className="buttonSubmit button-cus"
                 >
                   Update
@@ -328,20 +368,13 @@ function Content() {
                   >
                     Generate QR
                   </button>
-                  <button
-                    type="submit"
-                    onClick={handleSubmit}
-                    className="buttonSubmit button-cus"
-                  >
-                    Update
-                  </button>
-                  {!isPaid && (
+                  {status === "Done" && (
                     <button
                       type="button"
                       onClick={handleClickCreate}
                       className="buttonCreatePayment button-cus"
                     >
-                      Pay
+                      Confirm Payment
                     </button>
                   )}
                 </>
@@ -358,31 +391,21 @@ function Content() {
                 </div>
               )}
             </form>
-            {showForm && (
-              <div className="payment-form" style={{ width: "492px" }}>
-                <form onSubmit={handlePaymentSubmit}>
-                  <label htmlFor="payment-method">Select Payment Method:</label>
-                  <select
-                    id="payment-method"
-                    value={paymentMethod || ""}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                  >
-                    <option value="Cash">Cash</option>
-                    <option value="Banking">Banking</option>
-                  </select>
-                  <button type="submit" style={{ margin: "5px" }}>
-                    Submit Payment
-                  </button>
-                  <button
-                    type="button"
-                    style={{ margin: "5px" }}
-                    onClick={() => setShowForm(false)}
-                  >
-                    Cancel
-                  </button>
-                </form>
-              </div>
-            )}
+            <Payment
+              showForm={showForm}
+              setShowForm={setShowForm}
+              handlePaymentSubmit={handlePaymentSubmit}
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+            />
+
+            <ConfirmModal
+              show={showConfirm}
+              onConfirm={handleConfirmPayment}
+              onCancel={() => setShowConfirm(false)}
+              message="Are you sure you want to proceed with the payment?"
+            />
+
             <div className="col-md-6 QR">
               {status === "Completed" && (
                 <button
@@ -392,27 +415,32 @@ function Content() {
                   Feedback
                 </button>
               )}
-              {qr && (
-                <div className="Image justify-content align-items">
-                  <div className="imageContainer">
-                    <img
-                      style={{ width: "400px", height: "400px" }}
-                      src={qr}
-                      alt="QR Code"
+
+              <div className="row">
+                {qr && (
+                  <div className="Image justify-content align-items">
+                    <div className="imageContainer">
+                      <img
+                        style={{ width: "400px", height: "400px" }}
+                        src={qr}
+                        alt="QR Code"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {status === "Done" && detail.data?.customerID != null && (
+                  <div className="checkbox-container">
+                    <CheckboxLoyaltyPoints
+                      loyaltyPoints={detail.data?.loyaltyPoints || 0}
+                      originalPrice={originalPrice}
+                      setDiscountPrice={setPrice}
+                      setChecked={setChecked}
+                      checked={checked}
                     />
                   </div>
-                </div>
-              )}
-
-              {status !== "Completed" && (
-                <CheckboxLoyaltyPoints
-                  loyaltyPoints={detail.data?.loyaltyPoints || 0}
-                  originalPrice={originalPrice}
-                  setDiscountPrice={setPrice}
-                  setChecked={setChecked}
-                  isPaid={isPaid}
-                />
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

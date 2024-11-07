@@ -1,23 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ListServices = (props) => {
-  const { detail, services, addService, setListServices } = props;
+  const { detail, isPaid, services, addService, setListServices, status } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedServices, setSelectedServices] = useState(
     detail.servicesName || []
   );
+  const [singleServices, setSingleServices] = useState([]);
+  const [comboServices, setComboServices] = useState([]);
 
-  const singleServices = services.filter(
-    (s) => s.type === "single" && !s.deleted
-  );
-  const comboServices = services.filter(
-    (s) => s.type === "combo" && !s.deleted
-  );
+  // Effect to set services and selected services
+  useEffect(() => {
+    if (detail.servicesName) {
+      setSelectedServices(detail.servicesName);
+    }
+    updateServices(services);
+  }, [detail.servicesName, services]); // Update on services change
 
-  const handleServicesOpen = () => setIsModalOpen(true);
+  const updateServices = (services) => {
+    const filteredSingleServices = services.filter(
+      (s) => s.type === "Single" && !s.deleted
+    );
+    const filteredComboServices = services.filter(
+      (s) => s.type === "Combo" && !s.deleted
+    );
+    setSingleServices(filteredSingleServices);
+    setComboServices(filteredComboServices);
+  };
+
+  const handleServicesOpen = () => {
+    console.log("Opening modal");
+    setIsModalOpen(true);
+  };
 
   const handleModalClose = (isSave = false) => {
     if (!isSave) {
+      console.log("Modal closed without saving");
       setSelectedServices(detail.servicesName || []);
     } else {
       const selectedIDs = services
@@ -75,73 +93,74 @@ const ListServices = (props) => {
 
   return (
     <>
-        <div className="form-group textDiv">
-          <strong>Services:</strong>
-          <textarea
-            name="servicesName"
-            value={getDisplayServices()}
-            rows={4}
-            className="form-control text"
-            onChange={() => {}}
-          />
-
+      <div className="form-group textDiv">
+        <strong>Services:</strong>
+        <textarea
+          name="servicesName"
+          value={getDisplayServices()}
+          rows={4}
+          className="form-control text"
+          onChange={() => {}}
+        />
+        {isPaid === false && status === "In-progress" && (
           <label className="add-more-label" onClick={handleServicesOpen}>
             Add or Remove Services
           </label>
+        )}
 
-          {isModalOpen && (
-            <div className="custom-modal-overlay">
-              <div className="custom-modal-content">
-                <h2>Select Services</h2>
-                <h6>Note: Choose at least 1 service</h6>
-                <div className="services-container">
-                  <div className="service-column">
-                    <h3>Single Services</h3>
-                    {singleServices.map((service) => (
-                      <div key={service.serviceID} className="service-item">
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={selectedServices.includes(
-                              service.serviceName
-                            )}
-                            onChange={() => handleServiceChange(service)}
-                          />
-                          {service.serviceName}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="service-column">
-                    <h3>Combo Services</h3>
-                    {comboServices.map((service) => (
-                      <div key={service.serviceID} className="service-item">
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={selectedServices.includes(
-                              service.serviceName
-                            )}
-                            onChange={() => handleServiceChange(service)}
-                          />
-                          {service.serviceName}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+        {isModalOpen && (
+          <div className="custom-modal-overlay">
+            <div className="custom-modal-content">
+              <h2>Select Services</h2>
+              <h6>Note: Choose at least 1 service</h6>
+              <div className="services-container">
+                <div className="service-column">
+                  <h3>Single Services</h3>
+                  {singleServices.map((service) => (
+                    <div key={service.serviceID} className="service-item">
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedServices.includes(
+                            service.serviceName
+                          )}
+                          onChange={() => handleServiceChange(service)}
+                        />
+                        {service.serviceName}
+                      </label>
+                    </div>
+                  ))}
                 </div>
 
-                {selectedServices.length > 0 && (
-                  <div className="modal-actions">
-                    <button onClick={handleAddServices}>Save Changes</button>
-                    <button onClick={handleModalClose}>Close</button>
-                  </div>
-                )}
+                <div className="service-column">
+                  <h3>Combo Services</h3>
+                  {comboServices.map((service) => (
+                    <div key={service.serviceID} className="service-item">
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedServices.includes(
+                            service.serviceName
+                          )}
+                          onChange={() => handleServiceChange(service)}
+                        />
+                        {service.serviceName}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              {selectedServices.length > 0 && (
+                <div className="modal-actions">
+                  <button onClick={handleAddServices}>Save Changes</button>
+                  <button onClick={handleModalClose}>Close</button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };

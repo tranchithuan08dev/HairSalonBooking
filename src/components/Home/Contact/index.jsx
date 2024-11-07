@@ -1,9 +1,7 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { sendEmail, setShowAlert } from "../store/homeSlice";
+import { sendEmail, setShowAlert } from "../../../store/homeSlice";
 import { useEffect } from "react";
-import "../assets/css/contactPage.css";
+import "../../../assets/css/contact.css";
 
 function Contact() {
   const dispatch = useDispatch();
@@ -35,7 +33,6 @@ function Contact() {
 
   return (
     <>
-    <Header/>
       <link
         rel="stylesheet"
         href="https://unpkg.com/bs-brain@2.0.4/components/contacts/contact-4/assets/css/contact-4.css"
@@ -188,7 +185,6 @@ function Contact() {
           </div>
         </div>
       </section>
-      <Footer/>
     </>
   );
 }

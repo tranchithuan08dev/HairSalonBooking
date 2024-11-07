@@ -9,6 +9,7 @@ import TakeCare from "../components/Home/TakeCare";
 import Instagram from "../components/Home/Instagram";
 import NewsBlog from "../components/Home/Newsblog";
 import Map from "../components/Home/Map";
+import Contact from "../components/Home/Contact";
 
 function HomePage() {
   return (
@@ -45,6 +46,9 @@ function HomePage() {
         {/* Ins */}
         <Instagram />
         {/* Ins end */}
+        {/* Contact  */}
+        <Contact/>
+        {/* Contact End */}
         {/* Map  */}
 
         <Map />

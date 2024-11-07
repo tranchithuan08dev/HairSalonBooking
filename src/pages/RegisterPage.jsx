@@ -134,12 +134,6 @@ const RegisterPage = () => {
                           },
                         ]}
                       >
-                        <Checkbox>
-                          I agree to all statements in{" "}
-                          <a href="#!" className="text-body">
-                            <u>Terms of service</u>
-                          </a>
-                        </Checkbox>
                       </Form.Item>
 
                       <Form.Item>
@@ -157,7 +151,7 @@ const RegisterPage = () => {
 
                     <p className="text-center text-muted mt-5 mb-0">
                       Already have an account?{" "}
-                      <a href="#!" className="fw-bold text-body">
+                      <a href="/login" className="fw-bold text-body">
                         <u>Login here</u>
                       </a>
                     </p>

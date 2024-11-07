@@ -20,6 +20,20 @@ function Content() {
     (state) => state.STYLIST.bookingDetail
   );
 
+  const formatSalary = (salary) => {
+    if(salary === null) return "";
+    const salaryString = salary.toString();
+    let formattedSalary = '';
+    const length = salaryString.length;
+    for (let i = 0; i < length; i++) {
+      formattedSalary = salaryString[length - 1 - i] + formattedSalary;
+      if ((i + 1) % 3 === 0 && (i + 1) < length) {
+        formattedSalary = ',' + formattedSalary;
+      }
+    }
+    return formattedSalary;
+  };
+
   const fetch = async () => {
     await dispatch(fetchBookingDetail(id));
   };
@@ -161,9 +175,9 @@ function Content() {
                   <div className="form-group form-groupTest">
                     <strong>Total Price:</strong>
                     <input
-                      type="number"
+                      type="text"
                       name="originalPrice"
-                      value={data.data?.originalPrice || 0}
+                      value={formatSalary(data.data?.originalPrice) || 0}
                       VND
                       readOnly
                     />

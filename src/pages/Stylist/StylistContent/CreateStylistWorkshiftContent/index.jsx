@@ -246,7 +246,7 @@ function Content() {
             <td className="disabled-slot sign"></td>
             <td className="contentSpan">Slot is disabled</td>
             <td className="disabled sign"></td>
-            <td className="contentSpan">Chosen slot</td>
+            <td className="contentSpan">Slot registered</td>
           </tr>
         </tbody>
       </table>
