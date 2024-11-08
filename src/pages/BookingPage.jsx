@@ -64,11 +64,10 @@ function BookingPage() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [note, setNote] = useState("");
 
-  // useEffect(() => {
-  //   if (customerID == null && guestID == null) {
-  //     nagative("/");
-  //   }
-  // }, [guestID, guestID]);
+  if (guest.guest?.guestID == null && auth?.actorByRole?.customerID == null) {
+    nagative("/");
+    message.error("Please log in or book from the home page", 10);
+  }
 
   useEffect(() => {
     setPhone(auth?.record?.phoneNumber || guest?.guest?.phoneNumber);
