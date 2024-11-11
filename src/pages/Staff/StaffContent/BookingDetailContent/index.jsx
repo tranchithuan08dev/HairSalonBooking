@@ -160,7 +160,7 @@ function Content() {
     };
 
     const result = await dispatch(generateQR(value));
-    if(result.payload.data.code === "00"){
+    if (result.payload.data.code === "00") {
       const link = result.payload.data.data.qrDataURL;
       setQr(link);
       dispatch(setMessage("Generate QR successfully!"));
@@ -168,16 +168,16 @@ function Content() {
       fetchData();
     }
   };
-  
+
   const formatSalary = (salary) => {
-    if(salary === null) return "";
+    if (salary === null) return "";
     const salaryString = salary.toString();
-    let formattedSalary = '';
+    let formattedSalary = "";
     const length = salaryString.length;
     for (let i = 0; i < length; i++) {
       formattedSalary = salaryString[length - 1 - i] + formattedSalary;
-      if ((i + 1) % 3 === 0 && (i + 1) < length) {
-        formattedSalary = ',' + formattedSalary;
+      if ((i + 1) % 3 === 0 && i + 1 < length) {
+        formattedSalary = "," + formattedSalary;
       }
     }
     return formattedSalary;
@@ -193,6 +193,18 @@ function Content() {
 
   const handleClickCreate = () => {
     setShowForm(true);
+  };
+
+  const handleCancelBooking = async (e) => {
+    e.preventDefault();
+    const result = await dispatch(
+      updateStatus({ bookingID: detail.data?.bookingID, status: "Cancelled" })
+    );
+    if (result.payload.ok) {
+      dispatch(setMessage("Booking has been cancelled"));
+      dispatch(setShowAlert(true));
+      fetchData();
+    }
   };
 
   const handlePaymentSubmit = async (e) => {
@@ -352,13 +364,22 @@ function Content() {
               {status === "Cancelled" || status === "Completed" ? (
                 <></>
               ) : status === "In-progress" ? (
-                <button
-                  type="submit"
-                  onClick={handleUpdate}
-                  className="buttonSubmit button-cus"
-                >
-                  Update
-                </button>
+                <>
+                  <button
+                    type="submit"
+                    onClick={handleUpdate}
+                    className="buttonSubmit button-cus"
+                  >
+                    Update
+                  </button>
+                  <button
+                    type="submit"
+                    onClick={handleCancelBooking}
+                    className="buttonSubmit button-cus"
+                  >
+                    Cancel
+                  </button>
+                </>
               ) : (
                 <>
                   <button
@@ -403,7 +424,7 @@ function Content() {
               show={showConfirm}
               onConfirm={handleConfirmPayment}
               onCancel={() => setShowConfirm(false)}
-              message="Are you sure you want to proceed with the payment?"
+              message="Are you sure that you want to proceed with the payment?"
             />
 
             <div className="col-md-6 QR">
