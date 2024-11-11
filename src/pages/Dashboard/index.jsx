@@ -22,11 +22,11 @@ const DashBroad = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const navigate = useNavigate();
   const auth = useSelector((state) => state.AUTH.currentUser);
-  useEffect(() => {
-    if (auth?.record.role !== "Manager") {
-      navigate("/");
-    }
-  }, [auth, navigate]);
+  // useEffect(() => {
+  if (auth?.record.role !== "Manager") {
+    navigate("/login");
+  }
+  // }, [auth]);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
