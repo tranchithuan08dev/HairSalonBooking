@@ -40,7 +40,6 @@ export const Register = createAsyncThunk(
   async (params = {}) => {
     try {
       console.log(params);
-
       const response = await authService.register(params);
       const res = await authService.login({
         phoneNumber: params.phoneNumber,
@@ -49,7 +48,6 @@ export const Register = createAsyncThunk(
       const token = res.data.records.accessToken;
       const currentUser = await authService.fetchWithMe(token);
       const currenInfor = currentUser.data;
-
       return {
         ok: true,
         data: {
