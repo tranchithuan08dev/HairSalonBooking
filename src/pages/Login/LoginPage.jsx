@@ -13,24 +13,36 @@ const LoginPage = () => {
         console.log("ph", res.payload.data.currenInfor.record.role);
         const role = res.payload.data.currenInfor.record.role.toLowerCase();
         console.log("role", role);
-        switch (role) {
-          case "stylist":
-            navigate(`/stylist`);
-            break;
-          case "manager":
-            navigate("/dashboard");
-            break;
-          case "staff":
-            navigate(`/staff`);
-            break;
-          default:
-            navigate("/");
-            break;
+        const deleted = res.payload.data.currenInfor.record.deleted;
+        console.log(
+          "Current usser",
+          res.payload.data.currenInfor.record.deleted
+        );
+        if (!deleted) {
+          switch (role) {
+            case "stylist":
+              navigate(`/stylist`);
+              break;
+            case "manager":
+              navigate("/dashboard");
+              break;
+            case "staff":
+              navigate(`/staff`);
+              break;
+            default:
+              navigate("/");
+              break;
+          }
+        } else {
+          message.open({
+            type: "error",
+            content: "You can't  access this page",
+          });
         }
       } else {
         message.open({
           type: "error",
-          content: "This is an error message",
+          content: "You wrong password or Phone",
         });
       }
     });
@@ -128,7 +140,11 @@ const LoginPage = () => {
                             Register here
                           </Link>
                         </p>
-                        <Link to="/"style={{display: 'flex', justifyContent: "end"}}>Back to homepage
+                        <Link
+                          to="/"
+                          style={{ display: "flex", justifyContent: "end" }}
+                        >
+                          Back to homepage
                         </Link>
                       </Form>
                     </div>
