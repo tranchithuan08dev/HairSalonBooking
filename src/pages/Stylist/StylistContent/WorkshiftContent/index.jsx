@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import "../../../../assets/css/stylist/workshift.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAll, setError, setShowAlert } from "../../../../store/stylistSlice/WorkShiftSlice";
+import {
+  getAll,
+  setError,
+  setShowAlert,
+} from "../../../../store/stylistSlice/WorkShiftSlice";
 import { useNavigate } from "react-router-dom";
 
 function Content() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.AUTH);
-  const { data, loading, showAlert, error } = useSelector((state) => state.STYLIST?.workshift);
-  const stylistID = currentUser.actorByRole.stylistID;
+  const { data, loading, showAlert, error } = useSelector(
+    (state) => state.STYLIST?.workshift
+  );
+  const stylistID = currentUser?.actorByRole.stylistID;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,15 +31,15 @@ function Content() {
   const handleClick = (shift) => {
     if (shift) {
       if (shift.bookingID && shift.bookingID) {
-        if(shift.bookingID.trim() !== ""){
-        navigate(`bookingDetail?id=${shift.bookingID}`);
+        if (shift.bookingID.trim() !== "") {
+          navigate(`bookingDetail?id=${shift.bookingID}`);
         }
       } else {
         dispatch(setError("This slot haven't booked yet"));
         dispatch(setShowAlert(true));
       }
     }
-  }
+  };
 
   const timeSlots = [
     "08:00 - 09:00",
@@ -65,7 +71,7 @@ function Content() {
   };
 
   const getWorkshiftData = (day, slot) => {
-    const startTime = slot.split(" - ")[0]; 
+    const startTime = slot.split(" - ")[0];
     if (Array.isArray(data)) {
       const foundShift = data.find(
         (shift) =>
@@ -120,7 +126,7 @@ function Content() {
 
   return (
     <>
-    {showAlert && (
+      {showAlert && (
         <div
           className={`alert ${error ? "alert-danger" : ""} mt-3`}
           role="alert"
