@@ -1,14 +1,23 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../../../assets/scss/sidebar.scss";
+import { useSelector } from "react-redux";
 
 function Sidebar() {
-  const navLinkActive = (e) => {
-    return e.isActive ? "sidebar__menu__li__link sidebar__menu__li__link--active" : "sidebar__menu__li__link";
-  };
-  const handleLogout =() =>{
-    localStorage.removeItem("ACCESS_TOKKEN");
-    window.location.reload();
+  const auth = useSelector((state) => state.AUTH.currentUser);
+  const navigate = useNavigate();
+  if (auth?.record.role !== "Staff") {
+    navigate("/login");
   }
+  const navLinkActive = (e) => {
+    return e.isActive
+      ? "sidebar__menu__li__link sidebar__menu__li__link--active"
+      : "sidebar__menu__li__link";
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("ACCESS_TOKKEN");
+    navigate("/login");
+    window.location.reload();
+  };
   return (
     <>
       <div className="sidebar">
@@ -34,13 +43,20 @@ function Sidebar() {
               </NavLink>
             </li>
             <li>
-              <NavLink to={`/staff/removeStylistWorkshift`} className={navLinkActive}>
+              <NavLink
+                to={`/staff/removeStylistWorkshift`}
+                className={navLinkActive}
+              >
                 Remove Stylist Workshift
               </NavLink>
             </li>
           </ul>
           <div className="sidebar__menu--logout">
-            <NavLink to="/login" className={navLinkActive} onClick={handleLogout}>
+            <NavLink
+              to="/login"
+              className={navLinkActive}
+              onClick={handleLogout}
+            >
               Logout
             </NavLink>
           </div>
