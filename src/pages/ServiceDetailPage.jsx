@@ -40,7 +40,7 @@ function ServiceDetailPage() {
                   Price: {formatPriceToUSD(dataServiceDetail.price)} VND
                 </p>
                 <p className="text-muted fs-5 mb-4">
-                  Time: {dataServiceDetail.duration} phút
+                  Time: {dataServiceDetail.duration} mins
                 </p>
                 <hr />
                 <p className="card-text fs-6">

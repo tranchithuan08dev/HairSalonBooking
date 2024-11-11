@@ -51,10 +51,6 @@ function StylistDetailPage() {
                 <h4 className="mb-3" style={{ color: "#6c757d" }}>
                   Level {dataStylistById.level}
                 </h4>
-                {/* Booking Button */}
-                <Link className="btn-booking text-black" to="/booking">
-                  Booking
-                </Link>
               </div>
             </div>
           </div>
