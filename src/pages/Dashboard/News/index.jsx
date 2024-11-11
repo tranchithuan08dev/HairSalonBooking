@@ -132,6 +132,7 @@ function News() {
       type: values.type,
       title: values.titleNews,
       content: content,
+      deleted: values.status,
       img: selectedFile,
     };
     console.log("update", updateNews);
