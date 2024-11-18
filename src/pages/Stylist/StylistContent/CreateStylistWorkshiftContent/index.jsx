@@ -14,7 +14,9 @@ function Content() {
   const { data, loading, duplicated, error, showAlert } = useSelector(
     (state) => state.STYLIST.workshift
   );
-  const stylistID = currentUser.actorByRole.stylistID;
+  console.log("data work shift", data);
+
+  const stylistID = currentUser?.actorByRole?.stylistID;
   const [modal, setModal] = useState(false);
   const [message, setMessage] = useState(false);
   const [bookedShifts, setBookedShifts] = useState([]);
@@ -52,7 +54,14 @@ function Content() {
     return data.data.workshifts.find((shift) => {
       const isMatchingShiftDay = shift.shiftDay === day;
       const isMatchingStartTime = formatTime(shift.startTime) === startTime;
-      return isMatchingShiftDay && isMatchingStartTime && !shift.deleted;
+      console.log("isMatchingShiftDay", isMatchingShiftDay);
+      console.log("isMatchingStartTime", isMatchingStartTime);
+
+      return (
+        isMatchingShiftDay &&
+        isMatchingStartTime &&
+        !shift.StylistWorkShiftDeleted
+      );
     });
   };
 
@@ -164,13 +173,12 @@ function Content() {
                       <td
                         key={colIndex}
                         onClick={() => !isDisabled && handleClick(shift)}
-                        className={`slotCell-choose ${
-                          isBooked ? "booked" : ""
-                        } ${
-                          isDisabled
-                            ? "disabled"
-                            : `${isDisabledSlotChoose ? "disabled-slot" : ""}`
-                        }`}
+                        className={`slotCell-choose ${isBooked ? "booked" : ""}
+                         ${
+                           isDisabled
+                             ? "disabled"
+                             : `${isDisabledSlotChoose ? "disabled-slot" : ""}`
+                         }`}
                         style={{
                           cursor: isDisabled ? "not-allowed" : "pointer",
                         }}
