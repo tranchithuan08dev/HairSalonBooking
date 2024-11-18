@@ -21,7 +21,7 @@ function Map() {
             <p className="text-gray-700 mb-2">123 Harmony Street</p>
             <p className="text-gray-700 mb-2">Binh Thanh District</p>
             <p className="text-gray-700 mb-2">Ho Chi Minh City, Vietnam</p>
-            <p className="text-gray-700">Phone: (0123) 456 789</p>
+            <p className="text-gray-700">Phone: +1 (123) 456-7890</p>
           </div>
 
           <div className="col-span-1 md:col-span-3">
