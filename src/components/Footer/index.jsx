@@ -28,14 +28,14 @@ function Footer() {
           <div className="footer-section contact">
             <h3>Contact Us</h3>
             <p>
-              <i className="fas fa-map-marker-alt" /> 123 Salon Street, Your
-              City
+              <i className="fas fa-map-marker-alt" /> 123 Salon Street, Ho Chi
+              Minh
             </p>
             <p>
               <i className="fas fa-phone" /> +1 (123) 456-7890
             </p>
             <p>
-              <i className="fas fa-envelope" /> info@hairharmony.com
+              <i className="fas fa-envelope" /> Hairmony@gamil.com.vn
             </p>
           </div>
         </div>
